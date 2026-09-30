@@ -1,0 +1,801 @@
+{% extends "base.html" %}
+
+{% block title %}
+Welfare Management
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-5">
+
+<!-- PAGE HEADER -->
+<div
+    class="card border-0 shadow-sm mb-4 overflow-hidden"
+>
+
+    <div
+        class="p-4 p-lg-5 text-white"
+        style="
+            background:
+            linear-gradient(
+                135deg,
+                #022C22,
+                #064E3B
+            );
+        "
+    >
+
+        <div
+            class="d-flex
+                   flex-column
+                   flex-lg-row
+                   justify-content-between
+                   align-items-lg-center
+                   gap-3"
+        >
+
+            <div>
+
+                <span
+                    class="badge mb-2"
+                    style="
+                        background:#D4AF37;
+                        color:#022C22;
+                    "
+                >
+                    <i class="bi bi-heart-pulse me-1"></i>
+                    Welfare Management
+                </span>
+
+                <h1 class="fw-bold mb-2">
+                    Welfare Cases
+                </h1>
+
+                <p class="mb-0 text-white-50">
+                    Review and manage association member welfare requests.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <a
+                    href="{% url 'welfare:create' %}"
+                    class="btn"
+                    style="
+                        background:#D4AF37;
+                        color:#022C22;
+                        font-weight:600;
+                    "
+                >
+
+                    <i class="bi bi-plus-circle me-1"></i>
+
+                    New Welfare Request
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- STATISTICS -->
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-6 col-xl-3">
+
+        <div
+            class="card border-0 shadow-sm h-100"
+            style="
+                border-top:
+                4px solid #D4AF37 !important;
+            "
+        >
+
+            <div class="card-body">
+
+                <div
+                    class="d-flex
+                           justify-content-between
+                           align-items-center"
+                >
+
+                    <div>
+
+                        <p
+                            class="text-muted
+                                   mb-1"
+                        >
+                            Total Cases
+                        </p>
+
+                        <h2
+                            class="fw-bold mb-0"
+                            style="color:#064E3B;"
+                        >
+                            {{ cases|length }}
+                        </h2>
+
+                    </div>
+
+
+                    <div
+                        class="rounded-circle
+                               d-flex
+                               align-items-center
+                               justify-content-center"
+                        style="
+                            width:55px;
+                            height:55px;
+                            background:#E8F3EF;
+                            color:#064E3B;
+                        "
+                    >
+
+                        <i class="bi bi-folder2-open fs-4"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-6 col-xl-3">
+
+        <div
+            class="card border-0 shadow-sm h-100"
+            style="
+                border-top:
+                4px solid #D4AF37 !important;
+            "
+        >
+
+            <div class="card-body">
+
+                <div
+                    class="d-flex
+                           justify-content-between
+                           align-items-center"
+                >
+
+                    <div>
+
+                        <p
+                            class="text-muted mb-1"
+                        >
+                            Pending
+                        </p>
+
+                        <h2
+                            class="fw-bold mb-0"
+                            style="color:#064E3B;"
+                        >
+
+                            {{ pending_count|default:0 }}
+
+                        </h2>
+
+                    </div>
+
+
+                    <div
+                        class="rounded-circle
+                               d-flex
+                               align-items-center
+                               justify-content-center"
+                        style="
+                            width:55px;
+                            height:55px;
+                            background:#FFF8DC;
+                            color:#D4AF37;
+                        "
+                    >
+
+                        <i class="bi bi-hourglass-split fs-4"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-6 col-xl-3">
+
+        <div
+            class="card border-0 shadow-sm h-100"
+            style="
+                border-top:
+                4px solid #D4AF37 !important;
+            "
+        >
+
+            <div class="card-body">
+
+                <div
+                    class="d-flex
+                           justify-content-between
+                           align-items-center"
+                >
+
+                    <div>
+
+                        <p
+                            class="text-muted mb-1"
+                        >
+                            Approved
+                        </p>
+
+                        <h2
+                            class="fw-bold mb-0"
+                            style="color:#064E3B;"
+                        >
+
+                            {{ approved_count|default:0 }}
+
+                        </h2>
+
+                    </div>
+
+
+                    <div
+                        class="rounded-circle
+                               d-flex
+                               align-items-center
+                               justify-content-center"
+                        style="
+                            width:55px;
+                            height:55px;
+                            background:#E8F3EF;
+                            color:#064E3B;
+                        "
+                    >
+
+                        <i class="bi bi-check-circle fs-4"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-6 col-xl-3">
+
+        <div
+            class="card border-0 shadow-sm h-100"
+            style="
+                border-top:
+                4px solid #D4AF37 !important;
+            "
+        >
+
+            <div class="card-body">
+
+                <div
+                    class="d-flex
+                           justify-content-between
+                           align-items-center"
+                >
+
+                    <div>
+
+                        <p
+                            class="text-muted mb-1"
+                        >
+                            Paid
+                        </p>
+
+                        <h2
+                            class="fw-bold mb-0"
+                            style="color:#064E3B;"
+                        >
+
+                            {{ paid_count|default:0 }}
+
+                        </h2>
+
+                    </div>
+
+
+                    <div
+                        class="rounded-circle
+                               d-flex
+                               align-items-center
+                               justify-content-center"
+                        style="
+                            width:55px;
+                            height:55px;
+                            background:#FFF8DC;
+                            color:#D4AF37;
+                        "
+                    >
+
+                        <i class="bi bi-cash-stack fs-4"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CASES TABLE -->
+
+<div
+    class="card border-0 shadow-sm"
+>
+
+    <div
+        class="card-header
+               py-3
+               text-white"
+        style="background:#064E3B;"
+    >
+
+        <div
+            class="d-flex
+                   flex-column
+                   flex-md-row
+                   justify-content-between
+                   align-items-md-center
+                   gap-2"
+        >
+
+            <h5 class="mb-0 fw-bold">
+
+                <i class="bi bi-clipboard-heart me-2"></i>
+
+                Welfare Requests
+
+            </h5>
+
+
+            <span
+                class="badge"
+                style="
+                    background:#D4AF37;
+                    color:#022C22;
+                "
+            >
+
+                {{ cases|length }} Cases
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table
+                class="table
+                       table-hover
+                       align-middle
+                       mb-0"
+            >
+
+                <thead
+                    style="
+                        background:#F4E7B2;
+                        color:#022C22;
+                    "
+                >
+
+                    <tr>
+
+                        <th class="px-4">
+                            Member
+                        </th>
+
+                        <th>
+                            Request
+                        </th>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Requested
+                        </th>
+
+                        <th>
+                            Approved
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for case in cases %}
+
+                        <tr>
+
+                            <!-- MEMBER -->
+
+                            <td class="px-4">
+
+                                <div
+                                    class="d-flex
+                                           align-items-center"
+                                >
+
+                                    <div
+                                        class="rounded-circle
+                                               d-flex
+                                               align-items-center
+                                               justify-content-center
+                                               me-2"
+                                        style="
+                                            width:40px;
+                                            height:40px;
+                                            background:#E8F3EF;
+                                            color:#064E3B;
+                                        "
+                                    >
+
+                                        <i class="bi bi-person"></i>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <div
+                                            class="fw-semibold"
+                                        >
+
+                                            {% if case.member.get_full_name %}
+
+                                                {{ case.member.get_full_name }}
+
+                                            {% else %}
+
+                                                {{ case.member.username }}
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <small
+                                            class="text-muted"
+                                        >
+
+                                            {{ case.member.username }}
+
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- TITLE -->
+
+                            <td>
+
+                                <strong
+                                    style="color:#064E3B;"
+                                >
+
+                                    {{ case.title }}
+
+                                </strong>
+
+                            </td>
+
+
+                            <!-- TYPE -->
+
+                            <td>
+
+                                <span
+                                    class="badge"
+                                    style="
+                                        background:#E8F3EF;
+                                        color:#064E3B;
+                                    "
+                                >
+
+                                    {{ case.get_case_type_display }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- REQUESTED -->
+
+                            <td>
+
+                                ₦{{ case.amount_requested|floatformat:2 }}
+
+                            </td>
+
+
+                            <!-- APPROVED -->
+
+                            <td>
+
+                                ₦{{ case.amount_approved|floatformat:2 }}
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if case.status == "APPROVED" %}
+
+                                    <span
+                                        class="badge"
+                                        style="
+                                            background:#064E3B;
+                                            color:white;
+                                        "
+                                    >
+
+                                        Approved
+
+                                    </span>
+
+                                {% elif case.status == "PAID" %}
+
+                                    <span
+                                        class="badge"
+                                        style="
+                                            background:#D4AF37;
+                                            color:#022C22;
+                                        "
+                                    >
+
+                                        Paid
+
+                                    </span>
+
+                                {% elif case.status == "REJECTED" %}
+
+                                    <span
+                                        class="badge bg-danger"
+                                    >
+
+                                        Rejected
+
+                                    </span>
+
+                                {% elif case.status == "PENDING" %}
+
+                                    <span
+                                        class="badge"
+                                        style="
+                                            background:#F4E7B2;
+                                            color:#022C22;
+                                        "
+                                    >
+
+                                        Pending
+
+                                    </span>
+
+                                {% elif case.status == "UNDER_REVIEW" %}
+
+                                    <span
+                                        class="badge bg-info text-dark"
+                                    >
+
+                                        Under Review
+
+                                    </span>
+
+                                {% elif case.status == "MORE_INFO" %}
+
+                                    <span
+                                        class="badge bg-warning text-dark"
+                                    >
+
+                                        More Information
+
+                                    </span>
+
+                                {% elif case.status == "PARTIALLY_APPROVED" %}
+
+                                    <span
+                                        class="badge"
+                                        style="
+                                            background:#D4AF37;
+                                            color:#022C22;
+                                        "
+                                    >
+
+                                        Partially Approved
+
+                                    </span>
+
+                                {% elif case.status == "CLOSED" %}
+
+                                    <span
+                                        class="badge bg-secondary"
+                                    >
+
+                                        Closed
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span
+                                        class="badge bg-secondary"
+                                    >
+
+                                        {{ case.get_status_display }}
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- DATE -->
+
+                            <td>
+
+                                <small>
+
+                                    {{ case.created_at|date:"d M Y" }}
+
+                                </small>
+
+                            </td>
+
+
+                            <!-- ACTION -->
+
+                            <td>
+
+                                <a
+                                    href="{% url 'welfare:detail' case.pk %}"
+                                    class="btn btn-sm"
+                                    style="
+                                        background:#064E3B;
+                                        color:white;
+                                    "
+                                >
+
+                                    <i
+                                        class="bi bi-eye me-1"
+                                    ></i>
+
+                                    View
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="text-center py-5"
+                            >
+
+                                <div class="py-4">
+
+                                    <i
+                                        class="bi bi-heart
+                                               display-3"
+                                        style="color:#D4AF37;"
+                                    ></i>
+
+
+                                    <h4
+                                        class="fw-bold mt-3"
+                                        style="color:#064E3B;"
+                                    >
+
+                                        No Welfare Cases
+
+                                    </h4>
+
+
+                                    <p
+                                        class="text-muted"
+                                    >
+
+                                        There are currently no
+                                        welfare requests.
+
+                                    </p>
+
+
+                                    <a
+                                        href="{% url 'welfare:create' %}"
+                                        class="btn text-white"
+                                        style="
+                                            background:#064E3B;
+                                        "
+                                    >
+
+                                        <i
+                                            class="bi bi-plus-circle me-1"
+                                        ></i>
+
+                                        Create Welfare Request
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

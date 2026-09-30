@@ -1,0 +1,844 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ session.title }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* ================================
+       ASSOCIATION COLOUR THEME
+       ================================ */
+
+    :root {
+        --dark-green: #022C22;
+        --green: #064E3B;
+        --light-green: #E8F3EF;
+        --gold: #D4AF37;
+        --light-gold: #F4E7B2;
+        --soft-bg: #F8FAF9;
+        --text-dark: #1F2937;
+    }
+
+    body {
+        background: var(--soft-bg);
+    }
+
+    /* ================================
+       PAGE HEADER
+       ================================ */
+
+    .attendance-header {
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(2, 44, 34, 0.12);
+        position: relative;
+    }
+
+    .attendance-header-content {
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(212, 175, 55, 0.20),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #022C22,
+                #064E3B
+            );
+        padding: 50px;
+        position: relative;
+    }
+
+    .attendance-header-content::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border: 2px solid rgba(212, 175, 55, 0.15);
+        border-radius: 50%;
+        right: -50px;
+        bottom: -80px;
+    }
+
+    .attendance-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--gold);
+        color: var(--dark-green);
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+
+    .attendance-title {
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        letter-spacing: -0.5px;
+    }
+
+    .attendance-date {
+        color: rgba(255,255,255,0.82);
+        font-size: 1rem;
+    }
+
+    .gold-line {
+        width: 70px;
+        height: 4px;
+        background: var(--gold);
+        border-radius: 20px;
+        margin-top: 18px;
+    }
+
+    /* ================================
+       STATISTICS
+       ================================ */
+
+    .stat-card {
+        background: white;
+        border: 0;
+        border-radius: 16px;
+        padding: 25px 20px;
+        height: 100%;
+        box-shadow: 0 6px 22px rgba(2, 44, 34, 0.07);
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(2, 44, 34, 0.12);
+    }
+
+    .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gold);
+    }
+
+    .stat-card.green::before {
+        background: var(--green);
+    }
+
+    .stat-card.gray::before {
+        background: #6c757d;
+    }
+
+    .stat-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        background: var(--light-green);
+        color: var(--green);
+        font-size: 1.55rem;
+    }
+
+    .stat-icon.gold {
+        background: #FFF8DF;
+        color: var(--gold);
+    }
+
+    .stat-icon.gray {
+        background: #F1F3F5;
+        color: #6c757d;
+    }
+
+    .stat-number {
+        font-size: 1.9rem;
+        color: var(--dark-green);
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6B7280;
+    }
+
+    /* ================================
+       RECORDS CARD
+       ================================ */
+
+    .records-card {
+        border: 0;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(2, 44, 34, 0.08);
+    }
+
+    .records-header {
+        background:
+            linear-gradient(
+                135deg,
+                #022C22,
+                #064E3B
+            );
+        color: white;
+        padding: 18px 24px;
+        position: relative;
+    }
+
+    .records-header::after {
+        content: "";
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 50%;
+        right: -30px;
+        top: -45px;
+    }
+
+    .records-header h5 {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ================================
+       TABLE
+       ================================ */
+
+    .attendance-table {
+        min-width: 850px;
+    }
+
+    .attendance-table thead th {
+        background: var(--light-gold);
+        color: var(--dark-green);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        border-bottom: 2px solid var(--gold);
+        padding: 15px 18px;
+        white-space: nowrap;
+    }
+
+    .attendance-table tbody td {
+        padding: 16px 18px;
+        border-color: #EEF2F0;
+        color: #4B5563;
+        font-size: 0.92rem;
+    }
+
+    .attendance-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .attendance-table tbody tr:hover {
+        background: #F8FCFA;
+    }
+
+    .member-name {
+        color: var(--green);
+        font-weight: 700;
+    }
+
+    /* ================================
+       STATUS BADGES
+       ================================ */
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 11px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .status-present {
+        background: #DDF5E9;
+        color: #065F46;
+    }
+
+    .status-late {
+        background: #FFF3CD;
+        color: #7A5B00;
+    }
+
+    .status-absent {
+        background: #FDE2E2;
+        color: #B42318;
+    }
+
+    .status-excused {
+        background: #E9ECEF;
+        color: #495057;
+    }
+
+    /* ================================
+       EMPTY STATE
+       ================================ */
+
+    .empty-state {
+        padding: 70px 20px;
+    }
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        background: #FFF8DF;
+        color: var(--gold);
+        font-size: 2rem;
+    }
+
+    /* ================================
+       RESPONSIVE
+       ================================ */
+
+    @media (max-width: 768px) {
+
+        .attendance-header-content {
+            padding: 35px 25px;
+        }
+
+        .attendance-title {
+            font-size: 1.8rem;
+        }
+
+        .attendance-date {
+            font-size: 0.9rem;
+        }
+
+        .stat-card {
+            padding: 22px 15px;
+        }
+
+        .records-header {
+            padding: 16px 18px;
+        }
+
+    }
+
+</style>
+
+<div class="container py-5">
+
+<!-- ==================================
+     PAGE HEADER
+     ================================== -->
+
+<div class="attendance-header mb-5">
+
+    <div class="attendance-header-content text-white">
+
+        <div class="position-relative" style="z-index:2;">
+
+            <span class="attendance-badge mb-3">
+
+                <i class="bi bi-calendar-event"></i>
+
+                {{ session.get_session_type_display }}
+
+            </span>
+
+
+            <h1 class="attendance-title fw-bold mb-3">
+
+                {{ session.title }}
+
+            </h1>
+
+
+            <div class="attendance-date">
+
+                <i
+                    class="bi bi-calendar3 me-2"
+                    style="color:#D4AF37;"
+                ></i>
+
+                {{ session.date|date:"l, d F Y" }}
+
+
+                {% if session.venue %}
+
+                    <span class="mx-2">•</span>
+
+                    <i
+                        class="bi bi-geo-alt me-1"
+                        style="color:#D4AF37;"
+                    ></i>
+
+                    {{ session.venue }}
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="gold-line"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==================================
+     STATISTICS
+     ================================== -->
+
+<div class="row g-4 mb-5">
+
+
+    <!-- TOTAL -->
+
+    <div class="col-6 col-md-3">
+
+        <div class="stat-card text-center">
+
+            <div class="stat-icon">
+
+                <i class="bi bi-people-fill"></i>
+
+            </div>
+
+            <h3 class="stat-number fw-bold mb-1">
+
+                {{ total_records }}
+
+            </h3>
+
+            <p class="stat-label mb-0">
+
+                Total Records
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PRESENT -->
+
+    <div class="col-6 col-md-3">
+
+        <div class="stat-card green text-center">
+
+            <div class="stat-icon">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+            </div>
+
+            <h3 class="stat-number fw-bold mb-1">
+
+                {{ present_count }}
+
+            </h3>
+
+            <p class="stat-label mb-0">
+
+                Present
+
+            </p>
+
+        </div>
+
+    </div>
+
+{% if user.is_staff or user.is_superuser %}
+
+    <a
+        href="{% url 'attendance:mark' session.pk %}"
+        class="btn text-white"
+        style="background:#064E3B;"
+    >
+
+        <i class="bi bi-check2-square me-1"></i>
+
+        Mark Attendance
+
+    </a>
+
+{% endif %}
+
+    <!-- LATE -->
+
+    <div class="col-6 col-md-3">
+
+        <div class="stat-card text-center">
+
+            <div class="stat-icon gold">
+
+                <i class="bi bi-clock-history"></i>
+
+            </div>
+
+            <h3 class="stat-number fw-bold mb-1">
+
+                {{ late_count }}
+
+            </h3>
+
+            <p class="stat-label mb-0">
+
+                Late
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ABSENT -->
+
+    <div class="col-6 col-md-3">
+
+        <div class="stat-card gray text-center">
+
+            <div class="stat-icon gray">
+
+                <i class="bi bi-x-circle-fill"></i>
+
+            </div>
+
+            <h3 class="stat-number fw-bold mb-1">
+
+                {{ absent_count }}
+
+            </h3>
+
+            <p class="stat-label mb-0">
+
+                Absent
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==================================
+     ATTENDANCE RECORDS
+     ================================== -->
+
+<div class="records-card bg-white">
+
+
+    <!-- HEADER -->
+
+    <div class="records-header">
+
+        <h5 class="mb-0 fw-bold">
+
+            <i class="bi bi-list-check me-2"></i>
+
+            Attendance Records
+
+        </h5>
+
+    </div>
+
+
+
+    <!-- TABLE -->
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table
+                class="table attendance-table table-hover align-middle mb-0"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th class="px-4">
+                            Member
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Check In
+                        </th>
+
+                        <th>
+                            Check Out
+                        </th>
+
+                        <th>
+                            Remarks
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for record in records %}
+
+                        <tr>
+
+
+                            <!-- MEMBER -->
+
+                            <td class="px-4">
+
+                                <div class="d-flex align-items-center">
+
+                                    <div
+                                        class="rounded-circle
+                                               d-flex
+                                               align-items-center
+                                               justify-content-center
+                                               me-3"
+                                        style="
+                                            width:40px;
+                                            height:40px;
+                                            background:#E8F3EF;
+                                            color:#064E3B;
+                                        "
+                                    >
+
+                                        <i class="bi bi-person-fill"></i>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <div class="member-name">
+
+                                            {{ record.member.get_full_name|default:record.member.username }}
+
+                                        </div>
+
+                                        <small class="text-muted">
+
+                                            Member
+
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if record.status == "PRESENT" %}
+
+                                    <span class="status-badge status-present">
+
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                        Present
+
+                                    </span>
+
+
+                                {% elif record.status == "LATE" %}
+
+                                    <span class="status-badge status-late">
+
+                                        <i class="bi bi-clock-fill"></i>
+
+                                        Late
+
+                                    </span>
+
+
+                                {% elif record.status == "ABSENT" %}
+
+                                    <span class="status-badge status-absent">
+
+                                        <i class="bi bi-x-circle-fill"></i>
+
+                                        Absent
+
+                                    </span>
+
+
+                                {% else %}
+
+                                    <span class="status-badge status-excused">
+
+                                        <i class="bi bi-info-circle-fill"></i>
+
+                                        Excused
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+
+                            <!-- CHECK IN -->
+
+                            <td>
+
+                                {% if record.check_in %}
+
+                                    <div class="fw-semibold">
+
+                                        {{ record.check_in|date:"d M Y" }}
+
+                                    </div>
+
+                                    <small class="text-muted">
+
+                                        {{ record.check_in|date:"H:i" }}
+
+                                    </small>
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        —
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+
+                            <!-- CHECK OUT -->
+
+                            <td>
+
+                                {% if record.check_out %}
+
+                                    <div class="fw-semibold">
+
+                                        {{ record.check_out|date:"d M Y" }}
+
+                                    </div>
+
+                                    <small class="text-muted">
+
+                                        {{ record.check_out|date:"H:i" }}
+
+                                    </small>
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        —
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+
+                            <!-- REMARKS -->
+
+                            <td>
+
+                                {% if record.remarks %}
+
+                                    {{ record.remarks }}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        —
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                        </tr>
+
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="text-center"
+                            >
+
+                                <div class="empty-state">
+
+                                    <div class="empty-icon">
+
+                                        <i class="bi bi-clipboard-x"></i>
+
+                                    </div>
+
+                                    <h5
+                                        class="fw-bold"
+                                        style="color:#064E3B;"
+                                    >
+
+                                        No Attendance Records
+
+                                    </h5>
+
+                                    <p class="text-muted mb-0">
+
+                                        No attendance records have been
+                                        recorded for this session yet.
+
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}

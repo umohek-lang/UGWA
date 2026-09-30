@@ -1,0 +1,1010 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    {{ case.title }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- ========================================================= -->
+    <!-- PAGE HEADER                                                -->
+    <!-- ========================================================= -->
+
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+
+        <div
+            class="p-4 p-lg-5 text-white"
+            style="
+                background: linear-gradient(
+                    135deg,
+                    #022C22,
+                    #064E3B
+                );
+            "
+        >
+
+            <div
+                class="
+                    d-flex
+                    flex-column
+                    flex-lg-row
+                    justify-content-between
+                    align-items-lg-start
+                    gap-3
+                "
+            >
+
+                <!-- CASE INFORMATION -->
+
+                <div>
+
+                    <span
+                        class="badge mb-3"
+                        style="
+                            background:#D4AF37;
+                            color:#022C22;
+                        "
+                    >
+                        {{ case.get_case_type_display }}
+                    </span>
+
+
+                    <h1 class="fw-bold mb-2">
+                        {{ case.title }}
+                    </h1>
+
+
+                    <p class="mb-0">
+                        Submitted
+                        {{ case.created_at|date:"d F Y" }}
+                    </p>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div>
+
+                    {% if case.status == "APPROVED" %}
+
+                        <span
+                            class="badge fs-6 px-3 py-2"
+                            style="
+                                background:#D4AF37;
+                                color:#022C22;
+                            "
+                        >
+                            Approved
+                        </span>
+
+
+                    {% elif case.status == "PARTIALLY_APPROVED" %}
+
+                        <span
+                            class="badge fs-6 px-3 py-2"
+                            style="
+                                background:#D4AF37;
+                                color:#022C22;
+                            "
+                        >
+                            Partially Approved
+                        </span>
+
+
+                    {% elif case.status == "PAID" %}
+
+                        <span
+                            class="badge fs-6 px-3 py-2"
+                            style="
+                                background:#D4AF37;
+                                color:#022C22;
+                            "
+                        >
+                            Paid
+                        </span>
+
+
+                    {% elif case.status == "REJECTED" %}
+
+                        <span class="badge bg-danger fs-6 px-3 py-2">
+                            Rejected
+                        </span>
+
+
+                    {% else %}
+
+                        <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                            {{ case.get_status_display }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- MAIN CONTENT                                               -->
+    <!-- ========================================================= -->
+
+    <div class="row g-4">
+
+
+        <!-- ===================================================== -->
+        <!-- LEFT COLUMN                                            -->
+        <!-- ===================================================== -->
+
+        <div class="col-lg-8">
+
+
+            <!-- ================================================= -->
+            <!-- REQUEST DETAILS                                   -->
+            <!-- ================================================= -->
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div
+                    class="card-header text-white py-3"
+                    style="background:#064E3B;"
+                >
+
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-file-text me-2"></i>
+                        Request Details
+                    </h5>
+
+                </div>
+
+
+                <div class="card-body p-4">
+
+
+                    <!-- DESCRIPTION -->
+
+                    <h6
+                        class="fw-bold mb-2"
+                        style="color:#064E3B;"
+                    >
+                        Description
+                    </h6>
+
+
+                    <div class="text-muted">
+
+                        {{ case.description|linebreaks }}
+
+                    </div>
+
+
+                    <!-- MEMBER REMARKS -->
+
+                    {% if case.member_remarks %}
+
+                        <hr class="my-4">
+
+
+                        <h6
+                            class="fw-bold mb-2"
+                            style="color:#064E3B;"
+                        >
+                            Additional Information
+                        </h6>
+
+
+                        <div class="text-muted">
+
+                            {{ case.member_remarks|linebreaks }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- OFFICER REMARKS -->
+
+                    {% if case.officer_remarks %}
+
+                        <hr class="my-4">
+
+
+                        <h6
+                            class="fw-bold mb-2"
+                            style="color:#064E3B;"
+                        >
+                            Officer Remarks
+                        </h6>
+
+
+                        <div class="text-muted">
+
+                            {{ case.officer_remarks|linebreaks }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- WELFARE PAYMENTS                                  -->
+            <!-- ================================================= -->
+
+            <div class="card border-0 shadow-sm">
+
+                <div
+                    class="card-header text-white py-3"
+                    style="background:#064E3B;"
+                >
+
+                    <h5 class="mb-0 fw-bold">
+
+                        <i class="bi bi-cash-stack me-2"></i>
+
+                        Welfare Payments
+
+                    </h5>
+
+                </div>
+
+
+                <div class="card-body p-0">
+
+                    <div class="table-responsive">
+
+                        <table
+                            class="table table-hover align-middle mb-0"
+                        >
+
+                            <thead
+                                style="
+                                    background:#F4E7B2;
+                                    color:#022C22;
+                                "
+                            >
+
+                                <tr>
+
+                                    <th class="px-4">
+                                        Date
+                                    </th>
+
+                                    <th>
+                                        Amount
+                                    </th>
+
+                                    <th>
+                                        Reference
+                                    </th>
+
+                                    <th>
+                                        Method
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for payment in payments %}
+
+                                    <tr>
+
+                                        <td class="px-4">
+
+                                            {{ payment.payment_date|date:"d M Y" }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <strong>
+
+                                                ₦{{ payment.amount|floatformat:2 }}
+
+                                            </strong>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ payment.payment_reference|default:"—" }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ payment.payment_method|default:"—" }}
+
+                                        </td>
+
+                                    </tr>
+
+
+                                {% empty %}
+
+                                    <tr>
+
+                                        <td
+                                            colspan="4"
+                                            class="
+                                                text-center
+                                                py-4
+                                                text-muted
+                                            "
+                                        >
+
+                                            <i
+                                                class="
+                                                    bi
+                                                    bi-wallet2
+                                                    fs-3
+                                                    d-block
+                                                    mb-2
+                                                "
+                                            ></i>
+
+                                            No payment has been recorded.
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ===================================================== -->
+        <!-- RIGHT COLUMN                                           -->
+        <!-- ===================================================== -->
+
+        <div class="col-lg-4">
+
+
+            <!-- ================================================= -->
+            <!-- FINANCIAL SUMMARY                                -->
+            <!-- ================================================= -->
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div
+                    class="card-header text-white py-3"
+                    style="background:#064E3B;"
+                >
+
+                    <h5 class="mb-0 fw-bold">
+
+                        <i class="bi bi-wallet2 me-2"></i>
+
+                        Financial Summary
+
+                    </h5>
+
+                </div>
+
+
+                <div class="card-body p-4">
+
+
+                    <!-- REQUESTED -->
+
+                    <div class="mb-4">
+
+                        <small class="text-muted">
+                            Amount Requested
+                        </small>
+
+
+                        <h3
+                            class="fw-bold mt-1 mb-0"
+                            style="color:#064E3B;"
+                        >
+
+                            ₦{{ case.amount_requested|floatformat:2 }}
+
+                        </h3>
+
+                    </div>
+
+
+                    <!-- APPROVED -->
+
+                    <div>
+
+                        <small class="text-muted">
+                            Amount Approved
+                        </small>
+
+
+                        <h3
+                            class="fw-bold mt-1 mb-0"
+                            style="color:#D4AF37;"
+                        >
+
+                            ₦{{ case.amount_approved|floatformat:2 }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- REVIEW WELFARE REQUEST                            -->
+            <!-- ================================================= -->
+
+            {% if can_review %}
+
+                <div class="card border-0 shadow-sm mb-4">
+
+                    <div
+                        class="card-header text-white py-3"
+                        style="background:#064E3B;"
+                    >
+
+                        <h5 class="mb-0 fw-bold">
+
+                            <i class="bi bi-clipboard-check me-2"></i>
+
+                            Review Welfare Request
+
+                        </h5>
+
+                    </div>
+
+
+                    <div class="card-body p-4">
+
+
+                        <!-- INFORMATION -->
+
+                        <div
+                            class="alert border-0 mb-4"
+                            style="
+                                background:#F4E7B2;
+                                color:#022C22;
+                            "
+                        >
+
+                            <i class="bi bi-info-circle me-2"></i>
+
+                            Review this request carefully before
+                            approving or rejecting it.
+
+                        </div>
+
+
+
+                        <!-- REVIEW FORM -->
+
+                        <form
+                            method="post"
+                            action="{% url 'welfare:review' case.pk %}"
+                        >
+
+                            {% csrf_token %}
+
+
+                            <!-- STATUS -->
+
+                            <div class="mb-4">
+
+                                <label
+                                    for="status"
+                                    class="form-label fw-semibold"
+                                >
+
+                                    Request Status
+
+                                </label>
+
+
+                                <select
+                                    name="status"
+                                    id="status"
+                                    class="form-select"
+                                    required
+                                >
+
+                                    {% for value, label in status_choices %}
+
+                                        <option
+                                            value="{{ value }}"
+                                            {% if case.status == value %}
+                                                selected
+                                            {% endif %}
+                                        >
+
+                                            {{ label }}
+
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+
+                            <!-- APPROVED AMOUNT -->
+
+                            <div class="mb-4">
+
+                                <label
+                                    class="form-label fw-semibold"
+                                >
+
+                                    Approved Amount
+
+                                </label>
+
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+                                        ₦
+                                    </span>
+
+
+                                    <input
+                                        type="number"
+                                        name="amount_approved"
+                                        class="form-control"
+                                        min="0"
+                                        step="0.01"
+                                        value="{{ case.amount_approved }}"
+                                        placeholder="Enter approved amount"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-text">
+
+                                    Requested amount:
+
+                                    <strong>
+                                        ₦{{ case.amount_requested|floatformat:2 }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- OFFICER REMARKS -->
+
+                            <div class="mb-4">
+
+                                <label
+                                    class="form-label fw-semibold"
+                                >
+
+                                    Officer Remarks
+
+                                </label>
+
+
+                                <textarea
+                                    name="officer_remarks"
+                                    class="form-control"
+                                    rows="5"
+                                    placeholder="Enter your remarks about this request..."
+                                >{{ case.officer_remarks }}</textarea>
+
+                            </div>
+
+
+
+                            <!-- QUICK ACTIONS -->
+
+                            <div class="d-grid gap-2">
+
+
+                                <!-- APPROVE -->
+
+                                <button
+                                    type="submit"
+                                    name="status"
+                                    value="APPROVED"
+                                    class="
+                                        btn
+                                        text-white
+                                        fw-semibold
+                                    "
+                                    style="background:#064E3B;"
+                                >
+
+                                    <i class="bi bi-check-circle me-2"></i>
+
+                                    Approve Request
+
+                                </button>
+
+
+
+                                <!-- PARTIAL APPROVAL -->
+
+                                <button
+                                    type="submit"
+                                    name="status"
+                                    value="PARTIALLY_APPROVED"
+                                    class="btn fw-semibold"
+                                    style="
+                                        background:#D4AF37;
+                                        color:#022C22;
+                                    "
+                                >
+
+                                    <i class="bi bi-check2-circle me-2"></i>
+
+                                    Partially Approve
+
+                                </button>
+
+
+
+                                <!-- MORE INFORMATION -->
+
+                                <button
+                                    type="submit"
+                                    name="status"
+                                    value="MORE_INFO"
+                                    class="
+                                        btn
+                                        btn-outline-warning
+                                        fw-semibold
+                                    "
+                                >
+
+                                    <i class="bi bi-question-circle me-2"></i>
+
+                                    Request More Information
+
+                                </button>
+
+
+
+                                <!-- REJECT -->
+
+                                <button
+                                    type="submit"
+                                    name="status"
+                                    value="REJECTED"
+                                    class="
+                                        btn
+                                        btn-outline-danger
+                                        fw-semibold
+                                    "
+                                >
+
+                                    <i class="bi bi-x-circle me-2"></i>
+
+                                    Reject Request
+
+                                </button>
+
+
+                                <!-- RECORD PAYMENT -->
+
+                                {% if case.status == "APPROVED" or case.status == "PARTIALLY_APPROVED" %}
+
+                                    <a
+                                        href="#paymentForm"
+                                        class="
+                                            btn
+                                            text-white
+                                            fw-semibold
+                                        "
+                                        style="background:#022C22;"
+                                        data-bs-toggle="collapse"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="paymentForm"
+                                    >
+
+                                        <i class="bi bi-cash-stack me-2"></i>
+
+                                        Record Welfare Payment
+
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- ================================================= -->
+            <!-- RECORD WELFARE PAYMENT                            -->
+            <!-- ================================================= -->
+
+            {% if can_review %}
+
+                {% if case.status == "APPROVED" or case.status == "PARTIALLY_APPROVED" %}
+
+                    <div
+                        class="card border-0 shadow-sm mb-4 collapse"
+                        id="paymentForm"
+                    >
+
+                        <div
+                            class="card-header text-white py-3"
+                            style="background:#022C22;"
+                        >
+
+                            <h5 class="mb-0 fw-bold">
+
+                                <i class="bi bi-wallet2 me-2"></i>
+
+                                Record Welfare Payment
+
+                            </h5>
+
+                        </div>
+
+
+                        <div class="card-body p-4">
+
+
+                            <!-- INFORMATION -->
+
+                            <div
+                                class="alert border-0"
+                                style="
+                                    background:#E8F3EF;
+                                    color:#022C22;
+                                "
+                            >
+
+                                <i class="bi bi-info-circle me-2"></i>
+
+                                Record the actual amount paid to the
+                                member. This will mark the welfare case
+                                as <strong>Paid</strong>.
+
+                            </div>
+
+
+
+                            <!-- PAYMENT FORM -->
+
+                            <form
+                                method="post"
+                                action="{% url 'welfare:record_payment' case.pk %}"
+                            >
+
+                                {% csrf_token %}
+
+
+                                <!-- AMOUNT -->
+
+                                <div class="mb-3">
+
+                                    <label
+                                        class="form-label fw-semibold"
+                                    >
+
+                                        Payment Amount
+
+                                    </label>
+
+
+                                    <div class="input-group">
+
+                                        <span class="input-group-text">
+                                            ₦
+                                        </span>
+
+
+                                        <input
+                                            type="number"
+                                            name="amount"
+                                            class="form-control"
+                                            min="0"
+                                            step="0.01"
+                                            value="{{ case.amount_approved }}"
+                                            required
+                                        >
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- DATE -->
+
+                                <div class="mb-3">
+
+                                    <label
+                                        class="form-label fw-semibold"
+                                    >
+
+                                        Payment Date
+
+                                    </label>
+
+
+                                    <input
+                                        type="date"
+                                        name="payment_date"
+                                        class="form-control"
+                                        required
+                                    >
+
+                                </div>
+
+
+
+                                <!-- METHOD -->
+
+                                <div class="mb-3">
+
+    <label class="form-label fw-semibold">
+        Payment Method
+    </label>
+
+    <select
+        name="payment_method"
+        class="form-select"
+        required
+    >
+
+        <option value="">
+            Select payment method
+        </option>
+
+        <option value="BANK_TRANSFER">
+            Bank Transfer
+        </option>
+
+        <option value="CASH">
+            Cash
+        </option>
+
+        <option value="POS">
+            POS
+        </option>
+
+        <option value="CHEQUE">
+            Cheque
+        </option>
+
+        <option value="OTHER">
+            Other
+        </option>
+
+    </select>
+
+</div>
+
+
+                                <!-- REFERENCE -->
+
+                                <div class="mb-3">
+
+                                    <label
+                                        class="form-label fw-semibold"
+                                    >
+
+                                        Payment Reference
+
+                                    </label>
+
+
+                                    <input
+                                        type="text"
+                                        name="payment_reference"
+                                        class="form-control"
+                                        placeholder="e.g. TRX-20260925-001"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- NOTES -->
+
+                                <div class="mb-4">
+
+                                    <label
+                                        class="form-label fw-semibold"
+                                    >
+
+                                        Payment Notes
+
+                                    </label>
+
+
+                                    <textarea
+                                        name="notes"
+                                        class="form-control"
+                                        rows="3"
+                                        placeholder="Additional payment information..."
+                                    ></textarea>
+
+                                </div>
+
+
+
+                                <!-- SUBMIT -->
+
+                                <button
+                                    type="submit"
+                                    class="
+                                        btn
+                                        text-white
+                                        w-100
+                                        fw-semibold
+                                    "
+                                    style="background:#064E3B;"
+                                >
+
+                                    <i class="bi bi-check-circle me-2"></i>
+
+                                    Confirm Payment
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

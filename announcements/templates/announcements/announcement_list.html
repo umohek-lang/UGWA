@@ -1,0 +1,533 @@
+{% extends "base.html" %}
+
+{% block title %}
+Announcements
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --association-green: #0b3d2e;
+        --association-green-dark: #06291f;
+        --association-green-light: #145c45;
+        --association-gold: #d4af37;
+        --association-gold-light: #f1d77a;
+        --association-muted: #68756f;
+        --association-cream: #f8f6ef;
+    }
+
+    .announcements-page {
+        background: #ffffff;
+    }
+
+    /* =========================
+       HERO SECTION
+    ========================== */
+
+    .announcements-hero {
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green)
+            );
+        padding: 80px 20px;
+        margin-bottom: 60px;
+    }
+
+    .announcements-hero::before,
+    .announcements-hero::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        border-radius: 50%;
+    }
+
+    .announcements-hero::before {
+        width: 280px;
+        height: 280px;
+        right: -100px;
+        top: -120px;
+    }
+
+    .announcements-hero::after {
+        width: 180px;
+        height: 180px;
+        left: -70px;
+        bottom: -90px;
+    }
+
+    .announcements-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 850px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .announcement-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(212, 175, 55, 0.12);
+        border: 1px solid rgba(241, 215, 122, 0.45);
+        border-radius: 50%;
+        color: var(--association-gold-light);
+        font-size: 30px;
+    }
+
+    .announcements-hero h1 {
+        color: #ffffff;
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
+    }
+
+    .announcements-hero h1 span {
+        color: var(--association-gold);
+    }
+
+    .announcements-hero p {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 1.08rem;
+        margin-bottom: 0;
+        line-height: 1.8;
+    }
+
+    /* =========================
+       SECTION
+    ========================== */
+
+    .announcements-section {
+        padding-bottom: 70px;
+    }
+
+    .section-heading {
+        margin-bottom: 35px;
+    }
+
+    .section-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--association-gold);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 10px;
+    }
+
+    .section-label::before {
+        content: "";
+        width: 30px;
+        height: 2px;
+        background: var(--association-gold);
+    }
+
+    .section-heading h2 {
+        color: var(--association-green);
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .section-heading p {
+        color: var(--association-muted);
+        margin-bottom: 0;
+    }
+
+    /* =========================
+       ANNOUNCEMENT CARD
+    ========================== */
+
+    .announcement-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid #e8ece9;
+        border-top: 4px solid var(--association-gold);
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(6, 41, 31, 0.07);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
+    }
+
+    .announcement-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(212, 175, 55, 0.55);
+        box-shadow: 0 18px 40px rgba(6, 41, 31, 0.13);
+    }
+
+    /* =========================
+       IMAGE
+    ========================== */
+
+    .announcement-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        height: 220px;
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green),
+                var(--association-green-dark)
+            );
+    }
+
+    .announcement-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .announcement-card:hover .announcement-image-wrapper img {
+        transform: scale(1.06);
+    }
+
+    .announcement-image-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to bottom,
+            transparent 45%,
+            rgba(6, 41, 31, 0.65)
+        );
+        pointer-events: none;
+    }
+
+    .announcement-placeholder {
+        height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 45px;
+    }
+
+    /* =========================
+       CARD BODY
+    ========================== */
+
+    .announcement-card-body {
+        padding: 25px;
+    }
+
+    .announcement-date {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--association-green);
+        background: rgba(11, 61, 46, 0.07);
+        border-radius: 30px;
+        padding: 6px 12px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .announcement-date i {
+        color: var(--association-gold);
+    }
+
+    .announcement-card h4 {
+        color: var(--association-green);
+        font-size: 1.25rem;
+        line-height: 1.4;
+        margin-bottom: 12px;
+        transition: color 0.25s ease;
+    }
+
+    .announcement-card:hover h4 {
+        color: var(--association-green-light);
+    }
+
+    .announcement-excerpt {
+        color: var(--association-muted);
+        line-height: 1.75;
+        margin-bottom: 22px;
+    }
+
+    /* =========================
+       BUTTON
+    ========================== */
+
+    .read-more-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        background: var(--association-green);
+        border: 1px solid var(--association-green);
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 10px 17px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+    .read-more-btn:hover {
+        background: var(--association-gold);
+        border-color: var(--association-gold);
+        color: var(--association-green-dark);
+        transform: translateY(-2px);
+    }
+
+    .read-more-btn i {
+        transition: transform 0.25s ease;
+    }
+
+    .read-more-btn:hover i {
+        transform: translateX(4px);
+    }
+
+    /* =========================
+       EMPTY STATE
+    ========================== */
+
+    .announcement-empty {
+        max-width: 650px;
+        margin: 20px auto 0;
+        padding: 55px 30px;
+        text-align: center;
+        background: var(--association-cream);
+        border: 1px solid #e8e4d6;
+        border-radius: 18px;
+    }
+
+    .announcement-empty-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(212, 175, 55, 0.14);
+        border-radius: 50%;
+        color: var(--association-gold);
+        font-size: 28px;
+    }
+
+    .announcement-empty h4 {
+        color: var(--association-green);
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .announcement-empty p {
+        color: var(--association-muted);
+        margin-bottom: 0;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 767.98px) {
+
+        .announcements-hero {
+            padding: 60px 18px;
+            margin-bottom: 45px;
+        }
+
+        .announcements-hero h1 {
+            font-size: 2.2rem;
+        }
+
+        .announcements-hero p {
+            font-size: 0.98rem;
+        }
+
+        .announcements-section {
+            padding-bottom: 45px;
+        }
+
+        .announcement-card-body {
+            padding: 22px;
+        }
+
+        .announcement-image-wrapper,
+        .announcement-placeholder {
+            height: 200px;
+        }
+
+    }
+</style>
+
+<div class="announcements-page">
+
+```
+<!-- =========================
+     HERO
+========================== -->
+
+<section class="announcements-hero">
+
+    <div class="announcements-hero-content">
+
+        <div class="announcement-icon">
+            <i class="bi bi-megaphone"></i>
+        </div>
+
+        <h1>
+            Announcements
+        </h1>
+
+        <p>
+            Stay informed with the latest news, updates, notices,
+            and important information from the association.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ANNOUNCEMENTS
+========================== -->
+
+<section class="announcements-section">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div class="section-label">
+                Latest Updates
+            </div>
+
+            <h2>
+                News &amp; Announcements
+            </h2>
+
+            <p>
+                Important information and updates from the association.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            {% for announcement in announcements %}
+
+                <div class="col-md-6 col-lg-4">
+
+                    <article class="announcement-card">
+
+                        {% if announcement.image %}
+
+                            <div class="announcement-image-wrapper">
+
+                                <img
+                                    src="{{ announcement.image.url }}"
+                                    alt="{{ announcement.title }}"
+                                    loading="lazy"
+                                >
+
+                                <div class="announcement-image-overlay"></div>
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="announcement-placeholder">
+
+                                <i class="bi bi-megaphone"></i>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="announcement-card-body">
+
+                            <div class="announcement-date">
+
+                                <i class="bi bi-calendar3"></i>
+
+                                {{ announcement.published_at|date:"d M Y" }}
+
+                            </div>
+
+
+                            <h4 class="fw-bold">
+
+                                {{ announcement.title }}
+
+                            </h4>
+
+
+                            <p class="announcement-excerpt">
+
+                                {{ announcement.content|truncatewords:25 }}
+
+                            </p>
+
+
+                            <a
+                                href="{% url 'announcements:detail' announcement.slug %}"
+                                class="read-more-btn"
+                            >
+
+                                Read More
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12">
+
+                    <div class="announcement-empty">
+
+                        <div class="announcement-empty-icon">
+
+                            <i class="bi bi-megaphone"></i>
+
+                        </div>
+
+                        <h4>
+                            No Announcements Yet
+                        </h4>
+
+                        <p>
+                            No announcements have been published yet.
+                            Please check back later for updates.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</div>
+
+{% endblock %}

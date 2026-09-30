@@ -1,0 +1,572 @@
+{% extends "base.html" %}
+
+{% block title %}
+Register | Association
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .register-page {
+        min-height: calc(100vh - 80px);
+        background: #f8f6ef;
+        padding: 50px 0;
+    }
+
+    /* =========================
+       REGISTER CARD
+    ========================= */
+    .register-card {
+        background: #ffffff;
+        border: 0;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(11, 61, 46, 0.13);
+    }
+
+    .register-card-body {
+        padding: 42px;
+    }
+
+    .register-top-line {
+        height: 5px;
+        background: linear-gradient(
+            90deg,
+            #0b3d2e,
+            #d4af37,
+            #0b3d2e
+        );
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+    .register-icon-wrapper {
+        width: 82px;
+        height: 82px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(212, 175, 55, 0.13);
+        border: 2px solid rgba(212, 175, 55, 0.35);
+    }
+
+    .register-icon-wrapper i {
+        color: #0b3d2e;
+        font-size: 40px;
+    }
+
+    .register-title {
+        color: #0b3d2e;
+        font-weight: 800;
+        margin-top: 20px;
+        margin-bottom: 8px;
+    }
+
+    .register-subtitle {
+        color: #68756f;
+        margin-bottom: 0;
+    }
+
+    /* =========================
+       FORM
+    ========================= */
+    .register-form .form-label {
+        color: #0b3d2e;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .register-form input,
+    .register-form select,
+    .register-form textarea {
+        width: 100%;
+        min-height: 50px;
+        border: 1px solid #dce5e0;
+        border-radius: 10px;
+        padding: 11px 14px;
+        color: #0b3d2e;
+        background: #ffffff;
+        outline: none;
+        transition: all 0.2s ease;
+    }
+
+    .register-form input:focus,
+    .register-form select:focus,
+    .register-form textarea:focus {
+        border-color: #d4af37;
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.14);
+    }
+
+    .register-form input::placeholder {
+        color: #9aa7a0;
+    }
+
+    /* =========================
+       FIELD GROUP
+    ========================= */
+    .register-field {
+        position: relative;
+    }
+
+    .register-field-icon {
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        color: #d4af37;
+        pointer-events: none;
+    }
+
+    /* =========================
+       ERROR MESSAGES
+    ========================= */
+    .register-error {
+        display: block;
+        color: #b02a37;
+        background: #fff5f5;
+        border-left: 3px solid #dc3545;
+        padding: 6px 10px;
+        margin-top: 6px;
+        border-radius: 5px;
+        font-size: 0.82rem;
+    }
+
+    .register-alert {
+        border: 0;
+        border-left: 4px solid #dc3545;
+        border-radius: 10px;
+        background: #fff5f5;
+        color: #842029;
+    }
+
+    /* =========================
+       SECTION DIVIDER
+    ========================= */
+    .register-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 8px 0 25px;
+    }
+
+    .register-divider::before,
+    .register-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e4ebe7;
+    }
+
+    .register-divider span {
+        color: #b28b16;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    /* =========================
+       SUBMIT BUTTON
+    ========================= */
+    .register-btn {
+        min-height: 52px;
+        border: 0;
+        border-radius: 11px;
+        background: linear-gradient(
+            135deg,
+            #0b3d2e,
+            #145c45
+        );
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 7px 18px rgba(11, 61, 46, 0.18);
+        transition: all 0.2s ease;
+    }
+
+    .register-btn:hover {
+        background: linear-gradient(
+            135deg,
+            #06291f,
+            #0b3d2e
+        );
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(11, 61, 46, 0.25);
+    }
+
+    .register-btn i {
+        color: #f1d77a;
+    }
+
+    /* =========================
+       LOGIN LINK
+    ========================= */
+    .register-login {
+        border-top: 1px solid #e4ebe7;
+        margin-top: 30px;
+        padding-top: 25px;
+        color: #68756f;
+    }
+
+    .register-login a {
+        color: #0b3d2e;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .register-login a:hover {
+        color: #b28b16;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+    @media (max-width: 575.98px) {
+
+        .register-page {
+            padding: 30px 15px;
+        }
+
+        .register-card-body {
+            padding: 32px 22px;
+        }
+
+        .register-title {
+            font-size: 1.6rem;
+        }
+
+        .register-icon-wrapper {
+            width: 72px;
+            height: 72px;
+        }
+
+        .register-icon-wrapper i {
+            font-size: 35px;
+        }
+    }
+</style>
+
+<div class="register-page">
+<div class="container">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7 col-xl-6">
+
+            <div class="register-card">
+
+                <div class="register-top-line"></div>
+
+                <div class="register-card-body">
+
+                    <!-- =========================
+                         HEADER
+                    ========================== -->
+                    <div class="text-center mb-4">
+
+                        <div class="register-icon-wrapper">
+
+                            <i class="bi bi-person-plus-fill"></i>
+
+                        </div>
+
+                        <h2 class="register-title">
+                            Become a Member
+                        </h2>
+
+                        <p class="register-subtitle">
+                            Create your association account.
+                        </p>
+
+                    </div>
+
+
+                    <!-- =========================
+                         FORM
+                    ========================== -->
+                    <form method="POST" class="register-form">
+
+                        {% csrf_token %}
+
+
+                        {% if form.non_field_errors %}
+
+                            <div class="alert register-alert mb-4">
+
+                                <div class="d-flex align-items-start">
+
+                                    <i class="bi bi-exclamation-triangle-fill me-2 mt-1"></i>
+
+                                    <div>
+                                        {{ form.non_field_errors }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- PERSONAL INFORMATION -->
+                        <div class="register-divider">
+
+                            <span>
+                                Personal Information
+                            </span>
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <!-- First Name -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    First Name
+                                </label>
+
+                                <div class="register-field">
+
+                                    {{ form.first_name }}
+
+                                    <i class="bi bi-person register-field-icon"></i>
+
+                                </div>
+
+                                {% for error in form.first_name.errors %}
+
+                                    <div class="register-error">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- Last Name -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Last Name
+                                </label>
+
+                                <div class="register-field">
+
+                                    {{ form.last_name }}
+
+                                    <i class="bi bi-person register-field-icon"></i>
+
+                                </div>
+
+                                {% for error in form.last_name.errors %}
+
+                                    <div class="register-error">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ACCOUNT INFORMATION -->
+                        <div class="register-divider mt-2">
+
+                            <span>
+                                Account Information
+                            </span>
+
+                        </div>
+
+
+                        <!-- Username -->
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Username
+                            </label>
+
+                            <div class="register-field">
+
+                                {{ form.username }}
+
+                                <i class="bi bi-person-badge register-field-icon"></i>
+
+                            </div>
+
+                            {% for error in form.username.errors %}
+
+                                <div class="register-error">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- Email -->
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Email Address
+                            </label>
+
+                            <div class="register-field">
+
+                                {{ form.email }}
+
+                                <i class="bi bi-envelope register-field-icon"></i>
+
+                            </div>
+
+                            {% for error in form.email.errors %}
+
+                                <div class="register-error">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Phone Number
+                            </label>
+
+                            <div class="register-field">
+
+                                {{ form.phone }}
+
+                                <i class="bi bi-telephone register-field-icon"></i>
+
+                            </div>
+
+                            {% for error in form.phone.errors %}
+
+                                <div class="register-error">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- SECURITY -->
+                        <div class="register-divider mt-2">
+
+                            <span>
+                                Account Security
+                            </span>
+
+                        </div>
+
+
+                        <!-- Password -->
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <div class="register-field">
+
+                                {{ form.password1 }}
+
+                                <i class="bi bi-lock register-field-icon"></i>
+
+                            </div>
+
+                            {% for error in form.password1.errors %}
+
+                                <div class="register-error">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- Confirm Password -->
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Confirm Password
+                            </label>
+
+                            <div class="register-field">
+
+                                {{ form.password2 }}
+
+                                <i class="bi bi-shield-lock register-field-icon"></i>
+
+                            </div>
+
+                            {% for error in form.password2.errors %}
+
+                                <div class="register-error">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- Submit -->
+                        <button
+                            type="submit"
+                            class="btn register-btn w-100">
+
+                            <i class="bi bi-person-plus me-2"></i>
+
+                            Create Account
+
+                        </button>
+
+                    </form>
+
+
+                    <!-- =========================
+                         LOGIN LINK
+                    ========================== -->
+                    <div class="register-login text-center">
+
+                        <span>
+                            Already have an account?
+                        </span>
+
+                        <a href="{% url 'accounts:login' %}">
+                            Login
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

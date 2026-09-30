@@ -1,0 +1,568 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Dues Types
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   DUES TYPES PAGE
+   Professional UGMWA Green & Gold Design
+   ========================================================= */
+
+.dues-page {
+    background: #f6f8f7;
+    min-height: calc(100vh - 80px);
+}
+
+/* Header */
+.dues-header {
+    background: linear-gradient(
+        135deg,
+        #022c22 0%,
+        #064e3b 100%
+    );
+    border-radius: 18px;
+    padding: 28px 30px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.dues-header::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.10);
+    right: -70px;
+    top: -90px;
+}
+
+.dues-header::before {
+    content: "";
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 1px solid rgba(212, 175, 55, 0.20);
+    right: 80px;
+    bottom: -90px;
+}
+
+.dues-header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.dues-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #d4af37;
+    color: #022c22;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 7px 13px;
+    border-radius: 50px;
+    margin-bottom: 10px;
+}
+
+.dues-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.dues-subtitle {
+    margin: 7px 0 0;
+    color: rgba(255,255,255,0.75);
+    font-size: 0.94rem;
+}
+
+/* Add button */
+.add-dues-btn {
+    background: #d4af37;
+    color: #022c22 !important;
+    border: none;
+    font-weight: 700;
+    padding: 11px 18px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.add-dues-btn:hover {
+    background: #e1bd45;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+}
+
+/* Main card */
+.dues-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(2,44,34,0.08);
+}
+
+/* Card header */
+.dues-card-header {
+    padding: 20px 22px;
+    border-bottom: 1px solid #edf1ef;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.dues-card-title {
+    color: #022c22;
+    font-weight: 800;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.dues-card-description {
+    color: #7b8581;
+    font-size: 0.82rem;
+    margin: 3px 0 0;
+}
+
+/* Table */
+.dues-table {
+    margin-bottom: 0;
+}
+
+.dues-table thead th {
+    background: #022c22;
+    color: #ffffff;
+    border: none;
+    padding: 15px 18px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.dues-table tbody td {
+    padding: 17px 18px;
+    border-color: #edf1ef;
+    color: #3f4a46;
+    font-size: 0.9rem;
+}
+
+.dues-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.dues-table tbody tr:hover {
+    background: #f7faf8;
+}
+
+/* Name */
+.dues-name {
+    color: #022c22;
+    font-weight: 700;
+    font-size: 0.94rem;
+}
+
+.dues-description {
+    margin-top: 4px;
+    color: #89938f;
+    font-size: 0.78rem;
+    max-width: 420px;
+}
+
+/* Amount */
+.dues-amount {
+    color: #064e3b;
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+/* Frequency */
+.frequency-badge {
+    display: inline-block;
+    background: #eef6f2;
+    color: #064e3b;
+    border: 1px solid #d8ebe2;
+    border-radius: 7px;
+    padding: 6px 10px;
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+/* Status */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 50px;
+    padding: 6px 11px;
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+
+.status-badge::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.status-active {
+    background: #e9f7ef;
+    color: #157347;
+}
+
+.status-active::before {
+    background: #198754;
+}
+
+.status-inactive {
+    background: #f0f1f2;
+    color: #6c757d;
+}
+
+.status-inactive::before {
+    background: #6c757d;
+}
+
+/* Empty state */
+.empty-state {
+    padding: 65px 20px !important;
+}
+
+.empty-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #eef6f2;
+    color: #064e3b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
+
+.empty-title {
+    color: #022c22;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.empty-text {
+    color: #8a9490;
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+}
+
+/* Mobile */
+@media (max-width: 767.98px) {
+
+    .dues-page {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .dues-header {
+        padding: 23px 20px;
+        border-radius: 14px;
+    }
+
+    .dues-title {
+        font-size: 1.45rem;
+    }
+
+    .dues-header .add-dues-btn {
+        width: 100%;
+        margin-top: 18px;
+    }
+
+    .dues-card {
+        border-radius: 13px;
+    }
+
+    .dues-card-header {
+        padding: 17px;
+    }
+
+    .dues-table thead th,
+    .dues-table tbody td {
+        padding: 13px 14px;
+    }
+
+}
+
+</style>
+
+
+<div class="dues-page">
+
+    <div class="container-fluid py-4 px-3 px-md-4">
+
+        <!-- =================================================
+             PAGE HEADER
+             ================================================= -->
+
+        <div class="dues-header mb-4">
+
+            <div class="dues-header-content">
+
+                <div class="row align-items-center">
+
+                    <div class="col-lg-8">
+
+                        <span class="dues-badge">
+                            <i class="bi bi-wallet2"></i>
+                            MEMBERSHIP
+                        </span>
+
+                        <h2 class="dues-title">
+                            Dues Types
+                        </h2>
+
+                        <p class="dues-subtitle">
+                            Manage membership dues categories, amounts
+                            and payment frequencies.
+                        </p>
+
+                    </div>
+
+                    <div class="col-lg-4 text-lg-end">
+
+                        <a
+                            href="{% url 'payments:dues_type_create' %}"
+                            class="btn add-dues-btn"
+                        >
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Add Dues Type
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             DUES TABLE
+             ================================================= -->
+
+        <div class="dues-card">
+
+            <div class="dues-card-header">
+
+                <div>
+
+                    <h5 class="dues-card-title">
+                        <i
+                            class="bi bi-list-check me-2"
+                            style="color:#D4AF37;"
+                        ></i>
+
+                        Membership Dues
+                    </h5>
+
+                    <p class="dues-card-description">
+                        Available dues categories for association members.
+                    </p>
+
+                </div>
+
+                <span
+                    class="badge rounded-pill"
+                    style="
+                        background:#eef6f2;
+                        color:#064E3B;
+                        padding:8px 12px;
+                    "
+                >
+                    {{ dues_types|length }} Type{{ dues_types|length|pluralize }}
+                </span>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table dues-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Dues Type
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Frequency
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for dues in dues_types %}
+
+                        <tr>
+
+                            <!-- Dues Name -->
+
+                            <td>
+
+                                <div class="dues-name">
+                                    {{ dues.name }}
+                                </div>
+
+                                {% if dues.description %}
+
+                                <div class="dues-description">
+
+                                    {{ dues.description|truncatechars:80 }}
+
+                                </div>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Amount -->
+
+                            <td>
+
+                                <span class="dues-amount">
+                                    ₦{{ dues.amount|floatformat:2 }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- Frequency -->
+
+                            <td>
+
+                                <span class="frequency-badge">
+
+                                    <i
+                                        class="bi bi-calendar3 me-1"
+                                    ></i>
+
+                                    {{ dues.get_frequency_display }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+                                {% if dues.is_active %}
+
+                                    <span
+                                        class="status-badge status-active"
+                                    >
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span
+                                        class="status-badge status-inactive"
+                                    >
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="4"
+                                class="empty-state text-center"
+                            >
+
+                                <div class="empty-icon">
+
+                                    <i class="bi bi-wallet2"></i>
+
+                                </div>
+
+                                <div class="empty-title">
+
+                                    No Dues Types Yet
+
+                                </div>
+
+                                <div class="empty-text">
+
+                                    No membership dues categories have
+                                    been created yet.
+
+                                </div>
+
+                                <a
+                                    href="{% url 'payments:dues_type_create' %}"
+                                    class="btn add-dues-btn"
+                                >
+
+                                    <i class="bi bi-plus-circle me-2"></i>
+
+                                    Create First Dues Type
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   UGMWA DUES SCHEDULE FORM
+   ========================================================= */
+
+.dues-page {
+    background: #f6f8f7;
+    min-height: calc(100vh - 70px);
+    padding: 50px 15px;
+}
+
+/* Main Card */
+.dues-form-card {
+    background: #ffffff;
+    border: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(2, 44, 34, 0.10);
+}
+
+/* Header */
+.dues-form-header {
+    background: linear-gradient(
+        135deg,
+        #022C22,
+        #064E3B
+    );
+    color: #ffffff;
+    padding: 30px 35px;
+    position: relative;
+}
+
+.dues-form-header::after {
+    content: "";
+    position: absolute;
+    left: 35px;
+    bottom: 0;
+    width: 65px;
+    height: 4px;
+    background: #D4AF37;
+    border-radius: 5px;
+}
+
+.dues-form-header h4 {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.dues-form-header small {
+    display: block;
+    margin-top: 6px;
+    color: rgba(255,255,255,0.72);
+}
+
+/* Card Body */
+.dues-form-body {
+    padding: 35px;
+}
+
+/* Form Fields */
+.dues-form-body .form-label {
+    color: #022C22;
+    font-size: 0.92rem;
+    margin-bottom: 8px;
+}
+
+.dues-form-body input,
+.dues-form-body select,
+.dues-form-body textarea {
+    width: 100%;
+    border: 1px solid #d8e2de;
+    border-radius: 9px;
+    padding: 11px 13px;
+    font-size: 0.95rem;
+    color: #022C22;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.dues-form-body input:focus,
+.dues-form-body select:focus,
+.dues-form-body textarea:focus {
+    border-color: #064E3B;
+    box-shadow: 0 0 0 3px rgba(6, 78, 59, 0.10);
+    outline: none;
+}
+
+/* Textarea */
+.dues-form-body textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* Checkbox */
+.dues-form-body input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+    accent-color: #064E3B;
+}
+
+/* Error Messages */
+.field-error {
+    color: #b42318;
+    font-size: 0.82rem;
+    margin-top: 6px;
+}
+
+/* Information Box */
+.dues-info-box {
+    background: #eef7f3;
+    border: 1px solid rgba(212, 175, 55, 0.65);
+    border-left: 5px solid #D4AF37;
+    border-radius: 10px;
+    padding: 15px 18px;
+    color: #022C22;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.dues-info-box i {
+    color: #D4AF37;
+    font-size: 1.1rem;
+}
+
+.dues-info-box strong {
+    color: #064E3B;
+}
+
+/* Buttons */
+.dues-actions {
+    border-top: 1px solid #edf1ef;
+    padding-top: 25px;
+    margin-top: 25px;
+}
+
+.btn-cancel {
+    border: 1px solid #cbd5d1;
+    color: #46534e;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background: #f1f4f3;
+    color: #022C22;
+    border-color: #9eaaa5;
+}
+
+.btn-save-schedule {
+    background: #064E3B;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 600;
+    box-shadow: 0 5px 12px rgba(6, 78, 59, 0.18);
+    transition: all 0.2s ease;
+}
+
+.btn-save-schedule:hover {
+    background: #022C22;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 7px 16px rgba(2, 44, 34, 0.22);
+}
+
+/* Required Fields */
+.dues-form-body .required label::after {
+    content: " *";
+    color: #b42318;
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+
+    .dues-page {
+        padding: 25px 10px;
+    }
+
+    .dues-form-header {
+        padding: 24px 22px;
+    }
+
+    .dues-form-header::after {
+        left: 22px;
+    }
+
+    .dues-form-body {
+        padding: 25px 20px;
+    }
+
+    .dues-actions {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 12px;
+    }
+
+    .dues-actions a,
+    .dues-actions button {
+        width: 100%;
+        text-align: center;
+    }
+
+}
+
+</style>
+
+
+<div class="dues-page">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-8 col-xl-7">
+
+                <div class="dues-form-card">
+
+                    <!-- Header -->
+                    <div class="dues-form-header">
+
+                        <h4>
+                            <i class="bi bi-calendar-check me-2"></i>
+                            {{ page_title }}
+                        </h4>
+
+                        <small>
+                            Assign a dues obligation to a member.
+                        </small>
+
+                    </div>
+
+
+                    <!-- Form -->
+                    <div class="dues-form-body">
+
+                        <form method="post">
+
+                            {% csrf_token %}
+
+
+                            {% for field in form %}
+
+                                <div class="mb-4">
+
+                                    <label
+                                        class="form-label fw-semibold"
+                                        for="{{ field.id_for_label }}"
+                                    >
+                                        {{ field.label }}
+                                    </label>
+
+                                    {{ field }}
+
+
+                                    {% if field.help_text %}
+
+                                        <div class="form-text mt-1">
+                                            {{ field.help_text }}
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    {% for error in field.errors %}
+
+                                        <div class="field-error">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endfor %}
+
+
+                            <!-- Information -->
+                            <div class="dues-info-box">
+
+                                <div class="d-flex align-items-start">
+
+                                    <i class="bi bi-info-circle-fill me-3 mt-1"></i>
+
+                                    <div>
+
+                                        <strong>
+                                            Invoice Information
+                                        </strong>
+
+                                        <div class="small mt-1">
+                                            The amount entered here becomes the
+                                            amount used when an invoice is
+                                            generated for this dues schedule.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Actions -->
+                            <div class="dues-actions
+                                        d-flex
+                                        justify-content-between
+                                        align-items-center">
+
+                                <a
+                                    href="{% url 'payments:dues_schedule_list' %}"
+                                    class="btn-cancel"
+                                >
+                                    <i class="bi bi-arrow-left me-1"></i>
+                                    Cancel
+                                </a>
+
+
+                                <button
+                                    type="submit"
+                                    class="btn-save-schedule"
+                                >
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Save Schedule
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

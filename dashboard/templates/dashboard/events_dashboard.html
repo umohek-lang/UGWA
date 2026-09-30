@@ -1,0 +1,574 @@
+{% extends "base.html" %}
+
+{% block title %}
+Events Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .events-dashboard {
+        background: #f8f6ef;
+        min-height: calc(100vh - 80px);
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+    .events-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+            135deg,
+            #0b3d2e 0%,
+            #145c45 55%,
+            #06291f 100%
+        );
+        border-radius: 20px;
+        padding: 32px;
+        color: #ffffff;
+        box-shadow: 0 12px 30px rgba(11, 61, 46, 0.18);
+    }
+
+    .events-hero::before,
+    .events-hero::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .events-hero::before {
+        width: 180px;
+        height: 180px;
+        right: -55px;
+        top: -75px;
+    }
+
+    .events-hero::after {
+        width: 280px;
+        height: 280px;
+        right: -120px;
+        bottom: -180px;
+    }
+
+    .events-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .events-hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(212, 175, 55, 0.15);
+        color: #f1d77a;
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        border-radius: 50px;
+        padding: 7px 14px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 14px;
+    }
+
+    .events-hero h2 {
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .events-hero p {
+        color: rgba(255, 255, 255, 0.78);
+        margin-bottom: 0;
+    }
+
+    .events-hero-icon {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        background: rgba(212, 175, 55, 0.14);
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        color: #f1d77a;
+        font-size: 2rem;
+    }
+
+    /* =========================
+       STATISTICS
+    ========================= */
+    .event-stat-card {
+        height: 100%;
+        background: #ffffff;
+        border: 0;
+        border-left: 4px solid #d4af37;
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(11, 61, 46, 0.08);
+        transition: all 0.25s ease;
+    }
+
+    .event-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(11, 61, 46, 0.14);
+    }
+
+    .event-stat-card .card-body {
+        position: relative;
+        min-height: 145px;
+        padding: 24px;
+    }
+
+    .event-stat-label {
+        color: #68756f;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .event-stat-number {
+        color: #0b3d2e;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+
+    .event-stat-icon {
+        position: absolute;
+        right: 22px;
+        bottom: 20px;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: rgba(11, 61, 46, 0.08);
+        color: #0b3d2e;
+        font-size: 1.45rem;
+    }
+
+    .event-stat-icon.gold {
+        background: rgba(212, 175, 55, 0.14);
+        color: #b28b16;
+    }
+
+    .event-stat-icon.success {
+        background: rgba(25, 135, 84, 0.10);
+        color: #198754;
+    }
+
+    /* =========================
+       EVENTS CARD
+    ========================= */
+    .events-main-card {
+        border: 0;
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: 0 7px 24px rgba(11, 61, 46, 0.08);
+        overflow: hidden;
+    }
+
+    .events-main-card .card-header {
+        background: #ffffff;
+        border-bottom: 1px solid #e4ebe7;
+        padding: 20px 24px;
+    }
+
+    .events-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #0b3d2e;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+
+    .events-section-title i {
+        color: #d4af37;
+        font-size: 1.25rem;
+    }
+
+    /* =========================
+       BUTTONS
+    ========================= */
+    .btn-event-primary {
+        background: #0b3d2e;
+        border: 1px solid #0b3d2e;
+        color: #ffffff;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 9px 16px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-event-primary:hover {
+        background: #06291f;
+        border-color: #06291f;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .btn-event-primary i {
+        color: #f1d77a;
+    }
+
+    /* =========================
+       TABLE
+    ========================= */
+    .events-table {
+        margin-bottom: 0;
+    }
+
+    .events-table thead th {
+        background: #f8f6ef;
+        color: #0b3d2e;
+        border-bottom: 2px solid #d4af37;
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        padding: 15px 14px;
+        white-space: nowrap;
+    }
+
+    .events-table tbody td {
+        padding: 18px 14px;
+        border-color: #edf1ee;
+    }
+
+    .events-empty {
+        padding: 55px 20px !important;
+    }
+
+    .events-empty-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(212, 175, 55, 0.12);
+        color: #b28b16;
+        font-size: 1.8rem;
+    }
+
+    .events-empty h6 {
+        color: #0b3d2e;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .events-empty p {
+        color: #68756f;
+        margin-bottom: 0;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 767.98px) {
+        .events-dashboard {
+            padding-bottom: 20px;
+        }
+
+        .events-hero {
+            padding: 25px 20px;
+            border-radius: 16px;
+        }
+
+        .events-hero-icon {
+            width: 58px;
+            height: 58px;
+            font-size: 1.6rem;
+        }
+
+        .events-hero h2 {
+            font-size: 1.5rem;
+        }
+
+        .events-main-card .card-header {
+            padding: 17px;
+        }
+
+        .events-main-card .card-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 14px;
+        }
+
+        .btn-event-primary {
+            width: 100%;
+        }
+
+        .event-stat-card .card-body {
+            min-height: 125px;
+        }
+    }
+</style>
+
+<div class="events-dashboard py-4">
+
+<div class="container-fluid">
+
+    <!-- =========================
+         HERO
+    ========================== -->
+    <div class="events-hero mb-4">
+
+        <div class="events-hero-content">
+
+            <div class="row align-items-center g-4">
+
+                <div class="col-lg-8">
+
+                    <div class="events-hero-label">
+                        <i class="bi bi-calendar-event"></i>
+                        Events Management
+                    </div>
+
+                    <h2>
+                        Events Dashboard
+                    </h2>
+
+                    <p>
+                        Create, manage and monitor association events
+                        from one central location.
+                    </p>
+
+                </div>
+
+                <div class="col-lg-4 d-flex justify-content-lg-end">
+
+                    <div class="events-hero-icon">
+                        <i class="bi bi-calendar2-week"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         STATISTICS
+    ========================== -->
+    <div class="row g-4 mb-4">
+
+        <!-- Total Events -->
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card event-stat-card">
+
+                <div class="card-body">
+
+                    <div class="event-stat-label">
+                        Total Events
+                    </div>
+
+                    <h2 class="event-stat-number">
+                        0
+                    </h2>
+
+                    <div class="event-stat-icon gold">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Upcoming -->
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card event-stat-card">
+
+                <div class="card-body">
+
+                    <div class="event-stat-label">
+                        Upcoming
+                    </div>
+
+                    <h2 class="event-stat-number text-success">
+                        0
+                    </h2>
+
+                    <div class="event-stat-icon success">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Registrations -->
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card event-stat-card">
+
+                <div class="card-body">
+
+                    <div class="event-stat-label">
+                        Registrations
+                    </div>
+
+                    <h2 class="event-stat-number">
+                        0
+                    </h2>
+
+                    <div class="event-stat-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Attendance -->
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card event-stat-card">
+
+                <div class="card-body">
+
+                    <div class="event-stat-label">
+                        Attendance
+                    </div>
+
+                    <h2 class="event-stat-number">
+                        0
+                    </h2>
+
+                    <div class="event-stat-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         UPCOMING EVENTS
+    ========================== -->
+    <div class="card events-main-card">
+
+        <div class="card-header
+                    d-flex
+                    justify-content-between
+                    align-items-center">
+
+            <h5 class="events-section-title">
+
+                <i class="bi bi-calendar3"></i>
+
+                Upcoming Events
+
+            </h5>
+
+            <a href="#"
+               class="btn btn-event-primary btn-sm">
+
+                <i class="bi bi-plus-lg me-1"></i>
+
+                Create Event
+
+            </a>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table events-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Event
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Location
+                            </th>
+
+                            <th>
+                                Registrations
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr>
+
+                            <td colspan="5"
+                                class="events-empty text-center">
+
+                                <div class="events-empty-icon">
+
+                                    <i class="bi bi-calendar-x"></i>
+
+                                </div>
+
+                                <h6>
+                                    No Upcoming Events
+                                </h6>
+
+                                <p>
+                                    There are currently no upcoming
+                                    events to display.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

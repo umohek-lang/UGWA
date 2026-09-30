@@ -1,0 +1,1034 @@
+{% extends "base.html" %}
+
+{% block title %}
+Member Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --association-green: #0b3d2e;
+        --association-green-dark: #06291f;
+        --association-green-light: #145c45;
+        --association-gold: #d4af37;
+        --association-gold-light: #f1d77a;
+        --association-muted: #68756f;
+        --association-cream: #f8f6ef;
+        --association-border: #e4ebe7;
+    }
+
+    /* =========================================
+       MEMBER DASHBOARD
+    ========================================== */
+
+    .member-dashboard {
+        min-height: 100vh;
+        background: #f5f7f6;
+        padding-bottom: 70px;
+    }
+
+    /* =========================================
+       WELCOME HERO
+    ========================================== */
+
+    .member-welcome {
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green)
+            );
+        border-radius: 0 0 25px 25px;
+        padding: 42px 0 82px;
+        margin-bottom: -48px;
+    }
+
+    .member-welcome::before,
+    .member-welcome::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .member-welcome::before {
+        width: 350px;
+        height: 350px;
+        right: -150px;
+        top: -200px;
+    }
+
+    .member-welcome::after {
+        width: 210px;
+        height: 210px;
+        left: -100px;
+        bottom: -130px;
+    }
+
+    .welcome-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .welcome-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 14px;
+        margin-bottom: 15px;
+        border: 1px solid rgba(241, 215, 122, 0.3);
+        border-radius: 30px;
+        background: rgba(212, 175, 55, 0.12);
+        color: var(--association-gold-light);
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+    }
+
+    .welcome-label i {
+        color: var(--association-gold);
+    }
+
+    .welcome-title {
+        color: #ffffff;
+        font-size: clamp(1.8rem, 4vw, 2.7rem);
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .welcome-title span {
+        color: var(--association-gold-light);
+    }
+
+    .welcome-text {
+        max-width: 650px;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 0;
+        line-height: 1.7;
+    }
+
+    /* =========================================
+       STATISTICS
+    ========================================== */
+
+    .member-stats {
+        position: relative;
+        z-index: 5;
+    }
+
+    .member-stat-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid var(--association-border);
+        border-radius: 17px;
+        box-shadow: 0 9px 28px rgba(6, 41, 31, 0.07);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    .member-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 35px rgba(6, 41, 31, 0.12);
+    }
+
+    .member-stat-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--association-gold);
+    }
+
+    .member-stat-body {
+        padding: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .member-stat-label {
+        color: var(--association-muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .member-stat-value {
+        color: var(--association-green);
+        font-size: 1.35rem;
+        font-weight: 800;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .member-stat-icon {
+        width: 54px;
+        height: 54px;
+        min-width: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 24px;
+    }
+
+    .member-stat-card.status .member-stat-icon {
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+
+    .member-stat-card.id-card .member-stat-icon {
+        background: rgba(212, 175, 55, 0.13);
+        color: #9a7800;
+    }
+
+    .member-stat-card.dues .member-stat-icon {
+        background: rgba(220, 160, 30, 0.12);
+        color: #a56f00;
+    }
+
+    .member-stat-card.events .member-stat-icon {
+        background: rgba(20, 92, 69, 0.1);
+        color: var(--association-green-light);
+    }
+
+    .status-value {
+        color: #198754 !important;
+    }
+
+    .dues-value {
+        color: #9a7000 !important;
+    }
+
+    /* =========================================
+       CONTENT SECTION
+    ========================================== */
+
+    .dashboard-content {
+        margin-top: 48px;
+    }
+
+    .dashboard-card {
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid var(--association-border);
+        border-radius: 17px;
+        box-shadow: 0 7px 25px rgba(6, 41, 31, 0.06);
+        overflow: hidden;
+    }
+
+    .dashboard-card-header {
+        padding: 19px 23px;
+        background: #ffffff;
+        border-bottom: 1px solid var(--association-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .dashboard-card-header h5 {
+        color: var(--association-green);
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .dashboard-card-header-icon {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+    }
+
+    .dashboard-card-body {
+        padding: 23px;
+    }
+
+    /* =========================================
+       QUICK ACTIONS
+    ========================================== */
+
+    .quick-action {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        width: 100%;
+        padding: 13px 15px;
+        border: 1px solid var(--association-border);
+        border-radius: 10px;
+        background: #ffffff;
+        color: var(--association-green);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 700;
+        transition: all 0.25s ease;
+    }
+
+    .quick-action:hover {
+        background: var(--association-green);
+        border-color: var(--association-green);
+        color: #ffffff;
+        transform: translateX(4px);
+        box-shadow: 0 6px 15px rgba(11, 61, 46, 0.13);
+    }
+
+    .quick-action-icon {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9px;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        transition: all 0.25s ease;
+    }
+
+    .quick-action:hover .quick-action-icon {
+        background: rgba(255, 255, 255, 0.13);
+        color: var(--association-gold-light);
+    }
+
+    .quick-action-arrow {
+        margin-left: auto;
+        opacity: 0.45;
+        transition: transform 0.25s ease;
+    }
+
+    .quick-action:hover .quick-action-arrow {
+        opacity: 1;
+        transform: translateX(3px);
+    }
+
+    /* =========================================
+       ANNOUNCEMENTS
+    ========================================== */
+
+    .announcement-item {
+        position: relative;
+        padding: 18px 18px 18px 21px;
+        margin-bottom: 13px;
+        background: #ffffff;
+        border: 1px solid var(--association-border);
+        border-radius: 11px;
+        transition: all 0.25s ease;
+    }
+
+    .announcement-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .announcement-item:hover {
+        border-color: rgba(212, 175, 55, 0.55);
+        box-shadow: 0 7px 20px rgba(6, 41, 31, 0.07);
+        transform: translateY(-2px);
+    }
+
+    .announcement-item::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 15px;
+        bottom: 15px;
+        width: 3px;
+        background: var(--association-gold);
+        border-radius: 0 4px 4px 0;
+    }
+
+    .announcement-item h6 {
+        color: var(--association-green);
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+
+    .announcement-item p {
+        color: var(--association-muted);
+        font-size: 0.88rem;
+        line-height: 1.65;
+        margin: 0;
+    }
+
+    .announcement-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--association-gold);
+        font-size: 0.72rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .view-all-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--association-green);
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .view-all-link:hover {
+        color: var(--association-gold);
+    }
+
+    /* =========================================
+       MEMBER STATUS PANEL
+    ========================================== */
+
+    .member-status-panel {
+        margin-top: 22px;
+        padding: 20px;
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green)
+            );
+        border-radius: 14px;
+        color: #ffffff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .member-status-panel::after {
+        content: "";
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        right: -40px;
+        top: -40px;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 50%;
+    }
+
+    .member-status-panel-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .member-status-panel small {
+        color: rgba(255, 255, 255, 0.65);
+    }
+
+    .member-status-panel strong {
+        color: var(--association-gold-light);
+    }
+
+    /* =========================================
+       MOBILE
+    ========================================== */
+
+    @media (max-width: 767.98px) {
+
+        .member-welcome {
+            padding: 32px 0 70px;
+            border-radius: 0 0 18px 18px;
+        }
+
+        .welcome-title {
+            font-size: 1.8rem;
+        }
+
+        .welcome-text {
+            font-size: 0.88rem;
+        }
+
+        .member-stat-body {
+            padding: 18px;
+        }
+
+        .member-stat-value {
+            font-size: 1.15rem;
+        }
+
+        .member-stat-icon {
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            font-size: 20px;
+        }
+
+        .dashboard-content {
+            margin-top: 35px;
+        }
+
+        .dashboard-card-header,
+        .dashboard-card-body {
+            padding: 18px;
+        }
+
+    }
+</style>
+
+<div class="member-dashboard">
+
+<!-- =========================================
+     WELCOME HERO
+========================================== -->
+
+<section class="member-welcome">
+
+    <div class="container-fluid px-3 px-lg-4">
+
+        <div class="welcome-content">
+
+            <div class="welcome-label">
+
+                <i class="bi bi-person-circle"></i>
+
+                Member Portal
+
+            </div>
+
+
+            <h1 class="welcome-title">
+
+                Welcome,
+                <span>
+                    {{ user.first_name|default:user.username }}
+                </span>
+
+            </h1>
+
+
+            <p class="welcome-text">
+
+                Here is an overview of your association account,
+                membership information, payments, events and updates.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="container-fluid px-3 px-lg-4">
+
+
+    <!-- =========================================
+         STATISTICS
+    ========================================== -->
+
+    <section class="member-stats">
+
+        <div class="row g-3 g-lg-4">
+
+
+            <!-- Membership Status -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="member-stat-card status">
+
+                    <div class="member-stat-body">
+
+                        <div>
+
+                            <div class="member-stat-label">
+                                Membership Status
+                            </div>
+
+                            <h4 class="member-stat-value status-value">
+                                ACTIVE
+                            </h4>
+
+                        </div>
+
+
+                        <div class="member-stat-icon">
+
+                            <i class="bi bi-person-check"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Membership ID -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="member-stat-card id-card">
+
+                    <div class="member-stat-body">
+
+                        <div>
+
+                            <div class="member-stat-label">
+                                Membership ID
+                            </div>
+
+                            <h5 class="member-stat-value">
+                                Pending
+                            </h5>
+
+                        </div>
+
+
+                        <div class="member-stat-icon">
+
+                            <i class="bi bi-person-vcard"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Outstanding Dues -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="member-stat-card dues">
+
+                    <div class="member-stat-body">
+
+                        <div>
+
+                            <div class="member-stat-label">
+                                Outstanding Dues
+                            </div>
+
+
+                            <a
+                                href="{% url 'payments:invoices' %}"
+                                class="text-decoration-none"
+                            >
+
+                                <h3 class="member-stat-value dues-value">
+
+                                    ₦{{ total_outstanding|default:"0.00" }}
+
+                                </h3>
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="member-stat-icon">
+
+                            <i class="bi bi-wallet2"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Events -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="member-stat-card events">
+
+                    <div class="member-stat-body">
+
+                        <div>
+
+                            <div class="member-stat-label">
+                                Events
+                            </div>
+
+                            <h4 class="member-stat-value">
+                                0
+                            </h4>
+
+                        </div>
+
+
+                        <div class="member-stat-icon">
+
+                            <i class="bi bi-calendar-event"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <section class="dashboard-content">
+
+        <div class="row g-4">
+
+
+            <!-- =================================
+                 QUICK ACTIONS
+            ================================== -->
+
+            <div class="col-lg-4">
+
+                <div class="dashboard-card">
+
+                    <div class="dashboard-card-header">
+
+                        <h5>
+                            Quick Actions
+                        </h5>
+
+
+                        <div class="dashboard-card-header-icon">
+
+                            <i class="bi bi-lightning-charge"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-card-body">
+
+                        <div class="d-grid gap-2">
+
+
+                            <a
+                                href="#"
+                                class="quick-action"
+                            >
+
+                                <span class="quick-action-icon">
+
+                                    <i class="bi bi-person"></i>
+
+                                </span>
+
+                                <span>
+                                    My Profile
+                                </span>
+
+                                <i class="bi bi-chevron-right quick-action-arrow"></i>
+
+                            </a>
+
+
+                            <a
+                                href="#"
+                                class="quick-action"
+                            >
+
+                                <span class="quick-action-icon">
+
+                                    <i class="bi bi-credit-card"></i>
+
+                                </span>
+
+                                <span>
+                                    Membership Card
+                                </span>
+
+                                <i class="bi bi-chevron-right quick-action-arrow"></i>
+
+                            </a>
+
+
+                            <a
+                                href="#"
+                                class="quick-action"
+                            >
+
+                                <span class="quick-action-icon">
+
+                                    <i class="bi bi-calendar-event"></i>
+
+                                </span>
+
+                                <span>
+                                    Browse Events
+                                </span>
+
+                                <i class="bi bi-chevron-right quick-action-arrow"></i>
+
+                            </a>
+
+
+                            <a
+                                href="#"
+                                class="quick-action"
+                            >
+
+                                <span class="quick-action-icon">
+
+                                    <i class="bi bi-wallet2"></i>
+
+                                </span>
+
+                                <span>
+                                    Make Payment
+                                </span>
+
+                                <i class="bi bi-chevron-right quick-action-arrow"></i>
+
+                            </a>
+
+
+                            <a
+                                href="#"
+                                class="quick-action"
+                            >
+
+                                <span class="quick-action-icon">
+
+                                    <i class="bi bi-file-earmark-text"></i>
+
+                                </span>
+
+                                <span>
+                                    Documents
+                                </span>
+
+                                <i class="bi bi-chevron-right quick-action-arrow"></i>
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- Membership Status -->
+
+                        <div class="member-status-panel">
+
+                            <div class="member-status-panel-content">
+
+                                <small class="d-block mb-1">
+                                    Current Membership
+                                </small>
+
+                                <strong>
+                                    <i class="bi bi-check-circle-fill me-1"></i>
+                                    Active Member
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 ANNOUNCEMENTS
+            ================================== -->
+
+            <div class="col-lg-8">
+
+                <div class="dashboard-card">
+
+                    <div class="dashboard-card-header">
+
+                        <div class="d-flex align-items-center gap-2">
+
+                            <div class="dashboard-card-header-icon">
+
+                                <i class="bi bi-megaphone"></i>
+
+                            </div>
+
+                            <h5>
+                                Latest Announcements
+                            </h5>
+
+                        </div>
+
+
+                        <a
+                            href="#"
+                            class="view-all-link"
+                        >
+
+                            View All
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+
+<div class="col-md-6 col-xl-3">
+
+    <div
+        class="card border-0 shadow-sm h-100"
+        style="
+            border-top:
+            4px solid #D4AF37 !important;
+        "
+    >
+
+        <div class="card-body">
+
+            <div
+                class="rounded-circle
+                       d-flex
+                       align-items-center
+                       justify-content-center
+                       mb-3"
+                style="
+                    width:50px;
+                    height:50px;
+                    background:#E8F3EF;
+                    color:#064E3B;
+                "
+            >
+
+                <i class="bi bi-calendar-check fs-4"></i>
+
+            </div>
+
+            <h5
+                class="fw-bold"
+                style="color:#064E3B;"
+            >
+
+                Attendance
+
+            </h5>
+
+            <p class="text-muted small">
+
+                View your association attendance history.
+
+            </p>
+
+            <a
+                href="{% url 'attendance:my' %}"
+                class="btn btn-sm"
+                style="
+                    background:#064E3B;
+                    color:white;
+                "
+            >
+
+                View Attendance
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+                    <div class="dashboard-card-body">
+
+
+                        <!-- Announcement 1 -->
+
+                        <div class="announcement-item">
+
+                            <div class="announcement-meta">
+
+                                <i class="bi bi-megaphone"></i>
+
+                                Association Update
+
+                            </div>
+
+
+                            <h6>
+                                Welcome to the Association
+                            </h6>
+
+
+                            <p>
+                                Your member dashboard will contain
+                                important announcements, notices,
+                                events and other association updates.
+                            </p>
+
+                        </div>
+
+
+                        <!-- Announcement 2 -->
+
+                        <div class="announcement-item">
+
+                            <div class="announcement-meta">
+
+                                <i class="bi bi-calendar-event"></i>
+
+                                Upcoming Event
+
+                            </div>
+
+
+                            <h6>
+                                AGM 2026
+                            </h6>
+
+
+                            <p>
+                                Registration details for the Annual
+                                General Meeting will be published soon.
+                                Please check your dashboard regularly
+                                for updates.
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+</div>
+
+{% endblock %}

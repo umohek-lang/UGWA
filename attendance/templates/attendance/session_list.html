@@ -1,0 +1,801 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Attendance Management
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   UGMWA ATTENDANCE PAGE
+   DARK GREEN + GOLD
+   ========================================================= */
+
+:root {
+    --ugmwa-green: #073f36;
+    --ugmwa-green-dark: #022c22;
+    --ugmwa-green-light: #0b5d4f;
+    --ugmwa-gold: #f0c85b;
+    --ugmwa-gold-dark: #d4af37;
+    --ugmwa-bg: #f6f9f7;
+    --ugmwa-border: #e3ebe7;
+}
+
+
+/* =========================================================
+   HERO SECTION
+   ========================================================= */
+
+.ugmwa-attendance-hero {
+    position: relative;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(2,44,34,0.98),
+            rgba(7,63,54,0.96)
+        );
+
+    overflow: hidden;
+}
+
+
+/* Decorative circle */
+
+.ugmwa-attendance-hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    border-radius: 50%;
+
+    background: rgba(240,200,91,0.08);
+
+    top: -120px;
+    right: -70px;
+}
+
+
+/* Decorative circle */
+
+.ugmwa-attendance-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    border-radius: 50%;
+
+    background: rgba(240,200,91,0.05);
+
+    bottom: -90px;
+    left: -60px;
+}
+
+
+.ugmwa-attendance-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* =========================================================
+   HERO ICON
+   ========================================================= */
+
+.ugmwa-attendance-icon {
+    width: 76px;
+    height: 76px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background: rgba(240,200,91,0.13);
+
+    border: 1px solid rgba(240,200,91,0.35);
+
+    color: var(--ugmwa-gold);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.15);
+
+    font-size: 2rem;
+}
+
+
+/* =========================================================
+   PAGE BACKGROUND
+   ========================================================= */
+
+.ugmwa-attendance-page {
+    background: var(--ugmwa-bg);
+}
+
+
+/* =========================================================
+   SESSION CARD
+   ========================================================= */
+
+.ugmwa-attendance-card {
+
+    position: relative;
+
+    background: #fff;
+
+    border: 1px solid var(--ugmwa-border);
+
+    border-top: 4px solid var(--ugmwa-gold);
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 5px 20px rgba(7,63,54,0.06);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+.ugmwa-attendance-card:hover {
+
+    transform: translateY(-6px);
+
+    border-color: rgba(240,200,91,0.55);
+
+    box-shadow:
+        0 18px 40px rgba(7,63,54,0.13);
+}
+
+
+/* =========================================================
+   CARD BODY
+   ========================================================= */
+
+.ugmwa-attendance-card-body {
+    padding: 28px;
+}
+
+
+/* =========================================================
+   SESSION ICON
+   ========================================================= */
+
+.ugmwa-session-icon {
+
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e9f4f0,
+            #dcece6
+        );
+
+    color: var(--ugmwa-green);
+
+    border: 1px solid #d4e5df;
+
+    font-size: 1.35rem;
+
+    transition: 0.25s ease;
+}
+
+
+.ugmwa-attendance-card:hover
+.ugmwa-session-icon {
+
+    background: var(--ugmwa-green);
+
+    color: var(--ugmwa-gold);
+
+    transform: scale(1.05);
+}
+
+
+/* =========================================================
+   OPEN / CLOSED BADGES
+   ========================================================= */
+
+.ugmwa-open-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 7px 11px;
+
+    border-radius: 30px;
+
+    background: #e8f5ef;
+
+    color: var(--ugmwa-green);
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.4px;
+}
+
+
+.ugmwa-open-badge::before {
+
+    content: "";
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #198754;
+}
+
+
+.ugmwa-closed-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 7px 11px;
+
+    border-radius: 30px;
+
+    background: #f0f1f1;
+
+    color: #6c757d;
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.4px;
+}
+
+
+/* =========================================================
+   SESSION TITLE
+   ========================================================= */
+
+.ugmwa-session-title {
+
+    color: var(--ugmwa-green);
+
+    font-size: 1.1rem;
+
+    font-weight: 800;
+
+    line-height: 1.35;
+
+    margin-bottom: 5px;
+}
+
+
+.ugmwa-session-type {
+
+    color: #71807b;
+
+    font-size: 0.86rem;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   SESSION DETAILS
+   ========================================================= */
+
+.ugmwa-session-details {
+
+    padding-top: 5px;
+}
+
+
+.ugmwa-session-detail {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    color: #687873;
+
+    font-size: 0.84rem;
+
+    margin-bottom: 10px;
+}
+
+
+.ugmwa-session-detail:last-child {
+    margin-bottom: 0;
+}
+
+
+.ugmwa-session-detail i {
+
+    width: 18px;
+
+    color: var(--ugmwa-gold-dark);
+
+    font-size: 0.95rem;
+
+    margin-top: 2px;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.ugmwa-card-divider {
+
+    height: 1px;
+
+    background: #edf1ef;
+
+    margin: 22px 0;
+}
+
+
+/* =========================================================
+   VIEW BUTTON
+   ========================================================= */
+
+.ugmwa-view-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    width: 100%;
+
+    padding: 11px 18px;
+
+    border-radius: 8px;
+
+    background: var(--ugmwa-green);
+
+    color: #fff !important;
+
+    border: 1px solid var(--ugmwa-green);
+
+    font-size: 0.86rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.ugmwa-view-btn:hover {
+
+    background: var(--ugmwa-green-light);
+
+    border-color: var(--ugmwa-green-light);
+
+    color: var(--ugmwa-gold) !important;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 18px rgba(7,63,54,0.18);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.ugmwa-empty-state {
+
+    max-width: 560px;
+
+    margin: 30px auto;
+
+    padding: 55px 25px;
+
+    background: #fff;
+
+    border: 1px solid var(--ugmwa-border);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 5px 20px rgba(7,63,54,0.05);
+}
+
+
+.ugmwa-empty-icon {
+
+    width: 85px;
+    height: 85px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f7f3df;
+
+    color: var(--ugmwa-gold-dark);
+
+    font-size: 2.4rem;
+}
+
+
+.ugmwa-empty-title {
+
+    color: var(--ugmwa-green);
+
+    font-weight: 800;
+
+    margin-bottom: 8px;
+}
+
+
+.ugmwa-empty-text {
+
+    color: #71807b;
+
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .ugmwa-attendance-card-body {
+        padding: 22px;
+    }
+
+    .ugmwa-attendance-icon {
+        width: 65px;
+        height: 65px;
+        font-size: 1.7rem;
+    }
+
+    .ugmwa-attendance-hero h1 {
+        font-size: 1.7rem;
+    }
+
+    .ugmwa-attendance-hero p {
+        font-size: 0.95rem;
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .ugmwa-attendance-card-body {
+        padding: 20px;
+    }
+
+    .ugmwa-session-title {
+        font-size: 1rem;
+    }
+
+    .ugmwa-session-detail {
+        font-size: 0.8rem;
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     ATTENDANCE HERO
+     ========================================================= -->
+
+<section class="ugmwa-attendance-hero">
+
+    <div class="container py-5">
+
+        <div class="ugmwa-attendance-hero-content text-center text-white">
+
+            <div class="ugmwa-attendance-icon">
+
+                <i class="bi bi-calendar-check"></i>
+
+            </div>
+
+
+            <h1 class="fw-bold mb-2">
+
+                Attendance Management
+
+            </h1>
+
+
+            <p class="mb-0 text-white-50">
+
+                Association meetings, events and attendance records.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     ATTENDANCE CONTENT
+     ========================================================= -->
+
+<div class="ugmwa-attendance-page">
+
+    <div class="container py-5">
+
+        <div class="row g-4">
+
+
+            {% for session in sessions %}
+
+
+                <!-- =================================================
+                     SESSION CARD
+                     ================================================= -->
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="ugmwa-attendance-card h-100">
+
+
+                        <div class="ugmwa-attendance-card-body">
+
+
+                            <!-- TOP -->
+
+                            <div
+                                class="d-flex
+                                       justify-content-between
+                                       align-items-start
+                                       gap-3
+                                       mb-4"
+                            >
+
+
+                                <!-- ICON -->
+
+                                <div class="ugmwa-session-icon">
+
+                                    <i class="bi bi-calendar-event"></i>
+
+                                </div>
+
+
+                                <!-- STATUS -->
+
+                                {% if session.is_open %}
+
+                                    <span class="ugmwa-open-badge">
+
+                                        Open
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="ugmwa-closed-badge">
+
+                                        Closed
+
+                                    </span>
+
+                                {% endif %}
+
+
+                            </div>
+
+
+                            <!-- TITLE -->
+
+                            <h5 class="ugmwa-session-title">
+
+                                {{ session.title }}
+
+                            </h5>
+
+
+                            <div class="ugmwa-session-type mb-4">
+
+                                {{ session.get_session_type_display }}
+
+                            </div>
+
+
+                            <!-- DETAILS -->
+
+                            <div class="ugmwa-session-details">
+
+
+                                <!-- DATE -->
+
+                                <div class="ugmwa-session-detail">
+
+                                    <i class="bi bi-calendar3"></i>
+
+                                    <span>
+
+                                        {{ session.date|date:"d M Y" }}
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- TIME -->
+
+                                {% if session.start_time %}
+
+                                    <div class="ugmwa-session-detail">
+
+                                        <i class="bi bi-clock"></i>
+
+                                        <span>
+
+                                            {{ session.start_time }}
+
+                                            {% if session.end_time %}
+
+                                                - {{ session.end_time }}
+
+                                            {% endif %}
+
+                                        </span>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- VENUE -->
+
+                                {% if session.venue %}
+
+                                    <div class="ugmwa-session-detail">
+
+                                        <i class="bi bi-geo-alt"></i>
+
+                                        <span>
+
+                                            {{ session.venue }}
+
+                                        </span>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                            </div>
+
+
+                            <!-- DIVIDER -->
+
+                            <div class="ugmwa-card-divider"></div>
+
+
+                            <!-- VIEW BUTTON -->
+
+                            <a
+                                href="{% url 'attendance:detail' session.pk %}"
+                                class="ugmwa-view-btn"
+                            >
+
+                                <i class="bi bi-eye"></i>
+
+                                View Attendance
+
+                            </a>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            {% empty %}
+
+
+                <!-- =================================================
+                     EMPTY STATE
+                     ================================================= -->
+
+                <div class="col-12">
+
+                    <div class="ugmwa-empty-state text-center">
+
+
+                        <div class="ugmwa-empty-icon">
+
+                            <i class="bi bi-calendar-x"></i>
+
+                        </div>
+
+
+                        <h4 class="ugmwa-empty-title">
+
+                            No Attendance Sessions
+
+                        </h4>
+
+
+                        <p class="ugmwa-empty-text">
+
+                            Attendance sessions have not been created yet.
+
+                        </p>
+
+
+                    </div>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

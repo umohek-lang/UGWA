@@ -1,0 +1,598 @@
+{% extends "base.html" %}
+
+{% block title %}
+Welfare Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --association-green: #0b3d2e;
+        --association-green-dark: #06291f;
+        --association-green-light: #145c45;
+        --association-gold: #d4af37;
+        --association-gold-light: #f1d77a;
+        --association-muted: #68756f;
+        --association-cream: #f8f6ef;
+        --association-border: #e4ebe7;
+    }
+
+    .welfare-dashboard {
+        min-height: calc(100vh - 80px);
+        background: linear-gradient(
+            180deg,
+            #f8faf9 0%,
+            #ffffff 100%
+        );
+    }
+
+    /* =========================
+       HERO
+    ========================== */
+
+    .welfare-hero {
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green),
+                var(--association-green-light)
+            );
+        border-radius: 20px;
+        padding: 32px;
+        color: #fff;
+        box-shadow: 0 12px 35px rgba(11, 61, 46, 0.18);
+    }
+
+    .welfare-hero::before,
+    .welfare-hero::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .welfare-hero::before {
+        width: 250px;
+        height: 250px;
+        right: -90px;
+        top: -135px;
+    }
+
+    .welfare-hero::after {
+        width: 175px;
+        height: 175px;
+        right: 55px;
+        bottom: -120px;
+    }
+
+    .welfare-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .welfare-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(212, 175, 55, 0.14);
+        border: 1px solid rgba(241, 215, 122, 0.45);
+        color: var(--association-gold-light);
+        border-radius: 50px;
+        padding: 7px 14px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 14px;
+    }
+
+    .welfare-hero h2 {
+        font-size: clamp(1.7rem, 3vw, 2.35rem);
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .welfare-hero p {
+        color: rgba(255, 255, 255, 0.78);
+        max-width: 720px;
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
+    .welfare-hero-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(241, 215, 122, 0.35);
+        color: var(--association-gold-light);
+        font-size: 2rem;
+    }
+
+    /* =========================
+       STATISTICS
+    ========================== */
+
+    .welfare-stat-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        background: #fff;
+        border: 1px solid var(--association-border);
+        border-left: 4px solid var(--association-gold);
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 5px 18px rgba(11, 61, 46, 0.06);
+        transition: all 0.25s ease;
+    }
+
+    .welfare-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(11, 61, 46, 0.12);
+    }
+
+    .welfare-stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 1.3rem;
+        margin-bottom: 16px;
+    }
+
+    .welfare-stat-icon.gold {
+        background: rgba(212, 175, 55, 0.14);
+        color: #9a7708;
+    }
+
+    .welfare-stat-label {
+        color: var(--association-muted);
+        font-size: 0.86rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .welfare-stat-value {
+        color: var(--association-green-dark);
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+
+    .welfare-stat-value.warning {
+        color: #9a7708;
+    }
+
+    .welfare-stat-value.success {
+        color: var(--association-green);
+    }
+
+    /* =========================
+       REQUEST CARD
+    ========================== */
+
+    .welfare-request-card {
+        background: #fff;
+        border: 1px solid var(--association-border);
+        border-radius: 17px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(11, 61, 46, 0.06);
+    }
+
+    .welfare-card-header {
+        padding: 19px 22px;
+        background: linear-gradient(
+            90deg,
+            rgba(11, 61, 46, 0.05),
+            rgba(212, 175, 55, 0.06)
+        );
+        border-bottom: 1px solid var(--association-border);
+    }
+
+    .welfare-card-header h5 {
+        color: var(--association-green-dark);
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .welfare-card-header p {
+        color: var(--association-muted);
+        font-size: 0.82rem;
+        margin: 4px 0 0;
+    }
+
+    /* =========================
+       NEW REQUEST BUTTON
+    ========================== */
+
+    .welfare-new-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--association-green);
+        border: 1px solid var(--association-green);
+        color: #fff;
+        border-radius: 9px;
+        padding: 8px 14px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        transition: all 0.25s ease;
+    }
+
+    .welfare-new-btn:hover {
+        background: var(--association-green-dark);
+        border-color: var(--association-green-dark);
+        color: var(--association-gold-light);
+        transform: translateY(-2px);
+    }
+
+    /* =========================
+       TABLE
+    ========================== */
+
+    .welfare-table {
+        margin-bottom: 0;
+    }
+
+    .welfare-table thead th {
+        background: #f8faf9;
+        color: var(--association-green-dark);
+        border-bottom: 1px solid var(--association-border);
+        padding: 15px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .welfare-table tbody td {
+        padding: 18px 15px;
+        border-color: var(--association-border);
+        vertical-align: middle;
+    }
+
+    .welfare-empty {
+        padding: 55px 20px !important;
+    }
+
+    .empty-icon {
+        width: 68px;
+        height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        border-radius: 50%;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 1.8rem;
+    }
+
+    .empty-title {
+        color: var(--association-green-dark);
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .empty-text {
+        color: var(--association-muted);
+        font-size: 0.88rem;
+        margin-bottom: 0;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 767.98px) {
+
+        .welfare-hero {
+            padding: 24px 20px;
+            border-radius: 16px;
+        }
+
+        .welfare-hero h2 {
+            font-size: 1.65rem;
+        }
+
+        .welfare-hero-icon {
+            width: 56px;
+            height: 56px;
+            font-size: 1.6rem;
+        }
+
+        .welfare-stat-card {
+            padding: 20px;
+        }
+
+        .welfare-stat-value {
+            font-size: 1.6rem;
+        }
+
+        .welfare-card-header {
+            padding: 17px;
+        }
+
+        .welfare-table thead th,
+        .welfare-table tbody td {
+            padding: 13px 12px;
+        }
+
+    }
+</style>
+
+<div class="welfare-dashboard py-4 py-lg-5">
+
+<div class="container-fluid px-3 px-lg-4">
+
+    <!-- =========================
+         WELFARE HERO
+    ========================== -->
+
+    <div class="welfare-hero mb-4 mb-lg-5">
+
+        <div class="welfare-hero-content">
+
+            <div class="row align-items-center g-4">
+
+                <div class="col-lg-9">
+
+                    <div class="welfare-label">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                        Member Welfare
+                    </div>
+
+                    <h2>
+                        Welfare Dashboard
+                    </h2>
+
+                    <p>
+                        Manage member welfare requests, support
+                        and assistance from one central location.
+                    </p>
+
+                </div>
+
+                <div class="col-lg-3 d-flex justify-content-lg-end">
+
+                    <div class="welfare-hero-icon">
+                        <i class="bi bi-heart-pulse"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         STATISTICS
+    ========================== -->
+
+    <div class="row g-4 mb-5">
+
+        <!-- Welfare Requests -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="welfare-stat-card">
+
+                <div class="welfare-stat-icon">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                </div>
+
+                <p class="welfare-stat-label">
+                    Welfare Requests
+                </p>
+
+                <h2 class="welfare-stat-value">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- Pending -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="welfare-stat-card">
+
+                <div class="welfare-stat-icon gold">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+
+                <p class="welfare-stat-label">
+                    Pending
+                </p>
+
+                <h2 class="welfare-stat-value warning">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- Approved -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="welfare-stat-card">
+
+                <div class="welfare-stat-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+
+                <p class="welfare-stat-label">
+                    Approved
+                </p>
+
+                <h2 class="welfare-stat-value success">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- Assistance Paid -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="welfare-stat-card">
+
+                <div class="welfare-stat-icon gold">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+
+                <p class="welfare-stat-label">
+                    Assistance Paid
+                </p>
+
+                <h2 class="welfare-stat-value">
+                    ₦0
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         WELFARE REQUESTS
+    ========================== -->
+
+    <div class="welfare-request-card">
+
+        <div class="welfare-card-header">
+
+            <div class="d-flex flex-column flex-sm-row
+                        justify-content-between
+                        align-items-sm-center gap-3">
+
+                <div>
+
+                    <h5>
+                        <i class="bi bi-clipboard-heart me-2"
+                           style="color: var(--association-gold);"></i>
+                        Recent Welfare Requests
+                    </h5>
+
+                    <p>
+                        Review and manage recent member welfare requests.
+                    </p>
+
+                </div>
+
+                <a href="#"
+                   class="btn welfare-new-btn">
+
+                    <i class="bi bi-plus-circle"></i>
+
+                    New Request
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table welfare-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Member
+                            </th>
+
+                            <th>
+                                Request Type
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr>
+
+                            <td colspan="5"
+                                class="text-center welfare-empty">
+
+                                <div class="empty-icon">
+
+                                    <i class="bi bi-inbox"></i>
+
+                                </div>
+
+                                <div class="empty-title">
+                                    No Welfare Requests
+                                </div>
+
+                                <p class="empty-text">
+                                    No welfare requests are currently available.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

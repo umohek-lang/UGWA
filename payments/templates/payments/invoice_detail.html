@@ -1,0 +1,856 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ invoice.invoice_number }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .invoice-page {
+        background: #f8f6ef;
+        min-height: calc(100vh - 80px);
+        padding: 35px 0 60px;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+    .invoice-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+            135deg,
+            #0b3d2e 0%,
+            #145c45 55%,
+            #06291f 100%
+        );
+        border-radius: 20px;
+        padding: 28px 30px;
+        color: #ffffff;
+        box-shadow: 0 12px 30px rgba(11, 61, 46, 0.16);
+    }
+
+    .invoice-hero::before,
+    .invoice-hero::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .invoice-hero::before {
+        width: 170px;
+        height: 170px;
+        right: -50px;
+        top: -75px;
+    }
+
+    .invoice-hero::after {
+        width: 250px;
+        height: 250px;
+        right: -100px;
+        bottom: -175px;
+    }
+
+    .invoice-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .invoice-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #f1d77a;
+        background: rgba(212, 175, 55, 0.13);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 50px;
+        padding: 6px 13px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+
+    .invoice-hero h2 {
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .invoice-hero p {
+        color: rgba(255, 255, 255, 0.78);
+        margin-bottom: 0;
+    }
+
+    /* =========================
+       BACK BUTTON
+    ========================= */
+    .invoice-back-btn {
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        color: #ffffff;
+        border-radius: 10px;
+        padding: 9px 16px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.06);
+        transition: all 0.2s ease;
+    }
+
+    .invoice-back-btn:hover {
+        background: #d4af37;
+        border-color: #d4af37;
+        color: #06291f;
+    }
+
+    /* =========================
+       MAIN CARDS
+    ========================= */
+    .invoice-card {
+        background: #ffffff;
+        border: 0;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 7px 24px rgba(11, 61, 46, 0.08);
+    }
+
+    .invoice-card-header {
+        background: #ffffff;
+        border-bottom: 1px solid #e4ebe7;
+        padding: 19px 22px;
+    }
+
+    .invoice-card-header h5 {
+        color: #0b3d2e;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .invoice-card-header h5 i {
+        color: #d4af37;
+    }
+
+    .invoice-card-body {
+        padding: 25px;
+    }
+
+    /* =========================
+       INVOICE DETAILS
+    ========================= */
+    .invoice-detail-box {
+        background: #fafbf9;
+        border: 1px solid #e4ebe7;
+        border-radius: 12px;
+        padding: 17px;
+        height: 100%;
+        transition: all 0.2s ease;
+    }
+
+    .invoice-detail-box:hover {
+        border-color: rgba(212, 175, 55, 0.55);
+        transform: translateY(-2px);
+    }
+
+    .invoice-detail-label {
+        display: block;
+        color: #68756f;
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 6px;
+    }
+
+    .invoice-detail-value {
+        color: #0b3d2e;
+        font-weight: 750;
+        font-size: 1rem;
+        word-break: break-word;
+    }
+
+    .invoice-detail-value.success {
+        color: #198754;
+    }
+
+    .invoice-detail-value.danger {
+        color: #dc3545;
+    }
+
+    /* =========================
+       PAYMENT CARD
+    ========================= */
+    .payment-card {
+        border-top: 4px solid #d4af37;
+    }
+
+    .payment-header {
+        background: linear-gradient(
+            135deg,
+            #0b3d2e,
+            #145c45
+        );
+        color: #ffffff;
+        padding: 20px 22px;
+    }
+
+    .payment-header h5 {
+        margin: 0;
+        font-weight: 800;
+    }
+
+    .payment-header i {
+        color: #f1d77a;
+    }
+
+    .payment-body {
+        padding: 25px;
+    }
+
+    .payment-amount {
+        color: #0b3d2e;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 2px;
+    }
+
+    .payment-outstanding {
+        color: #68756f;
+        font-size: 0.9rem;
+        margin-bottom: 22px;
+    }
+
+    .payment-btn {
+        width: 100%;
+        min-height: 50px;
+        border: 0;
+        border-radius: 10px;
+        background: linear-gradient(
+            135deg,
+            #0b3d2e,
+            #145c45
+        );
+        color: #ffffff;
+        font-weight: 700;
+        transition: all 0.2s ease;
+        box-shadow: 0 6px 16px rgba(11, 61, 46, 0.17);
+    }
+
+    .payment-btn:hover {
+        background: #06291f;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .payment-btn i {
+        color: #f1d77a;
+    }
+
+    .paid-alert {
+        border: 0;
+        border-left: 4px solid #198754;
+        border-radius: 10px;
+        background: #effaf4;
+        color: #146c43;
+    }
+
+    .payment-note {
+        color: #68756f;
+        line-height: 1.6;
+        font-size: 0.78rem;
+    }
+
+    /* =========================
+       STATUS BADGES
+    ========================= */
+    .invoice-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(11, 61, 46, 0.08);
+        color: #0b3d2e;
+        border-radius: 50px;
+        padding: 6px 11px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    /* =========================
+       PAYMENT TABLE
+    ========================= */
+    .payment-table-card {
+        margin-top: 24px;
+    }
+
+    .payment-table {
+        margin-bottom: 0;
+    }
+
+    .payment-table thead th {
+        background: #f8f6ef;
+        color: #0b3d2e;
+        border-bottom: 2px solid #d4af37;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+        padding: 15px 14px;
+    }
+
+    .payment-table tbody td {
+        padding: 16px 14px;
+        border-color: #edf1ee;
+        color: #36443e;
+    }
+
+    .payment-table tbody tr:hover {
+        background: #fafcfb;
+    }
+
+    .receipt-number {
+        color: #0b3d2e;
+        font-weight: 700;
+    }
+
+    .payment-reference {
+        color: #68756f;
+        font-size: 0.9rem;
+        word-break: break-word;
+    }
+
+    .payment-amount-cell {
+        color: #0b3d2e;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .empty-payments {
+        padding: 50px 20px !important;
+        color: #68756f;
+    }
+
+    .empty-payments-icon {
+        width: 65px;
+        height: 65px;
+        margin: 0 auto 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(212, 175, 55, 0.12);
+        color: #b28b16;
+        font-size: 1.6rem;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+    @media (max-width: 767.98px) {
+
+        .invoice-page {
+            padding: 25px 0 40px;
+        }
+
+        .invoice-hero {
+            padding: 23px 20px;
+            border-radius: 16px;
+        }
+
+        .invoice-hero h2 {
+            font-size: 1.4rem;
+        }
+
+        .invoice-back-btn {
+            width: 100%;
+            margin-top: 18px;
+        }
+
+        .invoice-card-body,
+        .payment-body {
+            padding: 20px;
+        }
+
+        .payment-amount {
+            font-size: 1.7rem;
+        }
+    }
+</style>
+
+<div class="invoice-page">
+
+<div class="container">
+
+    <!-- =========================
+         INVOICE HERO
+    ========================== -->
+    <div class="invoice-hero mb-4">
+
+        <div class="invoice-hero-content">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-8">
+
+                    <div class="invoice-label">
+
+                        <i class="bi bi-receipt"></i>
+
+                        Payment Invoice
+
+                    </div>
+
+                    <h2>
+                        Invoice {{ invoice.invoice_number }}
+                    </h2>
+
+                    <p>
+                        {{ invoice.dues_type.name }}
+                    </p>
+
+                </div>
+
+
+                <div class="col-lg-4 text-lg-end">
+
+                    <a
+                        href="{% url 'payments:invoices' %}"
+                        class="btn invoice-back-btn">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+
+                        Back to Invoices
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+    <div class="row g-4">
+
+
+        <!-- =========================
+             INVOICE DETAILS
+        ========================== -->
+        <div class="col-lg-8">
+
+            <div class="card invoice-card">
+
+                <div class="invoice-card-header">
+
+                    <h5>
+
+                        <i class="bi bi-file-earmark-text me-2"></i>
+
+                        Invoice Details
+
+                    </h5>
+
+                </div>
+
+
+                <div class="invoice-card-body">
+
+                    <div class="row g-3">
+
+
+                        <!-- Invoice Number -->
+                        <div class="col-md-6">
+
+                            <div class="invoice-detail-box">
+
+                                <span class="invoice-detail-label">
+                                    Invoice Number
+                                </span>
+
+                                <div class="invoice-detail-value">
+
+                                    {{ invoice.invoice_number }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Due Date -->
+                        <div class="col-md-6">
+
+                            <div class="invoice-detail-box">
+
+                                <span class="invoice-detail-label">
+                                    Due Date
+                                </span>
+
+                                <div class="invoice-detail-value">
+
+                                    {{ invoice.due_date|default:"Not specified" }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Total Amount -->
+                        <div class="col-md-6">
+
+                            <div class="invoice-detail-box">
+
+                                <span class="invoice-detail-label">
+                                    Total Amount
+                                </span>
+
+                                <div class="invoice-detail-value">
+
+                                    ₦{{ invoice.amount|floatformat:2 }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Amount Paid -->
+                        <div class="col-md-6">
+
+                            <div class="invoice-detail-box">
+
+                                <span class="invoice-detail-label">
+                                    Amount Paid
+                                </span>
+
+                                <div class="invoice-detail-value success">
+
+                                    ₦{{ invoice.amount_paid|floatformat:2 }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Outstanding Balance -->
+                        <div class="col-md-6">
+
+                            <div class="invoice-detail-box">
+
+                                <span class="invoice-detail-label">
+                                    Outstanding Balance
+                                </span>
+
+                                <div class="invoice-detail-value danger">
+
+                                    ₦{{ invoice.balance|floatformat:2 }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Status -->
+                        <div class="col-md-6">
+
+                            <div class="invoice-detail-box">
+
+                                <span class="invoice-detail-label">
+                                    Status
+                                </span>
+
+                                <div class="invoice-detail-value">
+
+                                    <span class="invoice-status">
+
+                                        <i class="bi bi-info-circle"></i>
+
+                                        {{ invoice.get_status_display }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             PAYMENT
+        ========================== -->
+        <div class="col-lg-4">
+
+            <div class="card invoice-card payment-card">
+
+                <div class="payment-header">
+
+                    <h5>
+
+                        <i class="bi bi-credit-card me-2"></i>
+
+                        Payment
+
+                    </h5>
+
+                </div>
+
+
+                <div class="payment-body">
+
+                    {% if invoice.status == "PAID" %}
+
+                        <div class="alert paid-alert">
+
+                            <i class="bi bi-check-circle-fill me-2"></i>
+
+                            This invoice has been fully paid.
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="payment-amount">
+
+                            ₦{{ invoice.balance|floatformat:2 }}
+
+                        </div>
+
+                        <div class="payment-outstanding">
+
+                            Outstanding
+
+                        </div>
+
+
+                        {% if invoice.balance > 0 and invoice.status != "CANCELLED" %}
+
+                            <a
+                                href="{% url 'payments:pay_invoice' invoice.invoice_number %}"
+                                class="btn payment-btn">
+
+                                <i class="bi bi-credit-card me-2"></i>
+
+                                Pay Online
+
+                            </a>
+
+
+                        {% elif invoice.status == "PAID" %}
+
+                            <span class="badge bg-success fs-6">
+
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Fully Paid
+
+                            </span>
+
+
+                        {% else %}
+
+                            <span class="badge bg-secondary">
+
+                                Payment unavailable
+
+                            </span>
+
+                        {% endif %}
+
+
+                        <small class="payment-note d-block mt-3">
+
+                            <i class="bi bi-shield-check me-1"></i>
+
+                            Online payment will be connected
+                            to Paystack in the next step.
+
+                        </small>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         PAYMENT RECORDS
+    ========================== -->
+    <div class="card invoice-card payment-table-card">
+
+        <div class="invoice-card-header">
+
+            <h5>
+
+                <i class="bi bi-clock-history me-2"></i>
+
+                Payments Against This Invoice
+
+            </h5>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table payment-table table-hover">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Receipt
+                            </th>
+
+                            <th>
+                                Reference
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for payment in payments %}
+
+                            <tr>
+
+                                <td>
+
+                                    <span class="receipt-number">
+                                        {{ payment.receipt_number }}
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="payment-reference">
+                                        {{ payment.payment_reference }}
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="payment-amount-cell">
+                                        ₦{{ payment.amount|floatformat:2 }}
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="invoice-status">
+
+                                        <i class="bi bi-check2-circle"></i>
+
+                                        {{ payment.get_status_display }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ payment.created_at|date:"d M Y" }}
+
+                                </td>
+
+                            </tr>
+
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="empty-payments text-center">
+
+                                    <div class="empty-payments-icon">
+
+                                        <i class="bi bi-receipt"></i>
+
+                                    </div>
+
+                                    <div class="fw-semibold text-dark mb-1">
+
+                                        No Payment Records
+
+                                    </div>
+
+                                    <div>
+
+                                        No payments have been made
+                                        against this invoice.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

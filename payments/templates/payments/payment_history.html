@@ -1,0 +1,630 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Payment History
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .payment-history-page {
+        min-height: calc(100vh - 80px);
+        background: #f8f6ef;
+        padding: 35px 0 60px;
+    }
+
+    /* ==============================
+       HERO
+    ============================== */
+
+    .payment-history-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+            135deg,
+            #0b3d2e 0%,
+            #145c45 55%,
+            #06291f 100%
+        );
+        border-radius: 20px;
+        padding: 30px;
+        color: #ffffff;
+        box-shadow: 0 12px 30px rgba(11, 61, 46, 0.16);
+    }
+
+    .payment-history-hero::before,
+    .payment-history-hero::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .payment-history-hero::before {
+        width: 190px;
+        height: 190px;
+        right: -60px;
+        top: -80px;
+    }
+
+    .payment-history-hero::after {
+        width: 290px;
+        height: 290px;
+        right: -125px;
+        bottom: -200px;
+    }
+
+    .payment-history-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .history-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(212, 175, 55, 0.14);
+        border: 1px solid rgba(212, 175, 55, 0.32);
+        color: #f1d77a;
+        border-radius: 50px;
+        padding: 7px 14px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+
+    .payment-history-hero h2 {
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+
+    .payment-history-hero p {
+        color: rgba(255, 255, 255, 0.78);
+        margin-bottom: 0;
+    }
+
+    /* ==============================
+       HISTORY CARD
+    ============================== */
+
+    .history-card {
+        border: 0;
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: 0 8px 25px rgba(11, 61, 46, 0.08);
+        overflow: hidden;
+    }
+
+    .history-card-header {
+        padding: 20px 24px;
+        background: #ffffff;
+        border-bottom: 1px solid #e4ebe7;
+    }
+
+    .history-card-header h5 {
+        color: #0b3d2e;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .history-card-header h5 i {
+        color: #d4af37;
+    }
+
+    /* ==============================
+       TABLE
+    ============================== */
+
+    .payment-table {
+        margin-bottom: 0;
+    }
+
+    .payment-table thead th {
+        background: #f8f6ef;
+        color: #0b3d2e;
+        border-bottom: 2px solid #d4af37;
+        font-size: 0.76rem;
+        font-weight: 750;
+        text-transform: uppercase;
+        letter-spacing: 0.35px;
+        white-space: nowrap;
+        padding: 15px 14px;
+    }
+
+    .payment-table tbody td {
+        padding: 17px 14px;
+        border-color: #edf1ee;
+        vertical-align: middle;
+        color: #36443e;
+    }
+
+    .payment-table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .payment-table tbody tr:hover {
+        background: #fafcfb;
+    }
+
+    /* ==============================
+       PAYMENT DETAILS
+    ============================== */
+
+    .receipt-number {
+        color: #0b3d2e;
+        font-weight: 750;
+    }
+
+    .payment-reference {
+        color: #68756f;
+        font-size: 0.9rem;
+        font-family: monospace;
+    }
+
+    .invoice-number {
+        color: #145c45;
+        font-weight: 650;
+    }
+
+    .payment-amount {
+        color: #0b3d2e;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .payment-method {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #4e5d56;
+        font-weight: 600;
+    }
+
+    .payment-method i {
+        color: #d4af37;
+    }
+
+    .payment-date {
+        color: #68756f;
+        white-space: nowrap;
+    }
+
+    /* ==============================
+       STATUS BADGES
+    ============================== */
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border-radius: 50px;
+        padding: 6px 11px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-success {
+        background: rgba(25, 135, 84, 0.11);
+        color: #198754;
+    }
+
+    .status-pending {
+        background: rgba(255, 193, 7, 0.16);
+        color: #946f00;
+    }
+
+    .status-failed {
+        background: rgba(220, 53, 69, 0.10);
+        color: #c02b3a;
+    }
+
+    .status-refunded {
+        background: rgba(108, 117, 125, 0.12);
+        color: #5c636a;
+    }
+
+    /* ==============================
+       RECEIPT BUTTON
+    ============================== */
+
+    .receipt-btn {
+        border: 1px solid #0b3d2e;
+        color: #0b3d2e;
+        background: transparent;
+        border-radius: 8px;
+        font-weight: 650;
+        padding: 6px 12px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .receipt-btn:hover {
+        background: #0b3d2e;
+        border-color: #0b3d2e;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    /* ==============================
+       EMPTY STATE
+    ============================== */
+
+    .empty-payments {
+        padding: 65px 20px !important;
+    }
+
+    .empty-payments-icon {
+        width: 75px;
+        height: 75px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(212, 175, 55, 0.12);
+        color: #b28b16;
+        font-size: 2rem;
+    }
+
+    .empty-payments h6 {
+        color: #0b3d2e;
+        font-weight: 750;
+        margin-bottom: 5px;
+    }
+
+    .empty-payments p {
+        color: #68756f;
+        margin-bottom: 0;
+    }
+
+    /* ==============================
+       MOBILE
+    ============================== */
+
+    @media (max-width: 767.98px) {
+
+        .payment-history-page {
+            padding: 25px 0 40px;
+        }
+
+        .payment-history-hero {
+            padding: 23px 20px;
+            border-radius: 16px;
+        }
+
+        .payment-history-hero h2 {
+            font-size: 1.5rem;
+        }
+
+        .history-card-header {
+            padding: 18px;
+        }
+
+        .payment-table thead th,
+        .payment-table tbody td {
+            padding: 13px 12px;
+        }
+
+        .receipt-btn {
+            padding: 6px 10px;
+        }
+    }
+</style>
+
+
+<div class="payment-history-page">
+
+    <div class="container">
+
+        <!-- ==========================
+             PAGE HERO
+        =========================== -->
+
+        <div class="payment-history-hero mb-4">
+
+            <div class="payment-history-hero-content">
+
+                <div class="history-label">
+                    <i class="bi bi-clock-history"></i>
+                    Member Finance
+                </div>
+
+                <h2>
+                    Payment History
+                </h2>
+
+                <p>
+                    View all your recorded payments and transaction details.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==========================
+             PAYMENT HISTORY CARD
+        =========================== -->
+
+        <div class="card history-card">
+
+            <div class="history-card-header">
+
+                <h5>
+                    <i class="bi bi-receipt-cutoff me-2"></i>
+                    Transaction History
+                </h5>
+
+            </div>
+
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table payment-table table-hover">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Receipt
+                                </th>
+
+                                <th>
+                                    Reference
+                                </th>
+
+                                <th>
+                                    Invoice
+                                </th>
+
+                                <th>
+                                    Amount
+                                </th>
+
+                                <th>
+                                    Method
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for payment in payments %}
+
+                                <tr>
+
+                                    <!-- Receipt Number -->
+
+                                    <td>
+
+                                        <span class="receipt-number">
+
+                                            {{ payment.receipt_number }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- Payment Reference -->
+
+                                    <td>
+
+                                        <span class="payment-reference">
+
+                                            {{ payment.payment_reference }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- Invoice -->
+
+                                    <td>
+
+                                        {% if payment.invoice %}
+
+                                            <span class="invoice-number">
+
+                                                {{ payment.invoice.invoice_number }}
+
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+                                                —
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- Amount -->
+
+                                    <td>
+
+                                        <span class="payment-amount">
+
+                                            ₦{{ payment.amount|floatformat:2 }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- Payment Method -->
+
+                                    <td>
+
+                                        <span class="payment-method">
+
+                                            <i class="bi bi-credit-card"></i>
+
+                                            {{ payment.payment_method }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- Status -->
+
+                                    <td>
+
+                                        {% if payment.status == "SUCCESS" %}
+
+                                            <span class="status-badge status-success">
+
+                                                <i class="bi bi-check-circle-fill"></i>
+
+                                                Successful
+
+                                            </span>
+
+
+                                        {% elif payment.status == "PENDING" %}
+
+                                            <span class="status-badge status-pending">
+
+                                                <i class="bi bi-hourglass-split"></i>
+
+                                                Pending
+
+                                            </span>
+
+
+                                        {% elif payment.status == "FAILED" %}
+
+                                            <span class="status-badge status-failed">
+
+                                                <i class="bi bi-x-circle-fill"></i>
+
+                                                Failed
+
+                                            </span>
+
+
+                                        {% else %}
+
+                                            <span class="status-badge status-refunded">
+
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+
+                                                Refunded
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- Date -->
+
+                                    <td>
+
+                                        <span class="payment-date">
+
+                                            {{ payment.created_at|date:"d M Y" }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- Receipt Action -->
+
+                                    <td>
+
+                                        {% if payment.status == "SUCCESS" %}
+
+                                            <a
+                                                href="{% url 'payments:receipt' payment.receipt_number %}"
+                                                class="btn btn-sm receipt-btn">
+
+                                                <i class="bi bi-receipt me-1"></i>
+
+                                                Receipt
+
+                                            </a>
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+                                                —
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+
+                            {% empty %}
+
+                                <tr>
+
+                                    <td
+                                        colspan="8"
+                                        class="text-center empty-payments">
+
+                                        <div class="empty-payments-icon">
+
+                                            <i class="bi bi-wallet2"></i>
+
+                                        </div>
+
+                                        <h6>
+                                            No Payment Records
+                                        </h6>
+
+                                        <p>
+                                            You currently have no recorded payment transactions.
+                                        </p>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

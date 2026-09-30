@@ -1,0 +1,601 @@
+{% extends "base.html" %}
+
+{% block title %}
+Branch Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --association-green: #0b3d2e;
+        --association-green-dark: #06291f;
+        --association-green-light: #145c45;
+        --association-gold: #d4af37;
+        --association-gold-light: #f1d77a;
+        --association-muted: #68756f;
+        --association-cream: #f8f6ef;
+        --association-border: #e4ebe7;
+    }
+
+    .branch-dashboard {
+        background: linear-gradient(
+            180deg,
+            #f8faf9 0%,
+            #ffffff 100%
+        );
+        min-height: calc(100vh - 80px);
+    }
+
+    /* =========================
+       HERO
+    ========================== */
+
+    .branch-hero {
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green),
+                var(--association-green-light)
+            );
+        border-radius: 20px;
+        padding: 32px;
+        color: #fff;
+        box-shadow: 0 12px 35px rgba(11, 61, 46, 0.18);
+    }
+
+    .branch-hero::before,
+    .branch-hero::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .branch-hero::before {
+        width: 230px;
+        height: 230px;
+        right: -80px;
+        top: -120px;
+    }
+
+    .branch-hero::after {
+        width: 170px;
+        height: 170px;
+        right: 40px;
+        bottom: -110px;
+    }
+
+    .branch-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .branch-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(212, 175, 55, 0.14);
+        border: 1px solid rgba(241, 215, 122, 0.45);
+        color: var(--association-gold-light);
+        border-radius: 50px;
+        padding: 7px 14px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 14px;
+    }
+
+    .branch-hero h2 {
+        font-size: clamp(1.7rem, 3vw, 2.3rem);
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .branch-hero p {
+        color: rgba(255, 255, 255, 0.78);
+        margin-bottom: 0;
+        max-width: 700px;
+    }
+
+    .branch-hero-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(241, 215, 122, 0.35);
+        color: var(--association-gold-light);
+        font-size: 2rem;
+    }
+
+    /* =========================
+       STAT CARDS
+    ========================== */
+
+    .branch-stat-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        background: #fff;
+        border: 1px solid var(--association-border);
+        border-left: 4px solid var(--association-gold);
+        border-radius: 16px;
+        padding: 22px;
+        transition: all 0.25s ease;
+        box-shadow: 0 5px 18px rgba(11, 61, 46, 0.06);
+    }
+
+    .branch-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(11, 61, 46, 0.12);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 1.35rem;
+        margin-bottom: 16px;
+    }
+
+    .stat-icon.gold {
+        background: rgba(212, 175, 55, 0.14);
+        color: #a27d05;
+    }
+
+    .stat-label {
+        color: var(--association-muted);
+        font-size: 0.86rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .stat-value {
+        color: var(--association-green-dark);
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+
+    /* =========================
+       SECTION HEADER
+    ========================== */
+
+    .section-heading {
+        margin-bottom: 20px;
+    }
+
+    .section-heading h4 {
+        color: var(--association-green-dark);
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .section-heading p {
+        color: var(--association-muted);
+        margin-bottom: 0;
+        font-size: 0.92rem;
+    }
+
+    /* =========================
+       MANAGEMENT CARDS
+    ========================== */
+
+    .management-card {
+        position: relative;
+        height: 100%;
+        background: #fff;
+        border: 1px solid var(--association-border);
+        border-radius: 17px;
+        padding: 25px;
+        overflow: hidden;
+        transition: all 0.25s ease;
+        box-shadow: 0 5px 18px rgba(11, 61, 46, 0.06);
+    }
+
+    .management-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+            90deg,
+            var(--association-green),
+            var(--association-gold)
+        );
+    }
+
+    .management-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(212, 175, 55, 0.45);
+        box-shadow: 0 15px 30px rgba(11, 61, 46, 0.12);
+    }
+
+    .management-icon {
+        width: 62px;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 1.8rem;
+        transition: all 0.25s ease;
+    }
+
+    .management-card:hover .management-icon {
+        background: var(--association-green);
+        color: var(--association-gold-light);
+        transform: scale(1.05);
+    }
+
+    .management-card h5 {
+        color: var(--association-green-dark);
+        font-weight: 800;
+        margin-top: 20px;
+        margin-bottom: 9px;
+    }
+
+    .management-card p {
+        color: var(--association-muted);
+        line-height: 1.7;
+        min-height: 52px;
+    }
+
+    .branch-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--association-green);
+        border: 1px solid var(--association-green);
+        color: #fff;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 10px 17px;
+        transition: all 0.25s ease;
+    }
+
+    .branch-btn:hover {
+        background: var(--association-green-dark);
+        border-color: var(--association-green-dark);
+        color: var(--association-gold-light);
+        transform: translateY(-2px);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 767.98px) {
+
+        .branch-dashboard {
+            padding-bottom: 20px;
+        }
+
+        .branch-hero {
+            padding: 24px 20px;
+            border-radius: 16px;
+        }
+
+        .branch-hero-icon {
+            width: 56px;
+            height: 56px;
+            font-size: 1.6rem;
+        }
+
+        .branch-hero h2 {
+            font-size: 1.65rem;
+        }
+
+        .branch-stat-card,
+        .management-card {
+            padding: 20px;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+        }
+
+        .management-card p {
+            min-height: auto;
+        }
+
+    }
+</style>
+
+<div class="branch-dashboard py-4 py-lg-5">
+
+<div class="container-fluid px-3 px-lg-4">
+
+    <!-- =========================
+         BRANCH HERO
+    ========================== -->
+
+    <div class="branch-hero mb-4 mb-lg-5">
+
+        <div class="branch-hero-content">
+
+            <div class="row align-items-center g-4">
+
+                <div class="col-lg-8">
+
+                    <div class="branch-label">
+                        <i class="bi bi-diagram-3-fill"></i>
+                        Branch Management
+                    </div>
+
+                    <h2>
+                        Branch Dashboard
+                    </h2>
+
+                    <p>
+                        Manage your branch's members, activities
+                        and events from one central location.
+                    </p>
+
+                </div>
+
+                <div class="col-lg-4 d-flex justify-content-lg-end">
+
+                    <div class="branch-hero-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         BRANCH STATISTICS
+    ========================== -->
+
+    <div class="section-heading">
+
+        <h4>
+            Branch Overview
+        </h4>
+
+        <p>
+            A quick overview of your branch's current activities.
+        </p>
+
+    </div>
+
+
+    <div class="row g-4 mb-5">
+
+        <!-- Branch Members -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="branch-stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <p class="stat-label">
+                    Branch Members
+                </p>
+
+                <h2 class="stat-value">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- Upcoming Events -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="branch-stat-card">
+
+                <div class="stat-icon">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+
+                <p class="stat-label">
+                    Upcoming Events
+                </p>
+
+                <h2 class="stat-value">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- Pending Requests -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="branch-stat-card">
+
+                <div class="stat-icon gold">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+
+                <p class="stat-label">
+                    Pending Requests
+                </p>
+
+                <h2 class="stat-value">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- Branch Revenue -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="branch-stat-card">
+
+                <div class="stat-icon gold">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+
+                <p class="stat-label">
+                    Branch Revenue
+                </p>
+
+                <h2 class="stat-value">
+                    ₦0
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         BRANCH MANAGEMENT
+    ========================== -->
+
+    <div class="section-heading">
+
+        <h4>
+            Branch Management
+        </h4>
+
+        <p>
+            Access the tools and resources needed to manage your branch.
+        </p>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <!-- Branch Members -->
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="management-card">
+
+                <div class="management-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <h5>
+                    Branch Members
+                </h5>
+
+                <p>
+                    View and manage members belonging
+                    to this branch.
+                </p>
+
+                <a href="#" class="btn branch-btn">
+
+                    <i class="bi bi-arrow-right"></i>
+
+                    View Members
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Branch Events -->
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="management-card">
+
+                <div class="management-icon">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+
+                <h5>
+                    Branch Events
+                </h5>
+
+                <p>
+                    Manage events and activities
+                    for your branch.
+                </p>
+
+                <a href="#" class="btn branch-btn">
+
+                    <i class="bi bi-arrow-right"></i>
+
+                    Manage Events
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Branch Reports -->
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="management-card">
+
+                <div class="management-icon">
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+
+                <h5>
+                    Branch Reports
+                </h5>
+
+                <p>
+                    View membership, financial
+                    and activity reports.
+                </p>
+
+                <a href="#" class="btn branch-btn">
+
+                    <i class="bi bi-arrow-right"></i>
+
+                    View Reports
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,845 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Constitution & Bylaws | {{ association.name|default:"UGMWA" }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   UGMWA CONSTITUTION PAGE
+   ========================================================= */
+
+:root {
+    --ugmwa-green: #073f36;
+    --ugmwa-green-dark: #052f29;
+    --ugmwa-green-light: #0b5a4d;
+    --ugmwa-gold: #d4af37;
+    --ugmwa-gold-light: #f0d477;
+    --ugmwa-bg: #f5f7f6;
+    --ugmwa-text: #26332f;
+    --ugmwa-muted: #6c757d;
+    --ugmwa-border: #e4e9e7;
+}
+
+
+/* PAGE BACKGROUND */
+
+.constitution-page {
+    background: var(--ugmwa-bg);
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   HERO HEADER
+   ========================================================= */
+
+.constitution-hero {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(7, 63, 54, 0.98),
+            rgba(5, 47, 41, 0.98)
+        );
+    color: #ffffff;
+    padding: 80px 0 90px;
+}
+
+.constitution-hero::before {
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    border: 1px solid rgba(212, 175, 55, 0.18);
+    border-radius: 50%;
+    right: -120px;
+    top: -180px;
+}
+
+.constitution-hero::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border: 1px solid rgba(212, 175, 55, 0.12);
+    border-radius: 50%;
+    left: -140px;
+    bottom: -180px;
+}
+
+.constitution-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* GOLD ICON */
+
+.document-icon {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--ugmwa-gold);
+    color: var(--ugmwa-green);
+
+    border-radius: 18px;
+
+    font-size: 2rem;
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.20);
+}
+
+
+/* HERO TITLE */
+
+.constitution-hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 18px;
+}
+
+.constitution-hero h1 span {
+    color: var(--ugmwa-gold-light);
+}
+
+.constitution-hero p {
+    max-width: 700px;
+    margin: 0 auto;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.document-actions {
+    margin-top: 30px;
+}
+
+.btn-ugmwa-gold {
+    background: var(--ugmwa-gold);
+    border: 2px solid var(--ugmwa-gold);
+    color: var(--ugmwa-green);
+    font-weight: 700;
+    padding: 12px 22px;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+}
+
+.btn-ugmwa-gold:hover {
+    background: var(--ugmwa-gold-light);
+    border-color: var(--ugmwa-gold-light);
+    color: var(--ugmwa-green-dark);
+    transform: translateY(-2px);
+}
+
+.btn-ugmwa-outline {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+}
+
+.btn-ugmwa-outline:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: var(--ugmwa-green);
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.constitution-wrapper {
+    margin-top: -45px;
+    position: relative;
+    z-index: 5;
+}
+
+
+/* =========================================================
+   DOCUMENT CARD
+   ========================================================= */
+
+.constitution-card {
+    background: #ffffff;
+    border: 1px solid var(--ugmwa-border);
+    border-radius: 16px;
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 60px rgba(7, 63, 54, 0.10);
+}
+
+
+/* DOCUMENT TOP BAR */
+
+.document-topbar {
+    padding: 18px 25px;
+
+    background: #fafcfb;
+    border-bottom: 1px solid var(--ugmwa-border);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.document-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--ugmwa-green);
+    font-weight: 700;
+}
+
+.document-label i {
+    color: var(--ugmwa-gold);
+    font-size: 1.25rem;
+}
+
+.document-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    color: #198754;
+    background: #eaf7ef;
+
+    padding: 7px 12px;
+    border-radius: 30px;
+}
+
+.document-status span {
+    width: 7px;
+    height: 7px;
+    background: #198754;
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   DOCUMENT BODY
+   ========================================================= */
+
+.document-body {
+    padding: 50px;
+}
+
+
+/* CONSTITUTION CONTENT */
+
+.constitution-content {
+    max-width: 900px;
+    margin: 0 auto;
+
+    color: var(--ugmwa-text);
+
+    font-size: 1rem;
+    line-height: 2;
+}
+
+
+/* Headings generated from database text */
+
+.constitution-content h1,
+.constitution-content h2,
+.constitution-content h3,
+.constitution-content h4 {
+    color: var(--ugmwa-green);
+    font-weight: 750;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+
+/* Paragraphs */
+
+.constitution-content p {
+    margin-bottom: 1.2rem;
+}
+
+
+/* Lists */
+
+.constitution-content ul,
+.constitution-content ol {
+    padding-left: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.constitution-content li {
+    margin-bottom: 0.5rem;
+}
+
+
+/* Links */
+
+.constitution-content a {
+    color: var(--ugmwa-green-light);
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-constitution {
+    text-align: center;
+    padding: 80px 25px;
+}
+
+.empty-icon {
+    width: 90px;
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 25px;
+
+    background: #f0f4f2;
+    color: var(--ugmwa-green);
+
+    border-radius: 50%;
+
+    font-size: 2.5rem;
+}
+
+.empty-constitution h3 {
+    color: var(--ugmwa-green);
+    font-weight: 700;
+}
+
+.empty-constitution p {
+    max-width: 550px;
+    margin: 10px auto 0;
+    color: var(--ugmwa-muted);
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   INFORMATION CARDS
+   ========================================================= */
+
+.document-info {
+    margin-top: 35px;
+}
+
+.info-card {
+    height: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid var(--ugmwa-border);
+    border-radius: 14px;
+
+    padding: 25px;
+
+    transition: all 0.25s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 12px 30px rgba(7, 63, 54, 0.08);
+}
+
+.info-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(212, 175, 55, 0.14);
+    color: var(--ugmwa-green);
+
+    border-radius: 12px;
+
+    font-size: 1.3rem;
+
+    margin-bottom: 18px;
+}
+
+.info-card h5 {
+    color: var(--ugmwa-green);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.info-card p {
+    color: var(--ugmwa-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   FOOTER NOTICE
+   ========================================================= */
+
+.constitution-notice {
+    margin-top: 35px;
+
+    background: var(--ugmwa-green);
+    color: #ffffff;
+
+    border-radius: 14px;
+
+    padding: 25px 30px;
+}
+
+.constitution-notice-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.constitution-notice i {
+    color: var(--ugmwa-gold-light);
+    font-size: 1.5rem;
+}
+
+.constitution-notice h6 {
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.constitution-notice p {
+    color: rgba(255,255,255,0.75);
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+    .constitution-hero,
+    .document-topbar,
+    .document-actions,
+    .document-info,
+    .constitution-notice,
+    nav,
+    footer {
+        display: none !important;
+    }
+
+    .constitution-wrapper {
+        margin-top: 0;
+    }
+
+    .constitution-card {
+        box-shadow: none;
+        border: none;
+    }
+
+    .document-body {
+        padding: 0;
+    }
+
+    .constitution-content {
+        max-width: 100%;
+        color: #000;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .constitution-hero {
+        padding: 65px 0 80px;
+    }
+
+    .document-body {
+        padding: 35px;
+    }
+
+}
+
+
+@media (max-width: 767px) {
+
+    .constitution-hero {
+        padding: 55px 0 70px;
+    }
+
+    .document-icon {
+        width: 65px;
+        height: 65px;
+        font-size: 1.7rem;
+    }
+
+    .constitution-hero h1 {
+        font-size: 2rem;
+    }
+
+    .constitution-hero p {
+        font-size: 0.95rem;
+    }
+
+    .document-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .document-actions .btn {
+        width: 100%;
+    }
+
+    .constitution-wrapper {
+        margin-top: -30px;
+    }
+
+    .document-topbar {
+        padding: 15px 18px;
+    }
+
+    .document-status {
+        display: none;
+    }
+
+    .document-body {
+        padding: 25px 20px;
+    }
+
+    .constitution-content {
+        font-size: 0.95rem;
+        line-height: 1.85;
+    }
+
+    .constitution-notice {
+        padding: 22px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL DEVICES
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .constitution-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .document-body {
+        padding: 20px 15px;
+    }
+
+}
+
+</style>
+
+
+<div class="constitution-page">
+
+
+    <!-- =====================================================
+         HERO SECTION
+         ===================================================== -->
+
+    <section class="constitution-hero">
+
+        <div class="container">
+
+            <div class="constitution-hero-content text-center">
+
+                <div class="document-icon">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+
+                <h1>
+                    Constitution <span>&amp; Bylaws</span>
+                </h1>
+
+                <p>
+                    The official governing framework, rules and regulations
+                    that guide the administration, membership and activities
+                    of {{ association.name|default:"UGMWA" }}.
+                </p>
+
+
+                <!-- ACTION BUTTONS -->
+
+                <div class="document-actions d-flex justify-content-center gap-3 flex-wrap">
+
+                    <button
+                        type="button"
+                        class="btn btn-ugmwa-gold"
+                        onclick="window.print()">
+
+                        <i class="bi bi-printer me-2"></i>
+                        Print Constitution
+
+                    </button>
+
+
+                    <a
+                        href="#constitution-document"
+                        class="btn btn-ugmwa-outline">
+
+                        <i class="bi bi-arrow-down-circle me-2"></i>
+                        Read Document
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         MAIN DOCUMENT
+         ===================================================== -->
+
+    <div class="container constitution-wrapper">
+
+        <div class="constitution-card"
+             id="constitution-document">
+
+
+            <!-- DOCUMENT HEADER -->
+
+            <div class="document-topbar">
+
+                <div class="document-label">
+
+                    <i class="bi bi-file-earmark-text-fill"></i>
+
+                    <span>
+                        Official Constitution &amp; Bylaws
+                    </span>
+
+                </div>
+
+
+                {% if association.constitution %}
+
+                    <div class="document-status">
+
+                        <span></span>
+
+                        Published Document
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- DOCUMENT BODY -->
+
+            <div class="document-body">
+
+                {% if association.constitution %}
+
+                    <div class="constitution-content">
+
+                        {{ association.constitution|linebreaks }}
+
+                    </div>
+
+                {% else %}
+
+                    <!-- EMPTY STATE -->
+
+                    <div class="empty-constitution">
+
+                        <div class="empty-icon">
+
+                            <i class="bi bi-file-earmark-x"></i>
+
+                        </div>
+
+                        <h3>
+                            Constitution Not Available
+                        </h3>
+
+                        <p>
+                            The association constitution and bylaws
+                            have not been published yet. Please check
+                            back later for the official document.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             INFORMATION CARDS
+             ================================================= -->
+
+        {% if association.constitution %}
+
+        <div class="row g-4 document-info">
+
+            <div class="col-md-4">
+
+                <div class="info-card">
+
+                    <div class="info-icon">
+
+                        <i class="bi bi-shield-check"></i>
+
+                    </div>
+
+                    <h5>
+                        Governance
+                    </h5>
+
+                    <p>
+                        The constitution provides the framework
+                        for the proper administration and governance
+                        of the association.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="info-card">
+
+                    <div class="info-icon">
+
+                        <i class="bi bi-people"></i>
+
+                    </div>
+
+                    <h5>
+                        Members' Rights
+                    </h5>
+
+                    <p>
+                        Members can refer to the governing document
+                        to understand their rights, responsibilities
+                        and obligations.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="info-card">
+
+                    <div class="info-icon">
+
+                        <i class="bi bi-building"></i>
+
+                    </div>
+
+                    <h5>
+                        Association Rules
+                    </h5>
+
+                    <p>
+                        The bylaws establish rules and procedures
+                        for meetings, leadership, membership and
+                        other association activities.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             NOTICE
+             ================================================= -->
+
+        <div class="constitution-notice">
+
+            <div class="constitution-notice-content">
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                <div>
+
+                    <h6>
+                        Official Association Document
+                    </h6>
+
+                    <p>
+                        Members are encouraged to read and understand
+                        the constitution and bylaws. Where applicable,
+                        the latest officially approved version should
+                        be regarded as the authoritative document.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+{% endblock %}

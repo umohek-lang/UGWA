@@ -1,0 +1,816 @@
+{% extends "base.html" %}
+
+{% block title %}
+    My Membership Profile
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   UGMWA MEMBERSHIP PROFILE
+   DARK GREEN & GOLD THEME
+   ========================================================= */
+
+:root {
+    --ugmwa-green: #0b3d2e;
+    --ugmwa-green-dark: #06291f;
+    --ugmwa-green-light: #145c45;
+    --ugmwa-gold: #d4af37;
+    --ugmwa-gold-light: #f1d77a;
+    --ugmwa-bg: #f6f8f6;
+    --ugmwa-border: #e0e8e3;
+    --ugmwa-muted: #6b7872;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.membership-page {
+    min-height: calc(100vh - 80px);
+    background:
+        linear-gradient(
+            180deg,
+            #f8faf8 0%,
+            #f3f6f3 100%
+        );
+    padding: 50px 0 70px;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.membership-header {
+    margin-bottom: 30px;
+}
+
+.membership-header h2 {
+    color: var(--ugmwa-green);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.membership-header p {
+    color: var(--ugmwa-muted);
+}
+
+
+/* =========================================================
+   EDIT BUTTON
+   ========================================================= */
+
+.profile-edit-btn {
+    background: var(--ugmwa-green);
+    border: 1px solid var(--ugmwa-green);
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 11px 20px;
+    font-weight: 700;
+    transition: all 0.25s ease;
+    box-shadow: 0 5px 14px rgba(11, 61, 46, 0.12);
+}
+
+.profile-edit-btn:hover {
+    background: var(--ugmwa-green-dark);
+    border-color: var(--ugmwa-green-dark);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   GENERAL CARD
+   ========================================================= */
+
+.profile-card {
+    background: #ffffff;
+    border: 1px solid var(--ugmwa-border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(11, 61, 46, 0.08);
+    transition: all 0.25s ease;
+}
+
+.profile-card:hover {
+    box-shadow: 0 14px 35px rgba(11, 61, 46, 0.11);
+}
+
+
+/* =========================================================
+   PROFILE CARD
+   ========================================================= */
+
+.profile-card-body {
+    padding: 35px 25px;
+    position: relative;
+}
+
+.profile-card-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(
+        90deg,
+        var(--ugmwa-green),
+        var(--ugmwa-gold),
+        var(--ugmwa-green)
+    );
+}
+
+
+/* =========================================================
+   PROFILE PHOTO
+   ========================================================= */
+
+.profile-photo {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid #ffffff;
+    outline: 3px solid var(--ugmwa-gold);
+    box-shadow: 0 8px 22px rgba(11, 61, 46, 0.16);
+}
+
+.profile-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--ugmwa-green),
+            var(--ugmwa-green-light)
+        );
+
+    color: var(--ugmwa-gold-light);
+    border: 5px solid #ffffff;
+    outline: 3px solid var(--ugmwa-gold);
+    box-shadow: 0 8px 22px rgba(11, 61, 46, 0.16);
+}
+
+.profile-placeholder i {
+    font-size: 60px;
+}
+
+
+/* =========================================================
+   PROFILE NAME
+   ========================================================= */
+
+.profile-name {
+    color: var(--ugmwa-green);
+    font-weight: 800;
+    margin-top: 18px;
+    margin-bottom: 5px;
+}
+
+.profile-email {
+    color: var(--ugmwa-muted);
+    font-size: 0.95rem;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.membership-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-top: 8px;
+}
+
+.status-active {
+    background: rgba(11, 61, 46, 0.10);
+    color: var(--ugmwa-green);
+    border: 1px solid rgba(11, 61, 46, 0.15);
+}
+
+.status-pending {
+    background: rgba(212, 175, 55, 0.14);
+    color: #8a6a08;
+    border: 1px solid rgba(212, 175, 55, 0.30);
+}
+
+.status-suspended {
+    background: #fceaea;
+    color: #a52a2a;
+    border: 1px solid #f1caca;
+}
+
+.status-default {
+    background: #eef1ef;
+    color: #5f6c66;
+    border: 1px solid #dfe5e1;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.profile-section-header {
+    background:
+        linear-gradient(
+            135deg,
+            var(--ugmwa-green),
+            var(--ugmwa-green-light)
+        );
+
+    color: #ffffff;
+    padding: 18px 22px;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-section-header::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    right: -40px;
+    top: -50px;
+    border-radius: 50%;
+    border: 2px solid rgba(212, 175, 55, 0.25);
+}
+
+.profile-section-header h5 {
+    margin: 0;
+    font-weight: 750;
+    position: relative;
+    z-index: 1;
+}
+
+.profile-section-header h5::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: var(--ugmwa-gold);
+    margin-right: 10px;
+    vertical-align: middle;
+    border-radius: 5px;
+}
+
+
+/* =========================================================
+   INFORMATION CARD
+   ========================================================= */
+
+.info-card-body {
+    padding: 25px;
+}
+
+.info-item {
+    padding: 16px;
+    border: 1px solid var(--ugmwa-border);
+    border-radius: 12px;
+    height: 100%;
+    background: #fbfcfb;
+    transition: all 0.2s ease;
+}
+
+.info-item:hover {
+    border-color: rgba(212, 175, 55, 0.55);
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+.info-label {
+    display: block;
+    color: var(--ugmwa-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.info-value {
+    color: var(--ugmwa-green);
+    font-weight: 650;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   MEMBERSHIP NUMBER HIGHLIGHT
+   ========================================================= */
+
+.membership-number {
+    color: var(--ugmwa-green);
+    font-size: 1.08rem;
+    font-weight: 800;
+}
+
+.membership-number::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: var(--ugmwa-gold);
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .membership-page {
+        padding: 35px 15px 55px;
+    }
+
+    .membership-header {
+        text-align: center;
+    }
+
+    .membership-header .d-flex {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .profile-edit-btn {
+        width: 100%;
+    }
+
+    .profile-card-body {
+        padding: 32px 20px;
+    }
+
+    .info-card-body {
+        padding: 20px;
+    }
+
+}
+
+</style>
+
+
+<div class="membership-page">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             PAGE HEADER
+             ===================================================== -->
+
+        <div class="membership-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h2 class="mb-1">
+                        <i class="bi bi-person-badge me-2"
+                           style="color: var(--ugmwa-gold);"></i>
+
+                        My Membership Profile
+                    </h2>
+
+                    <p class="mb-0">
+                        View your association membership information.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{% url 'members:profile_edit' %}"
+                    class="btn profile-edit-btn">
+
+                    <i class="bi bi-pencil me-2"></i>
+
+                    Edit Profile
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- =================================================
+                 PROFILE PHOTO / MEMBER SUMMARY
+                 ================================================= -->
+
+            <div class="col-lg-4">
+
+                <div class="profile-card">
+
+                    <div class="profile-card-body text-center">
+
+
+                        {% if member_profile.profile_photo %}
+
+                            <img
+                                src="{{ member_profile.profile_photo.url }}"
+                                alt="Profile Photo"
+                                class="profile-photo mb-3"
+                            >
+
+                        {% else %}
+
+                            <div class="profile-placeholder">
+
+                                <i class="bi bi-person"></i>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <h4 class="profile-name">
+
+                            {{ user.get_full_name|default:user.username }}
+
+                        </h4>
+
+
+                        <p class="profile-email mb-3">
+
+                            <i class="bi bi-envelope me-1"></i>
+
+                            {{ user.email }}
+
+                        </p>
+
+
+                        {% if member_profile.status == "ACTIVE" %}
+
+                            <span class="membership-status status-active">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Active Member
+
+                            </span>
+
+
+                        {% elif member_profile.status == "PENDING" %}
+
+                            <span class="membership-status status-pending">
+
+                                <i class="bi bi-hourglass-split"></i>
+
+                                Pending Approval
+
+                            </span>
+
+
+                        {% elif member_profile.status == "SUSPENDED" %}
+
+                            <span class="membership-status status-suspended">
+
+                                <i class="bi bi-exclamation-circle-fill"></i>
+
+                                Suspended
+
+                            </span>
+
+
+                        {% else %}
+
+                            <span class="membership-status status-default">
+
+                                <i class="bi bi-info-circle"></i>
+
+                                {{ member_profile.get_status_display }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 INFORMATION
+                 ================================================= -->
+
+            <div class="col-lg-8">
+
+
+                <!-- =================================================
+                     MEMBERSHIP INFORMATION
+                     ================================================= -->
+
+                <div class="profile-card mb-4">
+
+                    <div class="profile-section-header">
+
+                        <h5>
+                            Membership Information
+                        </h5>
+
+                    </div>
+
+
+                    <div class="info-card-body">
+
+                        <div class="row g-3">
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Membership Number
+                                    </span>
+
+                                    <div class="info-value membership-number">
+
+                                        {{ member_profile.membership_number|default:"Not assigned" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Membership Status
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.get_status_display }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Membership Category
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.membership_category|default:"Not assigned" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Branch
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.branch|default:"Not assigned" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Joined Date
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.joined_date|default:"Not yet assigned" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     PERSONAL INFORMATION
+                     ================================================= -->
+
+                <div class="profile-card">
+
+                    <div class="profile-section-header">
+
+                        <h5>
+                            Personal Information
+                        </h5>
+
+                    </div>
+
+
+                    <div class="info-card-body">
+
+                        <div class="row g-3">
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Gender
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.get_gender_display|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Date of Birth
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.date_of_birth|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Occupation
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.occupation|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Organization
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.organization|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Qualification
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.qualification|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Phone
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ user.phone|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-12">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+                                        Address
+                                    </span>
+
+                                    <div class="info-value">
+
+                                        {{ member_profile.address|default:"Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

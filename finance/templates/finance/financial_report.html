@@ -1,0 +1,1166 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Financial Reports
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+    :root {
+        --finance-green: #0b3d2e;
+        --finance-dark: #06291f;
+        --finance-light-green: #145c45;
+        --finance-gold: #d4af37;
+        --finance-light-gold: #f1d77a;
+        --finance-bg: #f8f6ef;
+        --finance-border: #e4ebe7;
+        --finance-muted: #68756f;
+        --finance-danger: #a83232;
+    }
+
+    /* =========================
+       PAGE
+    ========================= */
+
+    .finance-reports {
+        background: var(--finance-bg);
+        min-height: 100vh;
+        padding: 30px 0 55px;
+    }
+
+
+    /* =========================
+       PAGE HEADER
+    ========================= */
+
+    .reports-header {
+        background: linear-gradient(
+            135deg,
+            var(--finance-dark),
+            var(--finance-green)
+        );
+        color: #fff;
+        border-radius: 20px;
+        padding: 28px 30px;
+        margin-bottom: 28px;
+        box-shadow: 0 10px 30px rgba(6, 41, 31, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .reports-header::after {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        right: -80px;
+        top: -100px;
+        border: 2px solid rgba(212, 175, 55, 0.25);
+        border-radius: 50%;
+    }
+
+    .reports-header::before {
+        content: "";
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        right: 90px;
+        bottom: -80px;
+        border: 1px solid rgba(241, 215, 122, 0.18);
+        border-radius: 50%;
+    }
+
+    .reports-header h2 {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .reports-header p {
+        color: rgba(255, 255, 255, 0.72);
+    }
+
+    .header-icon {
+        color: var(--finance-light-gold);
+    }
+
+
+    /* =========================
+       DASHBOARD BUTTON
+    ========================= */
+
+    .btn-dashboard {
+        border: 1px solid rgba(241, 215, 122, 0.6);
+        color: var(--finance-light-gold);
+        background: transparent;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 10px 17px;
+        transition: all 0.25s ease;
+        position: relative;
+        z-index: 2;
+    }
+
+    .btn-dashboard:hover {
+        background: var(--finance-gold);
+        border-color: var(--finance-gold);
+        color: var(--finance-dark);
+        transform: translateY(-2px);
+    }
+
+
+    /* =========================
+       SUMMARY CARDS
+    ========================= */
+
+    .summary-card {
+        background: #fff;
+        border: 1px solid var(--finance-border);
+        border-radius: 18px;
+        overflow: hidden;
+        height: 100%;
+        position: relative;
+        box-shadow: 0 5px 18px rgba(6, 41, 31, 0.06);
+        transition: all 0.25s ease;
+    }
+
+    .summary-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--finance-gold);
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(212, 175, 55, 0.5);
+        box-shadow: 0 12px 28px rgba(6, 41, 31, 0.12);
+    }
+
+    .summary-card .card-body {
+        padding: 24px;
+    }
+
+    .summary-label {
+        color: var(--finance-muted);
+        font-size: 0.88rem;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .summary-value {
+        color: var(--finance-dark);
+        font-size: 1.55rem;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+
+    .summary-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(11, 61, 46, 0.09);
+        color: var(--finance-green);
+        font-size: 1.45rem;
+    }
+
+    .summary-icon.gold {
+        background: rgba(212, 175, 55, 0.14);
+        color: #a88409;
+    }
+
+    .summary-icon.red {
+        background: rgba(168, 50, 50, 0.09);
+        color: var(--finance-danger);
+    }
+
+
+    /* =========================
+       MAIN CARDS
+    ========================= */
+
+    .report-card {
+        background: #fff;
+        border: 1px solid var(--finance-border);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(6, 41, 31, 0.06);
+    }
+
+
+    /* =========================
+       CARD HEADERS
+    ========================= */
+
+    .report-card-header {
+        background: linear-gradient(
+            135deg,
+            var(--finance-dark),
+            var(--finance-green)
+        );
+        color: #fff;
+        padding: 17px 21px;
+        border: none;
+    }
+
+    .report-card-header h5 {
+        font-weight: 750;
+        margin: 0;
+    }
+
+    .report-card-header i {
+        color: var(--finance-light-gold);
+    }
+
+    .report-total {
+        background: var(--finance-gold);
+        color: var(--finance-dark);
+        font-weight: 800;
+        border-radius: 8px;
+        padding: 7px 11px;
+    }
+
+
+    /* =========================
+       FILTER CARD
+    ========================= */
+
+    .filter-card {
+        background: #fff;
+        border: 1px solid var(--finance-border);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(6, 41, 31, 0.06);
+    }
+
+    .filter-header {
+        background: #f3f6f4;
+        border-bottom: 1px solid var(--finance-border);
+        padding: 17px 21px;
+    }
+
+    .filter-header h5 {
+        color: var(--finance-green);
+        font-weight: 800;
+    }
+
+    .filter-header i {
+        color: var(--finance-gold);
+    }
+
+    .filter-card .card-body {
+        padding: 24px;
+    }
+
+    .filter-card .form-label {
+        color: var(--finance-green);
+        font-size: 0.88rem;
+    }
+
+    .filter-card .form-control,
+    .filter-card .form-select {
+        border: 1px solid #d8e2dc;
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: #35453e;
+        transition: all 0.2s ease;
+    }
+
+    .filter-card .form-control:focus,
+    .filter-card .form-select:focus {
+        border-color: var(--finance-gold);
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.15);
+    }
+
+
+    /* =========================
+       BUTTONS
+    ========================= */
+
+    .btn-gold {
+        background: var(--finance-gold);
+        border: 1px solid var(--finance-gold);
+        color: var(--finance-dark);
+        font-weight: 800;
+        border-radius: 10px;
+        padding: 10px 17px;
+        transition: all 0.25s ease;
+    }
+
+    .btn-gold:hover {
+        background: var(--finance-light-gold);
+        border-color: var(--finance-light-gold);
+        color: var(--finance-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 7px 18px rgba(212, 175, 55, 0.25);
+    }
+
+    .btn-clear {
+        border: 1px solid #cbd7d1;
+        color: var(--finance-green);
+        background: #fff;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 10px 17px;
+        transition: all 0.25s ease;
+    }
+
+    .btn-clear:hover {
+        background: var(--finance-green);
+        border-color: var(--finance-green);
+        color: #fff;
+    }
+
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .finance-report-table {
+        margin: 0;
+    }
+
+    .finance-report-table thead {
+        background: #f3f6f4;
+    }
+
+    .finance-report-table thead th {
+        color: var(--finance-green);
+        font-size: 0.76rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.035em;
+        padding: 14px 15px;
+        border-bottom: 2px solid var(--finance-gold);
+        white-space: nowrap;
+    }
+
+    .finance-report-table tbody td {
+        padding: 14px 15px;
+        vertical-align: middle;
+        color: #3f4c46;
+        border-color: #edf1ef;
+        font-size: 0.88rem;
+    }
+
+    .finance-report-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .finance-report-table tbody tr:hover {
+        background: rgba(11, 61, 46, 0.035);
+    }
+
+    .record-number {
+        color: var(--finance-green);
+        font-weight: 800;
+    }
+
+    .category-text {
+        color: #52625b;
+        font-weight: 600;
+    }
+
+    .income-amount {
+        color: var(--finance-green) !important;
+        font-weight: 800;
+    }
+
+    .expense-amount {
+        color: var(--finance-danger) !important;
+        font-weight: 800;
+    }
+
+    .reference-text {
+        color: var(--finance-muted);
+    }
+
+
+    /* =========================
+       EMPTY STATE
+    ========================= */
+
+    .empty-report {
+        padding: 40px 20px !important;
+        color: var(--finance-muted);
+    }
+
+    .empty-report i {
+        display: block;
+        font-size: 2.1rem;
+        color: var(--finance-gold);
+        margin-bottom: 10px;
+    }
+
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 767.98px) {
+
+        .finance-reports {
+            padding: 20px 0 40px;
+        }
+
+        .reports-header {
+            padding: 22px 20px;
+            border-radius: 16px;
+        }
+
+        .reports-header .d-flex {
+            align-items: flex-start !important;
+            gap: 18px;
+        }
+
+        .reports-header h2 {
+            font-size: 1.4rem;
+        }
+
+        .btn-dashboard {
+            padding: 9px 12px;
+            font-size: 0.84rem;
+            white-space: nowrap;
+        }
+
+        .summary-card {
+            border-radius: 15px;
+        }
+
+        .summary-card .card-body {
+            padding: 20px;
+        }
+
+        .summary-value {
+            font-size: 1.35rem;
+        }
+
+        .filter-card,
+        .report-card {
+            border-radius: 15px;
+        }
+
+        .filter-card .card-body {
+            padding: 20px;
+        }
+
+        .report-card-header {
+            padding: 15px 17px;
+        }
+
+        .finance-report-table thead th,
+        .finance-report-table tbody td {
+            padding: 12px;
+        }
+
+    }
+
+</style>
+
+
+<div class="finance-reports">
+
+    <div class="container-fluid">
+
+
+        <!-- =========================
+             PAGE HEADER
+        ========================== -->
+
+        <div class="reports-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <div class="d-flex align-items-center mb-2">
+
+                        <i class="bi bi-bar-chart-line-fill fs-4 me-2 header-icon"></i>
+
+                        <h2 class="mb-0">
+                            Financial Reports
+                        </h2>
+
+                    </div>
+
+                    <p class="mb-0">
+                        Income and expenditure analysis
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <a
+                        href="{% url 'finance:dashboard' %}"
+                        class="btn btn-dashboard">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+
+                        Dashboard
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             SUMMARY CARDS
+        ========================== -->
+
+        <div class="row g-4 mb-4">
+
+
+            <!-- Total Income -->
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <div>
+
+                                <p class="summary-label">
+                                    Total Income
+                                </p>
+
+                                <h3 class="summary-value income-amount">
+
+                                    ₦{{ total_income|floatformat:2 }}
+
+                                </h3>
+
+                            </div>
+
+
+                            <div class="summary-icon">
+
+                                <i class="bi bi-arrow-down-circle-fill"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Total Expenses -->
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <div>
+
+                                <p class="summary-label">
+                                    Total Expenses
+                                </p>
+
+                                <h3 class="summary-value expense-amount">
+
+                                    ₦{{ total_expenses|floatformat:2 }}
+
+                                </h3>
+
+                            </div>
+
+
+                            <div class="summary-icon red">
+
+                                <i class="bi bi-arrow-up-circle-fill"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Net Balance -->
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <div>
+
+                                <p class="summary-label">
+                                    Net Balance
+                                </p>
+
+                                <h3 class="summary-value">
+
+                                    ₦{{ net_balance|floatformat:2 }}
+
+                                </h3>
+
+                            </div>
+
+
+                            <div class="summary-icon gold">
+
+                                <i class="bi bi-wallet2"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             FILTER REPORT
+        ========================== -->
+
+        <div class="filter-card mb-4">
+
+
+            <div class="filter-header">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-funnel-fill me-2"></i>
+
+                    Filter Report
+
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <form method="get">
+
+                    <div class="row g-3">
+
+
+                        <!-- Start Date -->
+
+                        <div class="col-md-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Start Date
+
+                            </label>
+
+                            <input
+                                type="date"
+                                name="start_date"
+                                class="form-control"
+                                value="{{ selected_start_date }}">
+
+                        </div>
+
+
+                        <!-- End Date -->
+
+                        <div class="col-md-3">
+
+                            <label class="form-label fw-semibold">
+
+                                End Date
+
+                            </label>
+
+                            <input
+                                type="date"
+                                name="end_date"
+                                class="form-control"
+                                value="{{ selected_end_date }}">
+
+                        </div>
+
+
+                        <!-- Income Category -->
+
+                        <div class="col-md-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Income Category
+
+                            </label>
+
+                            <select
+                                name="income_category"
+                                class="form-select">
+
+                                <option value="">
+                                    All Income Categories
+                                </option>
+
+                                {% for category in income_categories %}
+
+                                    <option
+                                        value="{{ category.id }}"
+                                        {% if selected_income_category == category.id|stringformat:"s" %}
+                                            selected
+                                        {% endif %}>
+
+                                        {{ category.name }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Expense Category -->
+
+                        <div class="col-md-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Expense Category
+
+                            </label>
+
+                            <select
+                                name="expense_category"
+                                class="form-select">
+
+                                <option value="">
+                                    All Expense Categories
+                                </option>
+
+                                {% for category in expense_categories %}
+
+                                    <option
+                                        value="{{ category.id }}"
+                                        {% if selected_expense_category == category.id|stringformat:"s" %}
+                                            selected
+                                        {% endif %}>
+
+                                        {{ category.name }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Filter Buttons -->
+
+                        <div class="col-12 pt-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-gold me-2">
+
+                                <i class="bi bi-search me-1"></i>
+
+                                Generate Report
+
+                            </button>
+
+
+                            <a
+                                href="{% url 'finance:report' %}"
+                                class="btn btn-clear">
+
+                                <i class="bi bi-x-circle me-1"></i>
+
+                                Clear Filters
+
+                            </a>
+
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             INCOME REPORT
+        ========================== -->
+
+        <div class="report-card mb-4">
+
+
+            <div class="report-card-header">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5>
+
+                        <i class="bi bi-arrow-down-circle-fill me-2"></i>
+
+                        Income Report
+
+                    </h5>
+
+
+                    <span class="report-total">
+
+                        ₦{{ total_income|floatformat:2 }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table finance-report-table table-hover align-middle mb-0">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+
+                                <th>Income Number</th>
+
+                                <th>Date</th>
+
+                                <th>Category</th>
+
+                                <th>Description</th>
+
+                                <th>Method</th>
+
+                                <th>Reference</th>
+
+                                <th class="text-end">
+                                    Amount
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for income in incomes %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+
+                                <td>
+
+                                    <span class="record-number">
+
+                                        {{ income.income_number }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ income.transaction_date|date:"d M Y" }}
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="category-text">
+
+                                        {{ income.category.name }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ income.description|default:"—"|truncatechars:40 }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ income.get_payment_method_display }}
+
+                                </td>
+
+
+                                <td class="reference-text">
+
+                                    {{ income.reference|default:"—" }}
+
+                                </td>
+
+
+                                <td class="text-end income-amount">
+
+                                    ₦{{ income.amount|floatformat:2 }}
+
+                                </td>
+
+                            </tr>
+
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="8"
+                                    class="text-center empty-report">
+
+                                    <i class="bi bi-inbox"></i>
+
+                                    No income records found.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             EXPENSE REPORT
+        ========================== -->
+
+        <div class="report-card">
+
+
+            <div class="report-card-header">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5>
+
+                        <i class="bi bi-arrow-up-circle-fill me-2"></i>
+
+                        Expense Report
+
+                    </h5>
+
+
+                    <span class="report-total">
+
+                        ₦{{ total_expenses|floatformat:2 }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table finance-report-table table-hover align-middle mb-0">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+
+                                <th>Expense Number</th>
+
+                                <th>Date</th>
+
+                                <th>Category</th>
+
+                                <th>Description</th>
+
+                                <th>Payee</th>
+
+                                <th>Method</th>
+
+                                <th>Reference</th>
+
+                                <th class="text-end">
+                                    Amount
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for expense in expenses %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+
+                                <td>
+
+                                    <span class="record-number">
+
+                                        {{ expense.expense_number }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ expense.transaction_date|date:"d M Y" }}
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="category-text">
+
+                                        {{ expense.category.name }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ expense.description|truncatechars:40 }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ expense.payee|default:"—" }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ expense.get_payment_method_display }}
+
+                                </td>
+
+
+                                <td class="reference-text">
+
+                                    {{ expense.reference|default:"—" }}
+
+                                </td>
+
+
+                                <td class="text-end expense-amount">
+
+                                    ₦{{ expense.amount|floatformat:2 }}
+
+                                </td>
+
+                            </tr>
+
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="9"
+                                    class="text-center empty-report">
+
+                                    <i class="bi bi-inbox"></i>
+
+                                    No expense records found.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

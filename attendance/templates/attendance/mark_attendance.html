@@ -1,0 +1,411 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Mark Attendance
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid py-5">
+
+    <!-- HEADER -->
+
+    <div
+        class="card border-0 shadow-sm mb-4 overflow-hidden"
+    >
+
+        <div
+            class="p-4 p-lg-5 text-white"
+            style="
+                background:
+                linear-gradient(
+                    135deg,
+                    #022C22,
+                    #064E3B
+                );
+            "
+        >
+
+            <div
+                class="d-flex
+                       flex-column
+                       flex-lg-row
+                       justify-content-between
+                       align-items-lg-center
+                       gap-3"
+            >
+
+                <div>
+
+                    <span
+                        class="badge mb-2"
+                        style="
+                            background:#D4AF37;
+                            color:#022C22;
+                        "
+                    >
+
+                        {{ session.get_session_type_display }}
+
+                    </span>
+
+
+                    <h1 class="fw-bold mb-2">
+
+                        {{ session.title }}
+
+                    </h1>
+
+
+                    <p class="mb-0">
+
+                        <i class="bi bi-calendar3 me-1"></i>
+
+                        {{ session.date|date:"d F Y" }}
+
+                        {% if session.venue %}
+
+                            <span class="mx-2">•</span>
+
+                            <i class="bi bi-geo-alt me-1"></i>
+
+                            {{ session.venue }}
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <a
+                        href="{% url 'attendance:detail' session.pk %}"
+                        class="btn btn-light"
+                    >
+
+                        <i class="bi bi-arrow-left me-1"></i>
+
+                        Back
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- INSTRUCTIONS -->
+
+    <div
+        class="alert border-0 shadow-sm"
+        style="
+            background:#F4E7B2;
+            color:#022C22;
+        "
+    >
+
+        <i
+            class="bi bi-info-circle-fill me-2"
+            style="color:#064E3B;"
+        ></i>
+
+        Select the attendance status for each member and
+        click <strong>Save Attendance</strong> when finished.
+
+    </div>
+
+
+    <!-- FORM -->
+
+    <form method="post">
+
+        {% csrf_token %}
+
+
+        <div class="card border-0 shadow-sm">
+
+            <div
+                class="card-header py-3 text-white"
+                style="background:#064E3B;"
+            >
+
+                <div
+                    class="d-flex
+                           justify-content-between
+                           align-items-center"
+                >
+
+                    <h5 class="mb-0 fw-bold">
+
+                        <i class="bi bi-people me-2"></i>
+
+                        Members Attendance
+
+                    </h5>
+
+
+                    <span
+                        class="badge"
+                        style="
+                            background:#D4AF37;
+                            color:#022C22;
+                        "
+                    >
+
+                        {{ members|length }} Members
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table
+                        class="table table-hover
+                               align-middle mb-0"
+                    >
+
+                        <thead
+                            style="
+                                background:#F4E7B2;
+                                color:#022C22;
+                            "
+                        >
+
+                            <tr>
+
+                                <th
+                                    class="px-4"
+                                    style="min-width:280px;"
+                                >
+                                    Member
+                                </th>
+
+                                <th
+                                    style="min-width:200px;"
+                                >
+                                    Status
+                                </th>
+
+                                <th
+                                    style="min-width:300px;"
+                                >
+                                    Remarks
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for row in member_rows %}
+
+    {% with member=row.member record=row.record %}
+
+                                <tr>
+
+                                    <td class="px-4">
+
+                                        <div
+                                            class="d-flex
+                                                   align-items-center"
+                                        >
+
+                                            <div
+                                                class="rounded-circle
+                                                       d-flex
+                                                       align-items-center
+                                                       justify-content-center
+                                                       me-3"
+                                                style="
+                                                    width:45px;
+                                                    height:45px;
+                                                    background:#E8F3EF;
+                                                    color:#064E3B;
+                                                "
+                                            >
+
+                                                <i class="bi bi-person"></i>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <div
+                                                    class="fw-bold"
+                                                    style="
+                                                        color:#064E3B;
+                                                    "
+                                                >
+
+                                                    {% if member.get_full_name %}
+
+                                                        {{ member.get_full_name }}
+
+                                                    {% else %}
+
+                                                        {{ member.username }}
+
+                                                    {% endif %}
+
+                                                </div>
+
+
+                                                <small class="text-muted">
+
+                                                    {{ member.username }}
+
+                                                </small>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <select
+                                            name="status_{{ member.pk }}"
+                                            class="form-select attendance-status"
+                                        >
+
+                                            {% for value, label in status_choices %}
+
+                                                <option
+                                                    value="{{ value }}"
+                                                    {% if record and record.status == value %}
+                                                        selected
+                                                    {% elif not record and value == "ABSENT" %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+
+                                                    {{ label }}
+
+                                                </option>
+
+                                            {% endfor %}
+
+                                        </select>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <input
+                                            type="text"
+                                            name="remarks_{{ member.pk }}"
+                                            class="form-control"
+                                            placeholder="Optional remarks"
+                                            value="{% if record %}{{ record.remarks }}{% endif %}"
+                                        >
+
+                                    </td>
+
+                                </tr>
+
+                                {% endwith %}
+
+                            {% empty %}
+
+                                <tr>
+
+                                    <td
+                                        colspan="3"
+                                        class="text-center py-5"
+                                    >
+
+                                        <i
+                                            class="bi bi-people display-5"
+                                            style="color:#D4AF37;"
+                                        ></i>
+
+                                        <p
+                                            class="text-muted mt-3 mb-0"
+                                        >
+
+                                            No active members were found.
+
+                                        </p>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="card-footer bg-white p-4"
+            >
+
+                <div
+                    class="d-flex
+                           flex-column
+                           flex-md-row
+                           justify-content-between
+                           gap-2"
+                >
+
+                    <a
+                        href="{% url 'attendance:detail' session.pk %}"
+                        class="btn btn-outline-secondary"
+                    >
+
+                        Cancel
+
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="btn text-white fw-semibold"
+                        style="background:#064E3B;"
+                    >
+
+                        <i
+                            class="bi bi-check2-circle me-1"
+                        ></i>
+
+                        Save Attendance
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

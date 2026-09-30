@@ -1,0 +1,421 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login | Association
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .login-page {
+        min-height: calc(100vh - 80px);
+        background: #f8f6ef;
+        display: flex;
+        align-items: center;
+        padding: 50px 0;
+    }
+
+    /* =========================
+       LOGIN CARD
+    ========================= */
+    .login-card {
+        background: #ffffff;
+        border: 0;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(11, 61, 46, 0.13);
+    }
+
+    .login-card-body {
+        padding: 42px;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+    .login-icon-wrapper {
+        width: 82px;
+        height: 82px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(212, 175, 55, 0.13);
+        border: 2px solid rgba(212, 175, 55, 0.35);
+    }
+
+    .login-icon-wrapper i {
+        color: #0b3d2e;
+        font-size: 42px;
+    }
+
+    .login-title {
+        color: #0b3d2e;
+        font-weight: 800;
+        margin-top: 20px;
+        margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+        color: #68756f;
+        margin-bottom: 0;
+    }
+
+    /* =========================
+       FORM
+    ========================= */
+    .login-form .form-label {
+        color: #0b3d2e;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .login-input-group {
+        position: relative;
+    }
+
+    .login-input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #68756f;
+        z-index: 2;
+    }
+
+    .login-form .form-control {
+        min-height: 52px;
+        border: 1px solid #dce5e0;
+        border-radius: 11px;
+        padding-left: 45px;
+        color: #0b3d2e;
+        background: #ffffff;
+        transition: all 0.2s ease;
+    }
+
+    .login-form .form-control::placeholder {
+        color: #9aa7a0;
+    }
+
+    .login-form .form-control:focus {
+        border-color: #d4af37;
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.14);
+    }
+
+    /* =========================
+       LOGIN BUTTON
+    ========================= */
+    .login-btn {
+        min-height: 52px;
+        border: 0;
+        border-radius: 11px;
+        background: linear-gradient(
+            135deg,
+            #0b3d2e,
+            #145c45
+        );
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 7px 18px rgba(11, 61, 46, 0.18);
+        transition: all 0.2s ease;
+    }
+
+    .login-btn:hover {
+        background: linear-gradient(
+            135deg,
+            #06291f,
+            #0b3d2e
+        );
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(11, 61, 46, 0.25);
+    }
+
+    .login-btn i {
+        color: #f1d77a;
+    }
+
+    /* =========================
+       LINKS
+    ========================= */
+    .login-links {
+        border-top: 1px solid #e4ebe7;
+        margin-top: 30px;
+        padding-top: 25px;
+    }
+
+    .login-links p {
+        color: #68756f;
+    }
+
+    .login-links a {
+        color: #0b3d2e;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .login-links a:hover {
+        color: #b28b16;
+    }
+
+    .forgot-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 5px;
+    }
+
+    .forgot-link i {
+        color: #d4af37;
+    }
+
+    /* =========================
+       DECORATIVE TOP LINE
+    ========================= */
+    .login-top-line {
+        height: 5px;
+        background: linear-gradient(
+            90deg,
+            #0b3d2e,
+            #d4af37,
+            #0b3d2e
+        );
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+    @media (max-width: 575.98px) {
+
+        .login-page {
+            padding: 30px 15px;
+        }
+
+        .login-card-body {
+            padding: 32px 22px;
+        }
+
+        .login-title {
+            font-size: 1.6rem;
+        }
+
+        .login-icon-wrapper {
+            width: 72px;
+            height: 72px;
+        }
+
+        .login-icon-wrapper i {
+            font-size: 36px;
+        }
+    }
+</style>
+
+<div class="login-page">
+
+<div class="container">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6 col-lg-5 col-xl-4">
+
+            <div class="login-card">
+
+                <div class="login-top-line"></div>
+
+                <div class="login-card-body">
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div
+            class="alert alert-{{ message.tags }} text-center mb-4"
+            style="
+                border-radius: 12px;
+                border: 1px solid #b7dfc8;
+                background: #f0faf4;
+                color: #145c45;
+                padding: 20px;
+            "
+        >
+
+            {% if message.tags == "success" %}
+
+                <i
+                    class="bi bi-check-circle-fill"
+                    style="
+                        font-size: 32px;
+                        color: #198754;
+                    "
+                ></i>
+
+                <h5
+                    class="fw-bold mt-2"
+                    style="color:#0b3d2e;"
+                >
+                    Registration Successful
+                </h5>
+
+            {% endif %}
+
+
+            <p class="mb-3">
+                {{ message }}
+            </p>
+
+
+            {% if activation_url %}
+
+                <a
+                    href="{{ activation_url }}"
+                    class="btn btn-success w-100 fw-bold"
+                >
+
+                    <i class="bi bi-shield-check me-2"></i>
+
+                    ACTIVATE MY ACCOUNT
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+                    <!-- =========================
+                         LOGIN HEADER
+                    ========================== -->
+                    <div class="text-center mb-4">
+
+                        <div class="login-icon-wrapper">
+
+                            <i class="bi bi-person-circle"></i>
+
+                        </div>
+
+                        <h2 class="login-title">
+                            Member Login
+                        </h2>
+
+                        <p class="login-subtitle">
+                            Sign in to your association account.
+                        </p>
+
+                    </div>
+
+
+                    <!-- =========================
+                         LOGIN FORM
+                    ========================== -->
+                    <form method="POST" class="login-form">
+
+                        {% csrf_token %}
+
+
+                        <!-- Username -->
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Username
+                            </label>
+
+                            <div class="login-input-group">
+
+                                <i class="bi bi-person login-input-icon"></i>
+
+                                <input
+                                    type="text"
+                                    name="username"
+                                    class="form-control"
+                                    placeholder="Enter username"
+                                    autocomplete="username"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Password -->
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <div class="login-input-group">
+
+                                <i class="bi bi-lock login-input-icon"></i>
+
+                                <input
+                                    type="password"
+                                    name="password"
+                                    class="form-control"
+                                    placeholder="Enter password"
+                                    autocomplete="current-password"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Login Button -->
+                        <button
+                            type="submit"
+                            class="btn login-btn w-100">
+
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+
+                            Login
+
+                        </button>
+
+                    </form>
+
+
+                    <!-- =========================
+                         ACCOUNT LINKS
+                    ========================== -->
+                    <div class="login-links text-center">
+
+                        <p class="mb-2">
+
+                            Don't have an account?
+
+                            <a href="{% url 'accounts:register' %}">
+                                Register
+                            </a>
+
+                        </p>
+
+                        <a href="#" class="forgot-link">
+
+                            <i class="bi bi-key"></i>
+
+                            Forgot Password?
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

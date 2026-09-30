@@ -1,0 +1,734 @@
+{% extends "base.html" %}
+
+{% block title %}
+Finance Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --association-green: #0b3d2e;
+        --association-green-dark: #06291f;
+        --association-green-light: #145c45;
+        --association-gold: #d4af37;
+        --association-gold-light: #f1d77a;
+        --association-muted: #68756f;
+        --association-cream: #f8f6ef;
+        --association-border: #e4ebe7;
+    }
+
+    .finance-dashboard {
+        min-height: calc(100vh - 80px);
+        background: linear-gradient(
+            180deg,
+            #f8faf9 0%,
+            #ffffff 100%
+        );
+    }
+
+    /* =========================
+       HERO
+    ========================== */
+
+    .finance-hero {
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green),
+                var(--association-green-light)
+            );
+        border-radius: 20px;
+        padding: 32px;
+        color: #fff;
+        box-shadow: 0 12px 35px rgba(11, 61, 46, 0.18);
+    }
+
+    .finance-hero::before,
+    .finance-hero::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .finance-hero::before {
+        width: 260px;
+        height: 260px;
+        right: -95px;
+        top: -145px;
+    }
+
+    .finance-hero::after {
+        width: 180px;
+        height: 180px;
+        right: 55px;
+        bottom: -125px;
+    }
+
+    .finance-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .finance-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(212, 175, 55, 0.14);
+        border: 1px solid rgba(241, 215, 122, 0.45);
+        color: var(--association-gold-light);
+        border-radius: 50px;
+        padding: 7px 14px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 14px;
+    }
+
+    .finance-hero h2 {
+        font-size: clamp(1.7rem, 3vw, 2.35rem);
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .finance-hero p {
+        color: rgba(255, 255, 255, 0.78);
+        max-width: 720px;
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
+    .finance-hero-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(241, 215, 122, 0.35);
+        color: var(--association-gold-light);
+        font-size: 2rem;
+    }
+
+    /* =========================
+       FINANCIAL STATISTICS
+    ========================== */
+
+    .finance-stat-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        background: #fff;
+        border: 1px solid var(--association-border);
+        border-left: 4px solid var(--association-gold);
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 5px 18px rgba(11, 61, 46, 0.06);
+        transition: all 0.25s ease;
+    }
+
+    .finance-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(11, 61, 46, 0.12);
+    }
+
+    .finance-stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 1.3rem;
+        margin-bottom: 16px;
+    }
+
+    .finance-stat-icon.gold {
+        background: rgba(212, 175, 55, 0.14);
+        color: #9a7708;
+    }
+
+    .finance-stat-label {
+        color: var(--association-muted);
+        font-size: 0.86rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .finance-stat-value {
+        color: var(--association-green-dark);
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .finance-stat-value.income {
+        color: var(--association-green);
+    }
+
+    .finance-stat-value.expense {
+        color: #a83a3a;
+    }
+
+    .finance-stat-meta {
+        color: var(--association-muted);
+        font-size: 0.78rem;
+    }
+
+    /* =========================
+       MAIN CARDS
+    ========================== */
+
+    .finance-card {
+        background: #fff;
+        border: 1px solid var(--association-border);
+        border-radius: 17px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(11, 61, 46, 0.06);
+    }
+
+    .finance-card-header {
+        padding: 19px 22px;
+        background: linear-gradient(
+            90deg,
+            rgba(11, 61, 46, 0.05),
+            rgba(212, 175, 55, 0.06)
+        );
+        border-bottom: 1px solid var(--association-border);
+    }
+
+    .finance-card-header h5 {
+        color: var(--association-green-dark);
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .finance-card-header p {
+        color: var(--association-muted);
+        font-size: 0.82rem;
+        margin: 4px 0 0;
+    }
+
+    /* =========================
+       TRANSACTIONS TABLE
+    ========================== */
+
+    .finance-table {
+        margin-bottom: 0;
+    }
+
+    .finance-table thead th {
+        background: #f8faf9;
+        color: var(--association-green-dark);
+        border-bottom: 1px solid var(--association-border);
+        padding: 15px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .finance-table tbody td {
+        padding: 18px 15px;
+        border-color: var(--association-border);
+        vertical-align: middle;
+    }
+
+    .finance-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .finance-table tbody tr:hover {
+        background: rgba(11, 61, 46, 0.025);
+    }
+
+    .finance-empty {
+        padding: 55px 20px !important;
+    }
+
+    .finance-empty-icon {
+        width: 68px;
+        height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        border-radius: 50%;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 1.8rem;
+    }
+
+    .finance-empty-title {
+        color: var(--association-green-dark);
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .finance-empty-text {
+        color: var(--association-muted);
+        font-size: 0.88rem;
+        margin-bottom: 0;
+    }
+
+    /* =========================
+       MANAGEMENT ACTIONS
+    ========================== */
+
+    .finance-actions {
+        padding: 22px;
+    }
+
+    .finance-action {
+        width: 100%;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        border-radius: 10px;
+        font-weight: 700;
+        transition: all 0.25s ease;
+    }
+
+    .finance-action-primary {
+        background: var(--association-green);
+        border: 1px solid var(--association-green);
+        color: #fff;
+    }
+
+    .finance-action-primary:hover {
+        background: var(--association-green-dark);
+        border-color: var(--association-green-dark);
+        color: var(--association-gold-light);
+        transform: translateY(-2px);
+    }
+
+    .finance-action-outline {
+        background: #fff;
+        border: 1px solid var(--association-border);
+        color: var(--association-green);
+    }
+
+    .finance-action-outline:hover {
+        background: var(--association-green);
+        border-color: var(--association-green);
+        color: var(--association-gold-light);
+        transform: translateY(-2px);
+    }
+
+    .finance-action i {
+        color: var(--association-gold);
+    }
+
+    .finance-action-primary i {
+        color: var(--association-gold-light);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 767.98px) {
+
+        .finance-hero {
+            padding: 24px 20px;
+            border-radius: 16px;
+        }
+
+        .finance-hero h2 {
+            font-size: 1.65rem;
+        }
+
+        .finance-hero-icon {
+            width: 56px;
+            height: 56px;
+            font-size: 1.6rem;
+        }
+
+        .finance-stat-card {
+            padding: 20px;
+        }
+
+        .finance-stat-value {
+            font-size: 1.55rem;
+        }
+
+        .finance-card-header,
+        .finance-actions {
+            padding: 18px;
+        }
+
+        .finance-table thead th,
+        .finance-table tbody td {
+            padding: 13px 12px;
+        }
+
+    }
+</style>
+
+<div class="finance-dashboard py-4 py-lg-5">
+
+<div class="container-fluid px-3 px-lg-4">
+
+    <!-- =========================
+         FINANCE HERO
+    ========================== -->
+
+    <div class="finance-hero mb-4 mb-lg-5">
+
+        <div class="finance-hero-content">
+
+            <div class="row align-items-center g-4">
+
+                <div class="col-lg-9">
+
+                    <div class="finance-label">
+                        <i class="bi bi-bank2"></i>
+                        Financial Management
+                    </div>
+
+                    <h2>
+                        Finance Dashboard
+                    </h2>
+
+                    <p>
+                        Manage association income, payments,
+                        dues and expenses from one central
+                        financial management area.
+                    </p>
+
+                </div>
+
+                <div class="col-lg-3 d-flex justify-content-lg-end">
+
+                    <div class="finance-hero-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FINANCIAL STATISTICS
+    ========================== -->
+
+    <div class="row g-4 mb-5">
+
+        <!-- Total Income -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="finance-stat-card">
+
+                <div class="finance-stat-icon">
+                    <i class="bi bi-arrow-down-circle-fill"></i>
+                </div>
+
+                <p class="finance-stat-label">
+                    Total Income
+                </p>
+
+                <h3 class="finance-stat-value income">
+                    ₦0
+                </h3>
+
+                <span class="finance-stat-meta">
+                    Recorded income
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total Expenses -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="finance-stat-card">
+
+                <div class="finance-stat-icon gold">
+                    <i class="bi bi-arrow-up-circle-fill"></i>
+                </div>
+
+                <p class="finance-stat-label">
+                    Total Expenses
+                </p>
+
+                <h3 class="finance-stat-value expense">
+                    ₦0
+                </h3>
+
+                <span class="finance-stat-meta">
+                    Recorded expenses
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Outstanding Dues -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="finance-stat-card">
+
+                <div class="finance-stat-icon gold">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+
+                <p class="finance-stat-label">
+                    Outstanding Dues
+                </p>
+
+                <h3 class="finance-stat-value">
+                    ₦0
+                </h3>
+
+                <span class="finance-stat-meta">
+                    Pending member dues
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Balance -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="finance-stat-card">
+
+                <div class="finance-stat-icon">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+
+                <p class="finance-stat-label">
+                    Balance
+                </p>
+
+                <h3 class="finance-stat-value">
+                    ₦0
+                </h3>
+
+                <span class="finance-stat-meta">
+                    Current balance
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FINANCE MANAGEMENT
+    ========================== -->
+
+    <div class="row g-4">
+
+        <!-- Recent Transactions -->
+
+        <div class="col-lg-8">
+
+            <div class="finance-card h-100">
+
+                <div class="finance-card-header">
+
+                    <h5>
+                        <i class="bi bi-arrow-left-right me-2"
+                           style="color: var(--association-gold);"></i>
+                        Recent Transactions
+                    </h5>
+
+                    <p>
+                        Monitor recent financial transactions.
+                    </p>
+
+                </div>
+
+
+                <div class="card-body p-0">
+
+                    <div class="table-responsive">
+
+                        <table class="table finance-table align-middle">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Date
+                                    </th>
+
+                                    <th>
+                                        Description
+                                    </th>
+
+                                    <th>
+                                        Type
+                                    </th>
+
+                                    <th>
+                                        Amount
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td colspan="4"
+                                        class="text-center finance-empty">
+
+                                        <div class="finance-empty-icon">
+
+                                            <i class="bi bi-receipt"></i>
+
+                                        </div>
+
+                                        <div class="finance-empty-title">
+                                            No Transactions
+                                        </div>
+
+                                        <p class="finance-empty-text">
+                                            No financial transactions are currently available.
+                                        </p>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Finance Management -->
+
+        <div class="col-lg-4">
+
+            <div class="finance-card h-100">
+
+                <div class="finance-card-header">
+
+                    <h5>
+                        <i class="bi bi-sliders me-2"
+                           style="color: var(--association-gold);"></i>
+                        Finance Management
+                    </h5>
+
+                    <p>
+                        Access financial management tools.
+                    </p>
+
+                </div>
+
+
+                <div class="finance-actions d-grid gap-2">
+
+                    <!-- Record Payment -->
+
+                    <a href="#"
+                       class="btn finance-action finance-action-primary">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                        Record Payment
+
+                    </a>
+
+
+                    <!-- Payment Records -->
+
+                    <a href="#"
+                       class="btn finance-action finance-action-outline">
+
+                        <i class="bi bi-receipt"></i>
+
+                        Payment Records
+
+                    </a>
+
+
+                    <!-- Manage Dues -->
+
+                    <a href="#"
+                       class="btn finance-action finance-action-outline">
+
+                        <i class="bi bi-wallet2"></i>
+
+                        Manage Dues
+
+                    </a>
+
+
+                    <!-- Expenses -->
+
+                    <a href="#"
+                       class="btn finance-action finance-action-outline">
+
+                        <i class="bi bi-credit-card"></i>
+
+                        Expenses
+
+                    </a>
+
+
+                    <!-- Financial Reports -->
+
+                    <a href="#"
+                       class="btn finance-action finance-action-outline">
+
+                        <i class="bi bi-file-earmark-bar-graph"></i>
+
+                        Financial Reports
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

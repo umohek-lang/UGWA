@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Payment Receipt
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow-sm">
+
+                <div
+                    class="text-center text-white p-4"
+                    style="
+                        background:#022C22;
+                        border-bottom:5px solid #D4AF37;
+                    "
+                >
+
+                    <i
+                        class="bi bi-check-circle-fill"
+                        style="
+                            font-size:55px;
+                            color:#D4AF37;
+                        "
+                    ></i>
+
+                    <h3 class="fw-bold mt-3 mb-1">
+                        Payment Successful
+                    </h3>
+
+                    <p class="mb-0">
+                        Official Association Payment Receipt
+                    </p>
+
+                </div>
+
+
+                <div class="card-body p-4 p-lg-5">
+
+                    <div class="text-center mb-4">
+
+                        <small class="text-muted">
+                            RECEIPT NUMBER
+                        </small>
+
+                        <h3
+                            class="fw-bold"
+                            style="color:#064E3B;"
+                        >
+                            {{ payment.receipt_number }}
+                        </h3>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <small class="text-muted d-block">
+                                Member
+                            </small>
+
+                            <strong>
+                                {{ payment.member.get_full_name|default:payment.member.username }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <small class="text-muted d-block">
+                                Membership Code
+                            </small>
+
+                            <strong>
+                                {{ payment.member.membership_code }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <small class="text-muted d-block">
+                                Invoice
+                            </small>
+
+                            <strong>
+                                {{ payment.invoice.invoice_number }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <small class="text-muted d-block">
+                                Payment Date
+                            </small>
+
+                            <strong>
+                                {{ payment.paid_at|date:"d M Y, h:i A" }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-12">
+
+                            <hr>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <small class="text-muted d-block">
+                                Payment Method
+                            </small>
+
+                            <strong>
+                                {{ payment.get_payment_method_display }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <small class="text-muted d-block">
+                                Reference
+                            </small>
+
+                            <strong>
+                                {{ payment.payment_reference }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-12 mt-4">
+
+                            <div
+                                class="p-4 rounded text-center"
+                                style="
+                                    background:#E8F3EF;
+                                    border:1px solid #D4AF37;
+                                "
+                            >
+
+                                <small class="text-muted">
+                                    AMOUNT PAID
+                                </small>
+
+                                <h2
+                                    class="fw-bold mb-0"
+                                    style="color:#022C22;"
+                                >
+
+                                    ₦{{ payment.amount|floatformat:2 }}
+
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="card-footer bg-white text-center p-4"
+                >
+
+                    <button
+                        onclick="window.print()"
+                        class="btn text-white"
+                        style="background:#064E3B;"
+                    >
+
+                        <i class="bi bi-printer me-2"></i>
+
+                        Print Receipt
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+@media print {
+
+    body * {
+        visibility: hidden;
+    }
+
+    .card,
+    .card * {
+        visibility: visible;
+    }
+
+    .card {
+        position: absolute;
+        left: 50%;
+        top: 20px;
+        transform: translateX(-50%);
+        width: 700px;
+    }
+
+}
+
+</style>
+
+{% endblock %}

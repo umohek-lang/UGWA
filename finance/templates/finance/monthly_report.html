@@ -1,0 +1,704 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Monthly Financial Report
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+    :root {
+        --finance-green: #0b3d2e;
+        --finance-dark: #06291f;
+        --finance-light-green: #145c45;
+        --finance-gold: #d4af37;
+        --finance-light-gold: #f1d77a;
+        --finance-bg: #f8f6ef;
+        --finance-border: #e4ebe7;
+        --finance-muted: #68756f;
+        --finance-danger: #a83232;
+    }
+
+
+    /* =========================
+       PAGE
+    ========================= */
+
+    .monthly-report {
+        background: var(--finance-bg);
+        min-height: 100vh;
+        padding: 30px 0 55px;
+    }
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .monthly-header {
+        background: linear-gradient(
+            135deg,
+            var(--finance-dark),
+            var(--finance-green)
+        );
+
+        color: #fff;
+        border-radius: 20px;
+        padding: 28px 30px;
+        margin-bottom: 28px;
+
+        box-shadow: 0 10px 30px rgba(6, 41, 31, 0.15);
+
+        position: relative;
+        overflow: hidden;
+    }
+
+    .monthly-header::after {
+        content: "";
+        position: absolute;
+
+        width: 220px;
+        height: 220px;
+
+        right: -80px;
+        top: -100px;
+
+        border: 2px solid rgba(212, 175, 55, 0.25);
+        border-radius: 50%;
+    }
+
+    .monthly-header::before {
+        content: "";
+        position: absolute;
+
+        width: 120px;
+        height: 120px;
+
+        right: 100px;
+        bottom: -80px;
+
+        border: 1px solid rgba(241, 215, 122, 0.18);
+        border-radius: 50%;
+    }
+
+    .monthly-header h2 {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .monthly-header p {
+        color: rgba(255, 255, 255, 0.72);
+    }
+
+    .header-icon {
+        color: var(--finance-light-gold);
+    }
+
+
+    /* =========================
+       DASHBOARD BUTTON
+    ========================= */
+
+    .btn-dashboard {
+        border: 1px solid rgba(241, 215, 122, 0.6);
+        color: var(--finance-light-gold);
+        background: transparent;
+
+        font-weight: 700;
+
+        border-radius: 10px;
+        padding: 10px 17px;
+
+        transition: all 0.25s ease;
+
+        position: relative;
+        z-index: 2;
+    }
+
+    .btn-dashboard:hover {
+        background: var(--finance-gold);
+        border-color: var(--finance-gold);
+        color: var(--finance-dark);
+
+        transform: translateY(-2px);
+    }
+
+
+    /* =========================
+       FILTER CARD
+    ========================= */
+
+    .year-filter-card {
+        background: #fff;
+
+        border: 1px solid var(--finance-border);
+        border-radius: 18px;
+
+        overflow: hidden;
+
+        box-shadow: 0 5px 18px rgba(6, 41, 31, 0.06);
+
+        margin-bottom: 28px;
+    }
+
+    .year-filter-card .card-body {
+        padding: 24px;
+    }
+
+    .filter-icon {
+        width: 48px;
+        height: 48px;
+
+        border-radius: 13px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(212, 175, 55, 0.14);
+        color: #a88409;
+
+        font-size: 1.3rem;
+    }
+
+    .year-filter-card .form-label {
+        color: var(--finance-green);
+        font-size: 0.88rem;
+    }
+
+    .year-filter-card .form-control {
+        border: 1px solid #d8e2dc;
+        border-radius: 10px;
+
+        padding: 10px 12px;
+
+        color: #35453e;
+
+        transition: all 0.2s ease;
+    }
+
+    .year-filter-card .form-control:focus {
+        border-color: var(--finance-gold);
+
+        box-shadow:
+            0 0 0 0.2rem rgba(212, 175, 55, 0.15);
+    }
+
+
+    /* =========================
+       GENERATE BUTTON
+    ========================= */
+
+    .btn-gold {
+        background: var(--finance-gold);
+        border: 1px solid var(--finance-gold);
+
+        color: var(--finance-dark);
+
+        font-weight: 800;
+
+        border-radius: 10px;
+
+        padding: 10px 18px;
+
+        transition: all 0.25s ease;
+    }
+
+    .btn-gold:hover {
+        background: var(--finance-light-gold);
+        border-color: var(--finance-light-gold);
+
+        color: var(--finance-dark);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 7px 18px rgba(212, 175, 55, 0.25);
+    }
+
+
+    /* =========================
+       REPORT CARD
+    ========================= */
+
+    .monthly-report-card {
+        background: #fff;
+
+        border: 1px solid var(--finance-border);
+        border-radius: 18px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 5px 18px rgba(6, 41, 31, 0.06);
+    }
+
+
+    /* =========================
+       REPORT HEADER
+    ========================= */
+
+    .monthly-report-header {
+        background: linear-gradient(
+            135deg,
+            var(--finance-dark),
+            var(--finance-green)
+        );
+
+        color: #fff;
+
+        padding: 18px 21px;
+
+        border: none;
+    }
+
+    .monthly-report-header h5 {
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .monthly-report-header i {
+        color: var(--finance-light-gold);
+    }
+
+    .year-badge {
+        background: var(--finance-gold);
+        color: var(--finance-dark);
+
+        font-weight: 800;
+
+        padding: 7px 12px;
+
+        border-radius: 8px;
+    }
+
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .monthly-table {
+        margin: 0;
+    }
+
+    .monthly-table thead {
+        background: #f3f6f4;
+    }
+
+    .monthly-table thead th {
+        color: var(--finance-green);
+
+        font-size: 0.77rem;
+
+        font-weight: 800;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.04em;
+
+        padding: 15px 16px;
+
+        border-bottom: 2px solid var(--finance-gold);
+
+        white-space: nowrap;
+    }
+
+    .monthly-table tbody td {
+        padding: 15px 16px;
+
+        vertical-align: middle;
+
+        color: #3f4c46;
+
+        border-color: #edf1ef;
+
+        font-size: 0.91rem;
+    }
+
+    .monthly-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .monthly-table tbody tr:hover {
+        background: rgba(11, 61, 46, 0.035);
+    }
+
+
+    /* =========================
+       TABLE NUMBER
+    ========================= */
+
+    .row-number {
+        color: var(--finance-muted);
+
+        font-weight: 700;
+    }
+
+
+    /* =========================
+       MONTH
+    ========================= */
+
+    .month-name {
+        color: var(--finance-green);
+
+        font-weight: 800;
+    }
+
+
+    /* =========================
+       AMOUNTS
+    ========================= */
+
+    .income-value {
+        color: var(--finance-green) !important;
+
+        font-weight: 750;
+    }
+
+    .expense-value {
+        color: var(--finance-danger) !important;
+
+        font-weight: 750;
+    }
+
+    .balance-value {
+        color: var(--finance-dark) !important;
+
+        font-weight: 850;
+    }
+
+
+    /* =========================
+       TABLE FOOTER
+    ========================= */
+
+    .report-note {
+        background: #f8faf8;
+
+        border-top: 1px solid var(--finance-border);
+
+        padding: 13px 18px;
+
+        color: var(--finance-muted);
+
+        font-size: 0.82rem;
+    }
+
+    .report-note i {
+        color: var(--finance-gold);
+    }
+
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 767.98px) {
+
+        .monthly-report {
+            padding: 20px 0 40px;
+        }
+
+        .monthly-header {
+            padding: 22px 20px;
+            border-radius: 16px;
+        }
+
+        .monthly-header .d-flex {
+            align-items: flex-start !important;
+            gap: 18px;
+        }
+
+        .monthly-header h2 {
+            font-size: 1.4rem;
+        }
+
+        .btn-dashboard {
+            padding: 9px 12px;
+            font-size: 0.84rem;
+            white-space: nowrap;
+        }
+
+        .year-filter-card,
+        .monthly-report-card {
+            border-radius: 15px;
+        }
+
+        .year-filter-card .card-body {
+            padding: 20px;
+        }
+
+        .monthly-report-header {
+            padding: 15px 17px;
+        }
+
+        .monthly-table thead th,
+        .monthly-table tbody td {
+            padding: 12px;
+        }
+
+    }
+
+</style>
+
+
+<div class="monthly-report">
+
+    <div class="container-fluid">
+
+
+        <!-- =========================
+             PAGE HEADER
+        ========================== -->
+
+        <div class="monthly-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <div class="d-flex align-items-center mb-2">
+
+                        <i class="bi bi-calendar3 fs-4 me-2 header-icon"></i>
+
+                        <h2 class="mb-0">
+                            Monthly Financial Report
+                        </h2>
+
+                    </div>
+
+                    <p class="mb-0">
+                        Monthly income and expenditure summary
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <a
+                        href="{% url 'finance:dashboard' %}"
+                        class="btn btn-dashboard">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+
+                        Dashboard
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             YEAR FILTER
+        ========================== -->
+
+        <div class="year-filter-card">
+
+            <div class="card-body">
+
+                <form
+                    method="get"
+                    class="row g-3 align-items-end">
+
+
+                    <div class="col-md-1 d-none d-md-flex align-items-center">
+
+                        <div class="filter-icon">
+
+                            <i class="bi bi-calendar-range"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label fw-semibold">
+
+                            Financial Year
+
+                        </label>
+
+                        <input
+                            type="number"
+                            name="year"
+                            class="form-control"
+                            value="{{ selected_year }}"
+                            min="2000"
+                            max="2100">
+
+                    </div>
+
+
+                    <div class="col-md-auto">
+
+                        <button
+                            type="submit"
+                            class="btn btn-gold">
+
+                            <i class="bi bi-bar-chart-line-fill me-1"></i>
+
+                            Generate
+
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             MONTHLY REPORT
+        ========================== -->
+
+        <div class="monthly-report-card">
+
+
+            <!-- Report Header -->
+
+            <div class="monthly-report-header">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5>
+
+                        <i class="bi bi-graph-up-arrow me-2"></i>
+
+                        Financial Year {{ selected_year }}
+
+                    </h5>
+
+
+                    <span class="year-badge">
+
+                        {{ selected_year }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Table -->
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table monthly-table table-hover align-middle mb-0">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+
+                                <th>Month</th>
+
+                                <th class="text-end">
+                                    Income
+                                </th>
+
+                                <th class="text-end">
+                                    Expenses
+                                </th>
+
+                                <th class="text-end">
+                                    Net Balance
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for item in monthly_data %}
+
+                            <tr>
+
+                                <td class="row-number">
+
+                                    {{ forloop.counter }}
+
+                                </td>
+
+
+                                <td class="month-name">
+
+                                    <i class="bi bi-calendar3 me-2 text-warning"></i>
+
+                                    {{ item.month }}
+
+                                </td>
+
+
+                                <td class="text-end income-value">
+
+                                    ₦{{ item.income|floatformat:2 }}
+
+                                </td>
+
+
+                                <td class="text-end expense-value">
+
+                                    ₦{{ item.expenses|floatformat:2 }}
+
+                                </td>
+
+
+                                <td class="text-end balance-value">
+
+                                    ₦{{ item.balance|floatformat:2 }}
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- Report Note -->
+
+            <div class="report-note">
+
+                <i class="bi bi-info-circle-fill me-1"></i>
+
+                Monthly balances represent income minus expenses for each month.
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

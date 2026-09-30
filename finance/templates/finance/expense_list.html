@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Expenses
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex
+                flex-column
+                flex-md-row
+                justify-content-between
+                align-items-md-center
+                mb-4">
+
+        <div>
+
+            <h2 class="fw-bold"
+                style="color:#022C22;">
+
+                Expenses
+
+            </h2>
+
+            <p class="text-muted mb-0">
+                Association expenditure records
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'finance:expense_create' %}"
+            class="btn text-white mt-3 mt-md-0"
+            style="background:#064E3B;"
+        >
+
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Record Expense
+
+        </a>
+
+    </div>
+
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead
+                        style="
+                            background:#022C22;
+                            color:white;
+                        "
+                    >
+
+                        <tr>
+
+                            <th>Date</th>
+
+                            <th>Reference</th>
+
+                            <th>Category</th>
+
+                            <th>Payee</th>
+
+                            <th>Method</th>
+
+                            <th>Amount</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for expense in expenses %}
+
+                        <tr>
+
+                            <td>
+                                {{ expense.transaction_date|date:"d M Y" }}
+                            </td>
+
+                            <td>
+                                {{ expense.expense_number }}
+                            </td>
+
+                            <td>
+
+                                {% if expense.category.name == "Welfare" %}
+
+                                    <span
+                                        class="badge"
+                                        style="
+                                            background:#F4E7B2;
+                                            color:#022C22;
+                                        "
+                                    >
+
+                                        <i class="bi bi-heart-pulse me-1"></i>
+
+                                        Welfare
+
+                                    </span>
+
+                                {% else %}
+
+                                    {{ expense.category.name }}
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ expense.payee }}
+                            </td>
+
+                            <td>
+                                {{ expense.get_payment_method_display }}
+                            </td>
+
+                            <td class="fw-bold text-danger">
+
+                                ₦{{ expense.amount|floatformat:2 }}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="text-center py-5 text-muted"
+                            >
+
+                                <i class="bi bi-receipt fs-1"></i>
+
+                                <p class="mt-3 mb-0">
+                                    No expenses have been recorded.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

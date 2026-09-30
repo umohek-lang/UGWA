@@ -1,0 +1,1786 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ association.name|default:"Association Management System" }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   ASSOCIATION HOMEPAGE
+   Professional modern association design
+   ========================================================= */
+
+:root {
+    --association-primary: #0b5d4f;
+    --association-primary-dark: #06483e;
+    --association-secondary: #d4a72c;
+    --association-light: #f5f8f7;
+    --association-dark: #102a26;
+    --association-muted: #66736f;
+    --association-white: #ffffff;
+    --association-border: #e6ecea;
+}
+
+/* ---------- General ---------- */
+
+.association-home {
+    color: var(--association-dark);
+    background: #fff;
+    overflow: hidden;
+}
+
+.association-home a {
+    text-decoration: none;
+}
+
+.section-padding {
+    padding: 90px 0;
+}
+
+.section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--association-primary);
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+}
+
+.section-label::before {
+    content: "";
+    width: 28px;
+    height: 2px;
+    background: var(--association-secondary);
+}
+
+.section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 18px;
+    color: var(--association-dark);
+}
+
+.section-description {
+    color: var(--association-muted);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    max-width: 700px;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.association-hero {
+    position: relative;
+    min-height: 650px;
+    display: flex;
+    align-items: center;
+    background:
+        linear-gradient(
+            110deg,
+            rgba(4, 55, 47, 0.97),
+            rgba(7, 91, 77, 0.90)
+        ),
+        radial-gradient(
+            circle at top right,
+            rgba(212, 167, 44, 0.25),
+            transparent 35%
+        );
+    color: #fff;
+}
+
+.association-hero::before {
+    content: "";
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 50%;
+    right: -150px;
+    top: -100px;
+}
+
+.association-hero::after {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+    right: 40px;
+    bottom: -150px;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+}
+
+.hero-badge i {
+    color: var(--association-secondary);
+}
+
+.hero-title {
+    font-size: clamp(2.6rem, 5vw, 4.7rem);
+    font-weight: 900;
+    line-height: 1.02;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+}
+
+.hero-title span {
+    color: #f0c85b;
+}
+
+.hero-slogan {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.86);
+    max-width: 650px;
+    margin-bottom: 34px;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn-association-primary {
+    background: var(--association-secondary);
+    border: 2px solid var(--association-secondary);
+    color: #18220f;
+    padding: 13px 25px;
+    border-radius: 8px;
+    font-weight: 800;
+    transition: 0.25s ease;
+}
+
+.btn-association-primary:hover {
+    background: #e3b83d;
+    border-color: #e3b83d;
+    color: #18220f;
+    transform: translateY(-2px);
+}
+
+.btn-association-outline {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.65);
+    color: #fff;
+    padding: 13px 25px;
+    border-radius: 8px;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
+
+.btn-association-outline:hover {
+    background: #fff;
+    border-color: #fff;
+    color: var(--association-primary);
+}
+
+.hero-visual {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-icon-container {
+    width: 310px;
+    height: 310px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+}
+
+.hero-icon-inner {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.12);
+}
+
+.hero-icon-inner i {
+    font-size: 110px;
+    color: #fff;
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.quick-actions {
+    position: relative;
+    margin-top: -55px;
+    z-index: 10;
+}
+
+.quick-action-card {
+    height: 100%;
+    background: #fff;
+    border: 1px solid var(--association-border);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 15px 40px rgba(20, 45, 40, 0.10);
+    transition: 0.25s ease;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(20, 45, 40, 0.14);
+}
+
+.quick-action-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(11, 93, 79, 0.10);
+    color: var(--association-primary);
+    font-size: 1.35rem;
+    margin-bottom: 18px;
+}
+
+.quick-action-card h5 {
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.quick-action-card p {
+    color: var(--association-muted);
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.quick-action-link {
+    color: var(--association-primary);
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.stats-section {
+    padding: 80px 0 40px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 20px;
+    border-right: 1px solid var(--association-border);
+}
+
+.stat-item:last-child {
+    border-right: none;
+}
+
+.stat-number {
+    color: var(--association-primary);
+    font-size: 2.6rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    color: var(--association-muted);
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   ABOUT
+   ========================================================= */
+
+.about-section {
+    background: var(--association-light);
+}
+
+.about-image-box {
+    min-height: 440px;
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--association-primary),
+            var(--association-primary-dark)
+        );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-image-box::before {
+    content: "";
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 50%;
+}
+
+.about-image-box i {
+    position: relative;
+    z-index: 2;
+    color: rgba(255,255,255,0.92);
+    font-size: 125px;
+}
+
+.about-content {
+    padding-left: 30px;
+}
+
+.about-content p {
+    color: var(--association-muted);
+    line-height: 1.9;
+    font-size: 1.03rem;
+}
+
+.about-list {
+    list-style: none;
+    padding: 0;
+    margin: 25px 0;
+}
+
+.about-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    color: #43514d;
+}
+
+.about-list i {
+    color: var(--association-primary);
+    font-size: 1.15rem;
+    margin-top: 2px;
+}
+
+
+/* =========================================================
+   MEMBERSHIP BENEFITS
+   ========================================================= */
+
+.benefit-card {
+    height: 100%;
+    border: 1px solid var(--association-border);
+    border-radius: 14px;
+    padding: 30px;
+    background: #fff;
+    transition: 0.25s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(11,93,79,0.25);
+    box-shadow: 0 18px 45px rgba(20,45,40,0.09);
+}
+
+.benefit-number {
+    font-size: 0.78rem;
+    font-weight: 900;
+    color: var(--association-secondary);
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+}
+
+.benefit-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: rgba(11,93,79,0.09);
+    color: var(--association-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.benefit-card h4 {
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.benefit-card p {
+    color: var(--association-muted);
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   MISSION / VISION
+   ========================================================= */
+
+.mission-section {
+    background: var(--association-primary);
+    color: #fff;
+}
+
+.mission-card {
+    height: 100%;
+    padding: 35px;
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.07);
+}
+
+.mission-icon {
+    font-size: 2.3rem;
+    color: #f0c85b;
+    margin-bottom: 20px;
+}
+
+.mission-card h3 {
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.mission-card p {
+    color: rgba(255,255,255,0.76);
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+
+.events-section {
+    background: #fff;
+}
+
+.event-card {
+    height: 100%;
+    border: 1px solid var(--association-border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    transition: 0.25s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 45px rgba(20,45,40,0.10);
+}
+
+.event-top {
+    padding: 24px 25px 18px;
+    background: var(--association-light);
+    border-bottom: 1px solid var(--association-border);
+}
+
+.event-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--association-primary);
+    font-size: 0.83rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.event-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    background: var(--association-primary);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 0.70rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    margin-bottom: 13px;
+}
+
+.event-body {
+    padding: 25px;
+}
+
+.event-body h4 {
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.event-body p {
+    color: var(--association-muted);
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   CTA
+   ========================================================= */
+
+.join-section {
+    padding: 90px 0;
+    background:
+        linear-gradient(
+            120deg,
+            var(--association-primary-dark),
+            var(--association-primary)
+        );
+}
+
+.join-box {
+    text-align: center;
+    max-width: 850px;
+    margin: auto;
+}
+
+.join-box h2 {
+    color: #fff;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 900;
+    margin-bottom: 18px;
+}
+
+.join-box p {
+    color: rgba(255,255,255,0.80);
+    font-size: 1.08rem;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+
+/* =========================================================
+   CONTACT
+   ========================================================= */
+
+.contact-section {
+    background: var(--association-light);
+}
+
+.contact-card {
+    height: 100%;
+    padding: 30px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid var(--association-border);
+    text-align: center;
+}
+
+.contact-icon {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(11,93,79,0.10);
+    color: var(--association-primary);
+    font-size: 1.4rem;
+}
+
+.contact-card h5 {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.contact-card p {
+    color: var(--association-muted);
+    margin-bottom: 0;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   FINAL INFORMATION
+   ========================================================= */
+
+.info-section {
+    background: #fff;
+}
+
+.info-card {
+    height: 100%;
+    padding: 30px;
+    border-radius: 14px;
+    border: 1px solid var(--association-border);
+}
+
+.info-card h4 {
+    font-weight: 800;
+    margin-bottom: 14px;
+}
+
+.info-card p {
+    color: var(--association-muted);
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .association-hero {
+        min-height: auto;
+        padding: 100px 0 120px;
+    }
+
+    .hero-visual {
+        margin-top: 60px;
+    }
+
+    .about-content {
+        padding-left: 0;
+        margin-top: 40px;
+    }
+
+    .stat-item {
+        border-right: none;
+        border-bottom: 1px solid var(--association-border);
+        padding: 25px 10px;
+    }
+
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+}
+.hero-icon-inner {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.12);
+    overflow: hidden;
+}
+.hero-icon-inner img {
+    width: 410px;
+    height: 410px;
+    object-fit: contain;
+    display: block;
+}
+.hero-logo {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    display: block;
+}
+@media (max-width: 575px) {
+
+    .section-padding {
+        padding: 65px 0;
+    }
+
+    .association-hero {
+        padding: 75px 0 100px;
+    }
+
+    .hero-title {
+        letter-spacing: -1px;
+    }
+
+    .hero-icon-container {
+        width: 230px;
+        height: 230px;
+    }
+
+    .hero-icon-inner {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.12);
+    overflow: hidden;
+}
+
+.hero-logo {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    display: block;
+}
+
+    /* .hero-icon-inner i {
+        font-size: 75px;
+    } */
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-actions a {
+        width: 100%;
+        text-align: center;
+    }
+
+    .quick-actions {
+        margin-top: -35px;
+    }
+}
+
+</style>
+
+<div class="association-home">
+
+<!-- =====================================================
+     HERO SECTION
+     ===================================================== -->
+
+<section class="association-hero">
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-7">
+
+                <div class="hero-content">
+
+                    <div class="hero-badge">
+                        <i class="bi bi-stars"></i>
+                        Welcome to our Association
+                    </div>
+
+                    <h1 class="hero-title">
+
+                        {{ association.name|default:"Association Management System" }}
+
+                        <span>
+                            {{ association.slogan|default:"Unity • Service • Progress" }}
+                        </span>
+
+                    </h1>
+
+                    <p class="hero-slogan">
+
+                        Building a stronger professional community through
+                        unity, collaboration, leadership, professional
+                        development and service.
+
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a href="{% url 'accounts:register' %}"
+
+                           class="btn btn-association-primary">
+
+                            <i class="bi bi-person-plus-fill me-2"></i>
+                            Become a Member
+
+                        </a>
+
+                                                <a href="{% url 'accounts:login' %}"
+
+                           class="btn btn-association-outline">
+
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Member Login
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-5">
+
+                <div class="hero-visual">
+
+<div class="hero-icon-container">
+
+    <div class="hero-icon-inner">
+
+        <img src="{% static 'images/ugmwa.jpg' %}"
+             alt="UGMWA Logo"
+             class="hero-logo">
+
+    </div>
+
+</div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     QUICK ACTIONS
+     ===================================================== -->
+
+<section class="quick-actions">
+
+    <div class="container">
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+
+                <div class="quick-action-card">
+
+                    <div class="quick-action-icon">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+
+                    <h5>Join the Association</h5>
+
+                    <p>
+                        Become part of a growing community and
+                        access the benefits of membership.
+                    </p>
+
+                    <a href="{% url 'accounts:register' %}" class="quick-action-link">
+                        
+                        Join Now
+                        <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="quick-action-card">
+
+                    <div class="quick-action-icon">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+
+                    <h5>Upcoming Events</h5>
+
+                    <p>
+                        Discover conferences, workshops, meetings
+                        and other activities organized by the association.
+                    </p>
+
+                    <a href="{% url 'events:list' %}" class="quick-action-link">
+                        View Events
+                        <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="quick-action-card">
+
+                    <div class="quick-action-icon">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+
+                    <h5>Member Portal</h5>
+
+                    <p>
+                        Existing members can sign in to manage
+                        their profile and access member services.
+                    </p>
+
+                    <a href="{% url 'dashboard:member_dashboard' %}" class="quick-action-link">
+                        Sign In
+                        <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     STATISTICS
+     ===================================================== -->
+
+<section class="stats-section">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-6 col-lg-3">
+
+                <div class="stat-item">
+
+                    <div class="stat-number">
+                        2,500+
+                    </div>
+
+                    <div class="stat-label">
+                        Members
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-6 col-lg-3">
+
+                <div class="stat-item">
+
+                    <div class="stat-number">
+                        25
+                    </div>
+
+                    <div class="stat-label">
+                        Branches
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-6 col-lg-3">
+
+                <div class="stat-item">
+
+                    <div class="stat-number">
+                        50+
+                    </div>
+
+                    <div class="stat-label">
+                        Events
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-6 col-lg-3">
+
+                <div class="stat-item">
+
+                    <div class="stat-number">
+                        15
+                    </div>
+
+                    <div class="stat-label">
+                        Years of Service
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ABOUT SECTION
+     ===================================================== -->
+
+<section class="about-section section-padding">
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-5">
+
+                <div class="about-image-box">
+
+                    <i class="bi bi-people-fill"></i>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-7">
+
+                <div class="about-content">
+
+                    <div class="section-label">
+                        About Us
+                    </div>
+
+                    <h2 class="section-title">
+
+                        About
+                        {{ association.name|default:"Our Association" }}
+
+                    </h2>
+
+                    <p>
+
+                        {{ association.history|default:"Our association is committed to bringing members together, promoting professional development, supporting members and contributing positively to society." }}
+
+                    </p>
+
+
+                    <ul class="about-list">
+
+                        <li>
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Building a strong professional community
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Promoting professional development and learning
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Supporting the welfare and interests of members
+                            </span>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Creating opportunities for collaboration and networking
+                            </span>
+                        </li>
+
+                    </ul>
+
+
+                    <a href="{% url 'association:about' %}"
+                    
+                       class="btn btn-success px-4 py-3">
+
+                        Discover More
+                        <i class="bi bi-arrow-right ms-2"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     MEMBERSHIP BENEFITS
+     ===================================================== -->
+
+<section class="section-padding">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <div class="section-label justify-content-center">
+                Membership
+            </div>
+
+            <h2 class="section-title">
+                Why Become a Member?
+            </h2>
+
+            <p class="section-description mx-auto">
+
+                Membership connects you with people, opportunities,
+                knowledge and activities that strengthen our association.
+
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="benefit-card">
+
+                    <div class="benefit-number">
+                        01
+                    </div>
+
+                    <div class="benefit-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+
+                    <h4>
+                        Professional Network
+                    </h4>
+
+                    <p>
+                        Connect with fellow members, professionals,
+                        leaders and other people within the association.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="benefit-card">
+
+                    <div class="benefit-number">
+                        02
+                    </div>
+
+                    <div class="benefit-icon">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+
+                    <h4>
+                        Learning & Development
+                    </h4>
+
+                    <p>
+                        Participate in workshops, conferences,
+                        training programmes and professional activities.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="benefit-card">
+
+                    <div class="benefit-number">
+                        03
+                    </div>
+
+                    <div class="benefit-icon">
+                        <i class="bi bi-megaphone-fill"></i>
+                    </div>
+
+                    <h4>
+                        Representation
+                    </h4>
+
+                    <p>
+                        Support initiatives that promote the interests,
+                        welfare and development of association members.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="benefit-card">
+
+                    <div class="benefit-number">
+                        04
+                    </div>
+
+                    <div class="benefit-icon">
+                        <i class="bi bi-calendar2-check-fill"></i>
+                    </div>
+
+                    <h4>
+                        Events & Activities
+                    </h4>
+
+                    <p>
+                        Take part in meetings, conferences, workshops,
+                        social activities and other association programmes.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="benefit-card">
+
+                    <div class="benefit-number">
+                        05
+                    </div>
+
+                    <div class="benefit-icon">
+                        <i class="bi bi-lightbulb-fill"></i>
+                    </div>
+
+                    <h4>
+                        Ideas & Collaboration
+                    </h4>
+
+                    <p>
+                        Share ideas, collaborate with other members
+                        and contribute to the growth of the association.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="benefit-card">
+
+                    <div class="benefit-number">
+                        06
+                    </div>
+
+                    <div class="benefit-icon">
+                        <i class="bi bi-award-fill"></i>
+                    </div>
+
+                    <h4>
+                        Recognition
+                    </h4>
+
+                    <p>
+                        Celebrate members, achievements, contributions
+                        and milestones within the association.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     MISSION & VISION
+     ===================================================== -->
+
+<section class="mission-section section-padding">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <div class="section-label justify-content-center"
+                 style="color:#f0c85b;">
+
+                Our Purpose
+
+            </div>
+
+            <h2 class="section-title text-white">
+                What Guides Us
+            </h2>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-lg-6">
+
+                <div class="mission-card">
+
+                    <div class="mission-icon">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+
+                    <h3>
+                        Our Mission
+                    </h3>
+
+                    <p>
+
+                        {{ association.mission|default:"To promote unity, professionalism, collaboration and the welfare of our members." }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-6">
+
+                <div class="mission-card">
+
+                    <div class="mission-icon">
+                        <i class="bi bi-eye-fill"></i>
+                    </div>
+
+                    <h3>
+                        Our Vision
+                    </h3>
+
+                    <p>
+
+                        {{ association.vision|default:"To become a leading professional association known for excellence, integrity and service." }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     EVENTS
+     ===================================================== -->
+
+<section class="events-section section-padding"
+         id="events">
+
+    <div class="container">
+
+        <div class="row align-items-end mb-5">
+
+            <div class="col-lg-8">
+
+                <div class="section-label">
+                    What's Happening
+                </div>
+
+                <h2 class="section-title mb-2">
+                    Upcoming Events
+                </h2>
+
+                <p class="section-description mb-0">
+                    Stay informed about meetings, workshops,
+                    conferences and other association activities.
+                </p>
+
+            </div>
+
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+
+                <a href="#"
+                   class="btn btn-outline-success px-4">
+
+                    View All Events
+                    <i class="bi bi-arrow-right ms-2"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- Event 1 -->
+
+            <div class="col-md-6 col-lg-4">
+
+                <article class="event-card">
+
+                    <div class="event-top">
+
+                        <span class="event-badge">
+                            AGM
+                        </span>
+
+                        <div class="event-date">
+                            <i class="bi bi-calendar3"></i>
+                            20 December 2026
+                        </div>
+
+                    </div>
+
+
+                    <div class="event-body">
+
+                        <h4>
+                            Annual General Meeting
+                        </h4>
+
+                        <p>
+                            Join members from across the association
+                            for our annual meeting and organisational
+                            activities.
+                        </p>
+
+                        <a href="#"
+                           class="btn btn-outline-success">
+
+                            View Event
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- Event 2 -->
+
+            <div class="col-md-6 col-lg-4">
+
+                <article class="event-card">
+
+                    <div class="event-top">
+
+                        <span class="event-badge">
+                            Workshop
+                        </span>
+
+                        <div class="event-date">
+                            <i class="bi bi-calendar3"></i>
+                            15 January 2027
+                        </div>
+
+                    </div>
+
+
+                    <div class="event-body">
+
+                        <h4>
+                            Professional Workshop
+                        </h4>
+
+                        <p>
+                            A professional development workshop
+                            designed to promote learning and
+                            collaboration among members.
+                        </p>
+
+                        <a href="#"
+                           class="btn btn-outline-success">
+
+                            View Event
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- Event 3 -->
+
+            <div class="col-md-6 col-lg-4">
+
+                <article class="event-card">
+
+                    <div class="event-top">
+
+                        <span class="event-badge">
+                            Conference
+                        </span>
+
+                        <div class="event-date">
+                            <i class="bi bi-calendar3"></i>
+                            20 February 2027
+                        </div>
+
+                    </div>
+
+
+                    <div class="event-body">
+
+                        <h4>
+                            Annual Conference
+                        </h4>
+
+                        <p>
+                            Connect with professionals and association
+                            members at our annual conference.
+                        </p>
+
+                        <a href="#"
+                           class="btn btn-outline-success">
+
+                            View Event
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     JOIN CTA
+     ===================================================== -->
+
+<section class="join-section">
+
+    <div class="container">
+
+        <div class="join-box">
+
+            <h2>
+                Be Part of Something Bigger
+            </h2>
+
+            <p>
+                Join {{ association.name|default:"our association" }}
+                and connect with a community committed to
+                professional growth, collaboration and service.
+            </p>
+
+            <a href="{% url 'accounts:login' %}"
+            
+               class="btn btn-association-primary btn-lg">
+
+                <i class="bi bi-person-plus-fill me-2"></i>
+                Become a Member
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CONTACT
+     ===================================================== -->
+
+<section class="contact-section section-padding">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <div class="section-label justify-content-center">
+                Contact
+            </div>
+
+            <h2 class="section-title">
+                Get in Touch
+            </h2>
+
+            <p class="section-description mx-auto">
+
+                Have a question or need more information?
+                Contact {{ association.name|default:"the Association" }}.
+
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <div class="contact-card">
+
+                    <div class="contact-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+
+                    <h5>
+                        Our Address
+                    </h5>
+
+                    <p>
+                        {{ association.address|default:"Abuja, Nigeria" }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="contact-card">
+
+                    <div class="contact-icon">
+                        <i class="bi bi-telephone-fill"></i>
+                    </div>
+
+                    <h5>
+                        Phone
+                    </h5>
+
+                    <p>
+                        {{ association.phone|default:"08000000000" }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="contact-card">
+
+                    <div class="contact-icon">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+
+                    <h5>
+                        Email
+                    </h5>
+
+                    <p>
+                        {{ association.email|default:"info@example.com" }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FINAL INFORMATION
+     ===================================================== -->
+
+<section class="info-section section-padding">
+
+    <div class="container">
+
+        <div class="row g-4">
+
+            <div class="col-lg-6">
+
+                <div class="info-card">
+
+                    <div class="section-label">
+                        Our Mission
+                    </div>
+
+                    <h4>
+                        Working Together
+                    </h4>
+
+                    <p>
+
+                        {{ association.mission|default:"To promote professional excellence, unity and sustainable development among members." }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-6">
+
+                <div class="info-card">
+
+                    <div class="section-label">
+                        Our Vision
+                    </div>
+
+                    <h4>
+                        Looking Ahead
+                    </h4>
+
+                    <p>
+
+                        {{ association.vision|default:"To become a leading professional association known for excellence, integrity and service." }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</div>
+
+{% endblock %}

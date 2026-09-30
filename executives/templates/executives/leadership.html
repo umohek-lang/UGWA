@@ -1,0 +1,726 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Leadership
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    :root {
+        --association-green: #0b3d2e;
+        --association-green-dark: #06291f;
+        --association-green-light: #145c45;
+        --association-gold: #d4af37;
+        --association-gold-light: #f1d77a;
+        --association-cream: #f8f6ef;
+        --association-muted: #68756f;
+    }
+
+
+    /* PAGE */
+
+    .leadership-page {
+        min-height: 100vh;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(11, 61, 46, 0.035),
+                rgba(212, 175, 55, 0.055)
+            );
+
+        padding-bottom: 80px;
+    }
+
+
+    /* HERO */
+
+    .leadership-hero {
+        position: relative;
+
+        overflow: hidden;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green)
+            );
+
+        color: #ffffff;
+
+        padding: 75px 20px;
+
+        margin-bottom: 55px;
+    }
+
+
+    .leadership-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 360px;
+        height: 360px;
+
+        border: 1px solid rgba(212, 175, 55, 0.22);
+
+        border-radius: 50%;
+
+        top: -190px;
+        right: -100px;
+    }
+
+
+    .leadership-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 250px;
+        height: 250px;
+
+        border: 1px solid rgba(212, 175, 55, 0.15);
+
+        border-radius: 50%;
+
+        bottom: -150px;
+        left: -80px;
+    }
+
+
+    .leadership-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .leadership-badge {
+        display: inline-block;
+
+        padding: 7px 18px;
+
+        border: 1px solid rgba(241, 215, 122, 0.5);
+
+        border-radius: 50px;
+
+        color: var(--association-gold-light);
+
+        font-size: 0.8rem;
+
+        font-weight: 700;
+
+        text-transform: uppercase;
+
+        letter-spacing: 1.5px;
+
+        margin-bottom: 18px;
+    }
+
+
+    .leadership-title {
+        font-size: clamp(2.3rem, 5vw, 4rem);
+
+        font-weight: 800;
+
+        line-height: 1.15;
+
+        margin-bottom: 15px;
+    }
+
+
+    .leadership-title span {
+        color: var(--association-gold);
+    }
+
+
+    .leadership-subtitle {
+        max-width: 700px;
+
+        margin: auto;
+
+        color: rgba(255, 255, 255, 0.78);
+
+        font-size: 1.1rem;
+
+        line-height: 1.7;
+    }
+
+
+    /* EXECUTIVE CARD */
+
+    .executive-card {
+        background: #ffffff;
+
+        border: none;
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+        height: 100%;
+
+        position: relative;
+
+        box-shadow:
+            0 10px 35px rgba(11, 61, 46, 0.09);
+
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+
+    .executive-card::before {
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 4px;
+
+        background: var(--association-gold);
+
+        z-index: 5;
+    }
+
+
+    .executive-card:hover {
+        transform: translateY(-8px);
+
+        box-shadow:
+            0 20px 45px rgba(11, 61, 46, 0.15);
+    }
+
+
+    /* PHOTO */
+
+    .executive-photo-wrapper {
+        height: 300px;
+
+        position: relative;
+
+        overflow: hidden;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green)
+            );
+    }
+
+
+    .executive-photo {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        transition: transform 0.5s ease;
+    }
+
+
+    .executive-card:hover .executive-photo {
+        transform: scale(1.05);
+    }
+
+
+    /* PHOTO OVERLAY */
+
+    .executive-photo-wrapper::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        height: 90px;
+
+        background:
+            linear-gradient(
+                transparent,
+                rgba(6, 41, 31, 0.55)
+            );
+    }
+
+
+    /* DEFAULT PHOTO */
+
+    .executive-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        color: var(--association-gold);
+
+        background:
+            radial-gradient(
+                circle at center,
+                rgba(212, 175, 55, 0.14),
+                transparent 45%
+            ),
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green)
+            );
+    }
+
+
+    .executive-placeholder i {
+        font-size: 105px;
+    }
+
+
+    /* CARD BODY */
+
+    .executive-body {
+        padding: 28px 25px 25px;
+
+        text-align: center;
+    }
+
+
+    .executive-name {
+        color: var(--association-green);
+
+        font-size: 1.35rem;
+
+        font-weight: 750;
+
+        margin-bottom: 8px;
+    }
+
+
+    .executive-position {
+        display: inline-block;
+
+        color: #9b7910;
+
+        background: rgba(212, 175, 55, 0.12);
+
+        border: 1px solid rgba(212, 175, 55, 0.25);
+
+        padding: 6px 13px;
+
+        border-radius: 50px;
+
+        font-size: 0.82rem;
+
+        font-weight: 700;
+
+        margin-bottom: 17px;
+    }
+
+
+    /* BIOGRAPHY */
+
+    .executive-bio {
+        color: var(--association-muted);
+
+        line-height: 1.75;
+
+        font-size: 0.92rem;
+
+        margin-bottom: 20px;
+    }
+
+
+    /* CONTACT */
+
+    .executive-contact {
+        border-top: 1px solid rgba(11, 61, 46, 0.08);
+
+        padding-top: 17px;
+
+        margin-top: 15px;
+    }
+
+
+    .contact-item {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 9px;
+
+        color: var(--association-muted);
+
+        font-size: 0.85rem;
+
+        margin-bottom: 8px;
+
+        word-break: break-word;
+    }
+
+
+    .contact-item:last-child {
+        margin-bottom: 0;
+    }
+
+
+    .contact-item i {
+        color: var(--association-gold);
+
+        font-size: 0.95rem;
+    }
+
+
+    /* SECTION INTRO */
+
+    .leadership-intro {
+        text-align: center;
+
+        margin-bottom: 35px;
+    }
+
+
+    .section-label {
+        color: #9b7910;
+
+        font-size: 0.75rem;
+
+        font-weight: 700;
+
+        letter-spacing: 2px;
+
+        text-transform: uppercase;
+
+        margin-bottom: 7px;
+    }
+
+
+    .section-heading {
+        color: var(--association-green);
+
+        font-size: 1.8rem;
+
+        font-weight: 750;
+
+        margin-bottom: 0;
+    }
+
+
+    /* EMPTY STATE */
+
+    .leadership-empty {
+        background: #ffffff;
+
+        border: 1px solid rgba(212, 175, 55, 0.3);
+
+        border-radius: 18px;
+
+        padding: 50px 25px;
+
+        text-align: center;
+
+        box-shadow:
+            0 10px 30px rgba(11, 61, 46, 0.07);
+    }
+
+
+    .leadership-empty-icon {
+        width: 70px;
+        height: 70px;
+
+        margin: 0 auto 18px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: rgba(212, 175, 55, 0.12);
+
+        color: #a98513;
+
+        font-size: 1.8rem;
+    }
+
+
+    .leadership-empty h4 {
+        color: var(--association-green);
+
+        font-weight: 700;
+
+        margin-bottom: 8px;
+    }
+
+
+    .leadership-empty p {
+        color: var(--association-muted);
+
+        margin-bottom: 0;
+    }
+
+
+    /* RESPONSIVE */
+
+    @media (max-width: 767px) {
+
+        .leadership-hero {
+            padding: 55px 15px;
+
+            margin-bottom: 40px;
+        }
+
+
+        .leadership-title {
+            font-size: 2.25rem;
+        }
+
+
+        .leadership-subtitle {
+            font-size: 0.98rem;
+        }
+
+
+        .executive-photo-wrapper {
+            height: 280px;
+        }
+
+    }
+
+</style>
+
+
+<div class="leadership-page">
+
+
+    <!-- HERO -->
+
+    <section class="leadership-hero">
+
+        <div class="container text-center leadership-hero-content">
+
+            <div class="leadership-badge">
+
+                <i class="bi bi-people-fill me-2"></i>
+
+                Our Team
+
+            </div>
+
+
+            <h1 class="leadership-title">
+
+                Our
+                <span>Leadership</span>
+
+            </h1>
+
+
+            <p class="leadership-subtitle">
+
+                Meet the dedicated executives responsible for
+                providing leadership, direction and service to
+                our association community.
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <div class="container">
+
+
+        <!-- SECTION INTRO -->
+
+        <div class="leadership-intro">
+
+            <div class="section-label">
+                Executive Council
+            </div>
+
+            <h2 class="section-heading">
+                Meet Our Executives
+            </h2>
+
+        </div>
+
+
+        <!-- EXECUTIVES -->
+
+        <div class="row g-4">
+
+            {% for executive in executives %}
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="executive-card">
+
+
+                        <!-- PHOTO -->
+
+                        <div class="executive-photo-wrapper">
+
+                            {% if executive.photo %}
+
+                                <img
+                                    src="{{ executive.photo.url }}"
+                                    class="executive-photo"
+                                    alt="{{ executive.full_name }}"
+                                >
+
+                            {% else %}
+
+                                <div class="executive-placeholder">
+
+                                    <i class="bi bi-person-circle"></i>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- BODY -->
+
+                        <div class="executive-body">
+
+
+                            <!-- NAME -->
+
+                            <h3 class="executive-name">
+
+                                {{ executive.full_name }}
+
+                            </h3>
+
+
+                            <!-- POSITION -->
+
+                            <div class="executive-position">
+
+                                <i class="bi bi-award me-1"></i>
+
+                                {{ executive.position }}
+
+                            </div>
+
+
+                            <!-- BIOGRAPHY -->
+
+                            {% if executive.biography %}
+
+                                <p class="executive-bio">
+
+                                    {{ executive.biography|truncatewords:25 }}
+
+                                </p>
+
+                            {% endif %}
+
+
+                            <!-- CONTACT -->
+
+                            {% if executive.email or executive.phone %}
+
+                                <div class="executive-contact">
+
+
+                                    {% if executive.email %}
+
+                                        <div class="contact-item">
+
+                                            <i class="bi bi-envelope-fill"></i>
+
+                                            <span>
+                                                {{ executive.email }}
+                                            </span>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    {% if executive.phone %}
+
+                                        <div class="contact-item">
+
+                                            <i class="bi bi-telephone-fill"></i>
+
+                                            <span>
+                                                {{ executive.phone }}
+                                            </span>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                </div>
+
+                            {% endif %}
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            {% empty %}
+
+
+                <!-- EMPTY STATE -->
+
+                <div class="col-12">
+
+                    <div class="leadership-empty">
+
+
+                        <div class="leadership-empty-icon">
+
+                            <i class="bi bi-people"></i>
+
+                        </div>
+
+
+                        <h4>
+                            Leadership Information Unavailable
+                        </h4>
+
+
+                        <p>
+
+                            No executive information has been
+                            published yet.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            {% endfor %}
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

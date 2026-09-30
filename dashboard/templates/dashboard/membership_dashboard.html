@@ -1,0 +1,802 @@
+{% extends "base.html" %}
+
+{% block title %}
+Membership Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --association-green: #0b3d2e;
+        --association-green-dark: #06291f;
+        --association-green-light: #145c45;
+        --association-gold: #d4af37;
+        --association-gold-light: #f1d77a;
+        --association-muted: #68756f;
+        --association-cream: #f8f6ef;
+        --association-border: #e5ebe7;
+    }
+
+    /* =========================================
+       DASHBOARD
+    ========================================== */
+
+    .membership-dashboard {
+        min-height: 100vh;
+        background: #f5f7f6;
+        padding-bottom: 60px;
+    }
+
+    /* =========================================
+       DASHBOARD HEADER
+    ========================================== */
+
+    .dashboard-header {
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark),
+                var(--association-green)
+            );
+        border-radius: 0 0 24px 24px;
+        padding: 38px 0 75px;
+        margin-bottom: -38px;
+    }
+
+    .dashboard-header::before,
+    .dashboard-header::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.22);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .dashboard-header::before {
+        width: 320px;
+        height: 320px;
+        right: -120px;
+        top: -180px;
+    }
+
+    .dashboard-header::after {
+        width: 190px;
+        height: 190px;
+        left: -80px;
+        bottom: -120px;
+    }
+
+    .dashboard-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .dashboard-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--association-gold-light);
+        background: rgba(212, 175, 55, 0.12);
+        border: 1px solid rgba(241, 215, 122, 0.25);
+        border-radius: 30px;
+        padding: 7px 14px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 13px;
+    }
+
+    .dashboard-badge i {
+        color: var(--association-gold);
+    }
+
+    .dashboard-title {
+        color: #ffffff;
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-subtitle {
+        color: rgba(255, 255, 255, 0.72);
+        margin: 0;
+        font-size: 0.98rem;
+    }
+
+    /* =========================================
+       STATISTICS
+    ========================================== */
+
+    .statistics-section {
+        position: relative;
+        z-index: 5;
+    }
+
+    .stat-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid var(--association-border);
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(6, 41, 31, 0.07);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(6, 41, 31, 0.12);
+    }
+
+    .stat-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--association-gold);
+    }
+
+    .stat-card-body {
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .stat-label {
+        color: var(--association-muted);
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .stat-number {
+        color: var(--association-green);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        margin: 0;
+    }
+
+    .stat-icon {
+        width: 55px;
+        height: 55px;
+        min-width: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 24px;
+    }
+
+    .stat-card.active .stat-icon {
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+
+    .stat-card.pending .stat-icon {
+        background: rgba(212, 175, 55, 0.13);
+        color: #a17d00;
+    }
+
+    .stat-card.inactive .stat-icon {
+        background: rgba(220, 53, 69, 0.09);
+        color: #dc3545;
+    }
+
+    .stat-card.active .stat-number {
+        color: #198754;
+    }
+
+    .stat-card.pending .stat-number {
+        color: #a17d00;
+    }
+
+    .stat-card.inactive .stat-number {
+        color: #dc3545;
+    }
+
+    /* =========================================
+       SECTION HEADING
+    ========================================== */
+
+    .dashboard-section {
+        margin-top: 45px;
+    }
+
+    .section-heading {
+        margin-bottom: 22px;
+    }
+
+    .section-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--association-gold);
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+
+    .section-label::before {
+        content: "";
+        width: 25px;
+        height: 2px;
+        background: var(--association-gold);
+    }
+
+    .section-heading h3 {
+        color: var(--association-green);
+        font-size: 1.45rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
+
+    .section-heading p {
+        color: var(--association-muted);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    /* =========================================
+       ACTION CARDS
+    ========================================== */
+
+    .action-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid var(--association-border);
+        border-radius: 17px;
+        box-shadow: 0 7px 22px rgba(6, 41, 31, 0.06);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
+    }
+
+    .action-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(212, 175, 55, 0.6);
+        box-shadow: 0 16px 35px rgba(6, 41, 31, 0.11);
+    }
+
+    .action-card::after {
+        content: "";
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        right: -50px;
+        bottom: -50px;
+        border-radius: 50%;
+        border: 1px solid rgba(212, 175, 55, 0.18);
+    }
+
+    .action-card-body {
+        padding: 28px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .action-icon {
+        width: 62px;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 27px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .action-card:hover .action-icon {
+        background: var(--association-green);
+        color: var(--association-gold-light);
+        transform: scale(1.05);
+    }
+
+    .action-card h5 {
+        color: var(--association-green);
+        font-size: 1.15rem;
+        font-weight: 800;
+        margin-bottom: 9px;
+    }
+
+    .action-card p {
+        color: var(--association-muted);
+        font-size: 0.9rem;
+        line-height: 1.7;
+        min-height: 48px;
+        margin-bottom: 22px;
+    }
+
+    /* =========================================
+       ACTION BUTTON
+    ========================================== */
+
+    .dashboard-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: var(--association-green);
+        border: 1px solid var(--association-green);
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 10px 17px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+    .dashboard-action-btn:hover {
+        background: var(--association-gold);
+        border-color: var(--association-gold);
+        color: var(--association-green-dark);
+        transform: translateY(-2px);
+    }
+
+    .dashboard-action-btn i {
+        transition: transform 0.25s ease;
+    }
+
+    .dashboard-action-btn:hover i {
+        transform: translateX(3px);
+    }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================== */
+
+    @media (max-width: 767.98px) {
+
+        .dashboard-header {
+            padding: 30px 0 65px;
+            border-radius: 0 0 18px 18px;
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+        }
+
+        .dashboard-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .stat-card-body {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 1.7rem;
+        }
+
+        .action-card-body {
+            padding: 23px;
+        }
+
+        .dashboard-section {
+            margin-top: 35px;
+        }
+    }
+</style>
+
+<div class="membership-dashboard">
+
+<!-- =========================================
+     DASHBOARD HEADER
+========================================== -->
+
+<section class="dashboard-header">
+
+    <div class="container-fluid px-3 px-lg-4">
+
+        <div class="dashboard-header-content">
+
+            <div class="dashboard-badge">
+
+                <i class="bi bi-shield-check"></i>
+
+                Membership Management
+
+            </div>
+
+
+            <h1 class="dashboard-title">
+
+                Membership Dashboard
+
+            </h1>
+
+<div class="alert alert-danger mt-3">
+    TEST: MEMBERSHIP DASHBOARD IS LOADING
+</div>
+            <p class="dashboard-subtitle">
+
+                Manage members, applications and membership records
+                from one central dashboard.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="container-fluid px-3 px-lg-4">
+
+    <!-- =========================================
+         STATISTICS
+    ========================================== -->
+
+    <section class="statistics-section">
+
+        <div class="row g-3 g-lg-4">
+
+            <!-- Total Members -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="stat-card">
+
+                    <div class="stat-card-body">
+
+                        <div>
+
+                            <div class="stat-label">
+                                Total Members
+                            </div>
+
+                            <h2 class="stat-number">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                        <div class="stat-icon">
+
+                            <i class="bi bi-people"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Active Members -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="stat-card active">
+
+                    <div class="stat-card-body">
+
+                        <div>
+
+                            <div class="stat-label">
+                                Active Members
+                            </div>
+
+                            <h2 class="stat-number">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                        <div class="stat-icon">
+
+                            <i class="bi bi-person-check"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Pending Applications -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="stat-card pending">
+
+                    <div class="stat-card-body">
+
+                        <div>
+
+                            <div class="stat-label">
+                                Pending Applications
+                            </div>
+
+                            <h2 class="stat-number">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                        <div class="stat-icon">
+
+                            <i class="bi bi-person-plus"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Inactive Members -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="stat-card inactive">
+
+                    <div class="stat-card-body">
+
+                        <div>
+
+                            <div class="stat-label">
+                                Inactive Members
+                            </div>
+
+                            <h2 class="stat-number">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                        <div class="stat-icon">
+
+                            <i class="bi bi-person-x"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         QUICK ACTIONS
+    ========================================== -->
+
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+
+            <div class="section-label">
+                Management
+            </div>
+
+            <h3>
+                Membership Operations
+            </h3>
+
+            <p>
+                Access the tools you need to manage association membership.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- Members -->
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="action-card">
+
+                    <div class="action-card-body">
+
+                        <div class="action-icon">
+
+                            <i class="bi bi-people-fill"></i>
+
+                        </div>
+
+
+                        <h5>
+                            Members
+                        </h5>
+
+
+                        <p>
+                            View, search and manage registered
+                            association members and their records.
+                        </p>
+
+
+                        <a
+                            href="#"
+                            class="dashboard-action-btn"
+                        >
+
+                            View Members
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Applications -->
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="action-card">
+
+                    <div class="action-card-body">
+
+                        <div class="action-icon">
+
+                            <i class="bi bi-person-plus-fill"></i>
+
+                        </div>
+
+
+                        <h5>
+                            Applications
+                        </h5>
+
+
+                        <p>
+                            Review new membership applications and
+                            process pending registration requests.
+                        </p>
+
+
+                        <a
+                            href="#"
+                            class="dashboard-action-btn"
+                        >
+
+                            Review Applications
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+<div class="col-xl-4 col-md-6">
+
+    <div class="card dashboard-card border-0 shadow-sm h-100">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex align-items-center mb-3">
+
+                <div
+                    class="icon-box me-3"
+                    style="
+                        background:#E8F3EF;
+                        color:#064E3B;
+                    "
+                >
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <div>
+                    <h5 class="fw-bold mb-1">
+                        Membership Management
+                    </h5>
+
+                    <p class="text-muted small mb-0">
+                        Manage members, dues and membership records.
+                    </p>
+                </div>
+
+            </div>
+
+            <a
+                href="/payments/membership/management/"
+                class="btn btn-success w-100"
+            >
+                <i class="bi bi-arrow-right-circle me-1"></i>
+                Open Membership Management
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+            <!-- Membership Cards -->
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="action-card">
+
+                    <div class="action-card-body">
+
+                        <div class="action-icon">
+
+                            <i class="bi bi-person-vcard"></i>
+
+                        </div>
+
+
+                        <h5>
+                            Membership Cards
+                        </h5>
+
+
+                        <p>
+                            Generate, view and manage identification
+                            cards for registered association members.
+                        </p>
+
+
+                        <a
+                            href="#"
+                            class="dashboard-action-btn"
+                        >
+
+                            Manage Cards
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+</div>
+
+{% endblock %}

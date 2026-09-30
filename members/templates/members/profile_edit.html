@@ -1,0 +1,643 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Edit Membership Profile
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   UGMWA EDIT MEMBERSHIP PROFILE
+   DARK GREEN & GOLD THEME
+   ========================================================= */
+
+:root {
+    --ugmwa-green: #0b3d2e;
+    --ugmwa-green-dark: #06291f;
+    --ugmwa-green-light: #145c45;
+    --ugmwa-gold: #d4af37;
+    --ugmwa-gold-light: #f1d77a;
+    --ugmwa-bg: #f6f8f6;
+    --ugmwa-border: #dfe7e2;
+    --ugmwa-muted: #6b7872;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.edit-profile-page {
+    min-height: calc(100vh - 80px);
+    background:
+        linear-gradient(
+            180deg,
+            #f8faf8 0%,
+            #f3f6f3 100%
+        );
+
+    padding: 50px 0 70px;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.edit-profile-header {
+    margin-bottom: 30px;
+}
+
+.edit-profile-header h2 {
+    color: var(--ugmwa-green);
+    font-weight: 800;
+    letter-spacing: -0.4px;
+}
+
+.edit-profile-header h2 i {
+    color: var(--ugmwa-gold);
+}
+
+.edit-profile-header p {
+    color: var(--ugmwa-muted);
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   MAIN FORM CARD
+   ========================================================= */
+
+.edit-profile-card {
+    background: #ffffff;
+    border: 1px solid var(--ugmwa-border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(11, 61, 46, 0.09);
+}
+
+
+/* =========================================================
+   CARD TOP LINE
+   ========================================================= */
+
+.edit-profile-top-line {
+    height: 5px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--ugmwa-green),
+            var(--ugmwa-gold),
+            var(--ugmwa-green)
+        );
+}
+
+
+/* =========================================================
+   CARD BODY
+   ========================================================= */
+
+.edit-profile-body {
+    padding: 38px;
+}
+
+
+/* =========================================================
+   FORM SECTION
+   ========================================================= */
+
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--ugmwa-green);
+    font-size: 1.05rem;
+    font-weight: 800;
+
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+
+    border-bottom: 1px solid var(--ugmwa-border);
+}
+
+.form-section-title::before {
+    content: "";
+
+    width: 5px;
+    height: 22px;
+
+    background: var(--ugmwa-gold);
+
+    border-radius: 5px;
+}
+
+
+/* =========================================================
+   FORM LABEL
+   ========================================================= */
+
+.edit-profile-form .form-label {
+    color: var(--ugmwa-green);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+
+/* =========================================================
+   FORM CONTROLS
+   ========================================================= */
+
+.edit-profile-form input,
+.edit-profile-form select,
+.edit-profile-form textarea {
+
+    width: 100%;
+
+    border: 1px solid #d7e1db;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: var(--ugmwa-green);
+
+    padding: 11px 14px;
+
+    min-height: 48px;
+
+    transition: all 0.2s ease;
+}
+
+
+.edit-profile-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+
+/* =========================================================
+   FORM FOCUS
+   ========================================================= */
+
+.edit-profile-form input:focus,
+.edit-profile-form select:focus,
+.edit-profile-form textarea:focus {
+
+    border-color: var(--ugmwa-gold);
+
+    outline: none;
+
+    box-shadow:
+        0 0 0 0.2rem rgba(212, 175, 55, 0.14);
+
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   FILE INPUT
+   ========================================================= */
+
+.edit-profile-form input[type="file"] {
+
+    padding: 8px 10px;
+
+    background: #fbfcfb;
+
+    cursor: pointer;
+}
+
+
+.edit-profile-form input[type="file"]::file-selector-button {
+
+    background: var(--ugmwa-green);
+
+    color: #ffffff;
+
+    border: 0;
+
+    border-radius: 7px;
+
+    padding: 8px 13px;
+
+    margin-right: 10px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.edit-profile-form input[type="file"]::file-selector-button:hover {
+
+    background: var(--ugmwa-green-dark);
+}
+
+
+/* =========================================================
+   CHECKBOX
+   ========================================================= */
+
+.edit-profile-form input[type="checkbox"] {
+
+    width: 18px;
+    height: 18px;
+
+    min-height: auto;
+
+    accent-color: var(--ugmwa-green);
+
+}
+
+
+/* =========================================================
+   HELP TEXT
+   ========================================================= */
+
+.edit-profile-form .helptext {
+
+    display: block;
+
+    color: var(--ugmwa-muted);
+
+    font-size: 0.82rem;
+
+    margin-top: 6px;
+}
+
+
+/* =========================================================
+   FIELD ERRORS
+   ========================================================= */
+
+.field-error {
+
+    color: #a52a2a;
+
+    background: #fceaea;
+
+    border-left: 3px solid #b83b3b;
+
+    border-radius: 6px;
+
+    padding: 7px 10px;
+
+    font-size: 0.82rem;
+
+    margin-top: 7px;
+}
+
+
+/* =========================================================
+   NON-FIELD ERRORS
+   ========================================================= */
+
+.form-error-alert {
+
+    background: #fceaea;
+
+    border: 1px solid #f0caca;
+
+    border-left: 5px solid #a52a2a;
+
+    color: #8c2525;
+
+    border-radius: 10px;
+
+    padding: 14px 17px;
+
+    margin-bottom: 25px;
+}
+
+
+/* =========================================================
+   BUTTON AREA
+   ========================================================= */
+
+.form-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 35px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid var(--ugmwa-border);
+}
+
+
+/* =========================================================
+   SAVE BUTTON
+   ========================================================= */
+
+.save-profile-btn {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--ugmwa-green),
+            var(--ugmwa-green-light)
+        );
+
+    color: #ffffff;
+
+    border: 0;
+
+    border-radius: 10px;
+
+    padding: 12px 24px;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 6px 16px rgba(11, 61, 46, 0.16);
+
+    transition: all 0.25s ease;
+}
+
+
+.save-profile-btn:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--ugmwa-green-dark),
+            var(--ugmwa-green)
+        );
+
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 20px rgba(11, 61, 46, 0.22);
+}
+
+
+.save-profile-btn i {
+
+    color: var(--ugmwa-gold-light);
+}
+
+
+/* =========================================================
+   CANCEL BUTTON
+   ========================================================= */
+
+.cancel-profile-btn {
+
+    background: #ffffff;
+
+    color: var(--ugmwa-green);
+
+    border: 1px solid var(--ugmwa-border);
+
+    border-radius: 10px;
+
+    padding: 11px 22px;
+
+    font-weight: 700;
+
+    transition: all 0.2s ease;
+}
+
+
+.cancel-profile-btn:hover {
+
+    background: #f1f5f2;
+
+    border-color: var(--ugmwa-green);
+
+    color: var(--ugmwa-green);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .edit-profile-page {
+
+        padding: 35px 15px 55px;
+
+    }
+
+
+    .edit-profile-header {
+
+        text-align: center;
+
+    }
+
+
+    .edit-profile-body {
+
+        padding: 25px 20px;
+
+    }
+
+
+    .form-actions {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+
+    .save-profile-btn,
+    .cancel-profile-btn {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+
+<div class="edit-profile-page">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             PAGE HEADER
+             ===================================================== -->
+
+        <div class="edit-profile-header">
+
+            <h2 class="mb-1">
+
+                <i class="bi bi-person-gear me-2"></i>
+
+                Edit Membership Profile
+
+            </h2>
+
+            <p>
+
+                Keep your membership information up to date.
+
+            </p>
+
+        </div>
+
+
+        <!-- =====================================================
+             FORM CARD
+             ===================================================== -->
+
+        <div class="edit-profile-card">
+
+            <div class="edit-profile-top-line"></div>
+
+
+            <div class="edit-profile-body">
+
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                    class="edit-profile-form">
+
+                    {% csrf_token %}
+
+
+                    <!-- =================================================
+                         FORM ERRORS
+                         ================================================= -->
+
+                    {% if form.non_field_errors %}
+
+                        <div class="form-error-alert">
+
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                            {{ form.non_field_errors }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- =================================================
+                         FORM FIELDS
+                         ================================================= -->
+
+                    <div class="form-section-title">
+
+                        Membership & Personal Information
+
+                    </div>
+
+
+                    <div class="row g-4">
+
+                        {% for field in form %}
+
+                            <div class="col-md-6">
+
+                                <label
+                                    for="{{ field.id_for_label }}"
+                                    class="form-label">
+
+                                    {{ field.label }}
+
+                                    {% if field.field.required %}
+
+                                        <span style="color: var(--ugmwa-gold);">
+                                            *
+                                        </span>
+
+                                    {% endif %}
+
+                                </label>
+
+
+                                {{ field }}
+
+
+                                {% if field.help_text %}
+
+                                    <span class="helptext">
+
+                                        {{ field.help_text }}
+
+                                    </span>
+
+                                {% endif %}
+
+
+                                {% if field.errors %}
+
+                                    <div class="field-error">
+
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+
+                                        {{ field.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- =================================================
+                         ACTION BUTTONS
+                         ================================================= -->
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="btn save-profile-btn">
+
+                            <i class="bi bi-check-circle me-2"></i>
+
+                            Save Changes
+
+                        </button>
+
+
+                        <a
+                            href="{% url 'members:profile' %}"
+                            class="btn cancel-profile-btn">
+
+                            <i class="bi bi-x-circle me-2"></i>
+
+                            Cancel
+
+                        </a>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

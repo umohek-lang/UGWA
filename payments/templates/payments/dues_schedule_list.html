@@ -1,0 +1,779 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Dues Schedules
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   DUES SCHEDULES PAGE
+   Professional UGMWA Green & Gold Design
+   ========================================================= */
+
+.dues-schedule-page {
+    min-height: calc(100vh - 80px);
+    background: #f6f8f7;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.schedule-header {
+    background: linear-gradient(
+        135deg,
+        #022c22 0%,
+        #064e3b 100%
+    );
+
+    border-radius: 18px;
+    padding: 28px 30px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.schedule-header::before {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.10);
+    right: -65px;
+    top: -95px;
+}
+
+.schedule-header::after {
+    content: "";
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    border: 1px solid rgba(212, 175, 55, 0.20);
+    right: 75px;
+    bottom: -80px;
+}
+
+.schedule-header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.schedule-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #d4af37;
+    color: #022c22;
+    padding: 7px 13px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+}
+
+.schedule-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.schedule-subtitle {
+    margin: 7px 0 0;
+    color: rgba(255,255,255,0.74);
+    font-size: 0.92rem;
+}
+
+/* =========================================================
+   CREATE BUTTON
+   ========================================================= */
+
+.create-schedule-btn {
+    background: #d4af37;
+    color: #022c22 !important;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+    transition: all 0.2s ease;
+}
+
+.create-schedule-btn:hover {
+    background: #e2bf48;
+    color: #022c22 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+}
+
+/* =========================================================
+   TABLE CARD
+   ========================================================= */
+
+.schedule-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(2,44,34,0.08);
+}
+
+.schedule-card-header {
+    padding: 20px 22px;
+    border-bottom: 1px solid #edf1ef;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.schedule-card-title {
+    color: #022c22;
+    font-weight: 800;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.schedule-card-subtitle {
+    color: #89938f;
+    font-size: 0.8rem;
+    margin: 4px 0 0;
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.schedule-table {
+    margin-bottom: 0;
+}
+
+.schedule-table thead th {
+    background: #022c22;
+    color: #ffffff;
+    border: none;
+    padding: 15px 16px;
+
+    font-size: 0.73rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    white-space: nowrap;
+}
+
+.schedule-table tbody td {
+    padding: 16px;
+    border-color: #edf1ef;
+    color: #46534e;
+    font-size: 0.87rem;
+    vertical-align: middle;
+}
+
+.schedule-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.schedule-table tbody tr:hover {
+    background: #f7faf8;
+}
+
+/* =========================================================
+   MEMBER
+   ========================================================= */
+
+.member-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.member-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+
+    background: #eaf4ef;
+    color: #064e3b;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 800;
+    font-size: 0.82rem;
+
+    flex-shrink: 0;
+}
+
+.member-name {
+    color: #022c22;
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+/* =========================================================
+   MEMBERSHIP CODE
+   ========================================================= */
+
+.membership-code {
+    display: inline-block;
+    background: #f4f7f5;
+    border: 1px solid #e1e8e4;
+    color: #52605a;
+
+    padding: 5px 9px;
+    border-radius: 6px;
+
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+/* =========================================================
+   DUES TYPE
+   ========================================================= */
+
+.dues-name {
+    color: #022c22;
+    font-weight: 700;
+}
+
+/* =========================================================
+   AMOUNT
+   ========================================================= */
+
+.schedule-amount {
+    color: #064e3b;
+    font-weight: 800;
+    font-size: 0.91rem;
+}
+
+/* =========================================================
+   NEXT DUE
+   ========================================================= */
+
+.next-due {
+    color: #4c5853;
+    font-weight: 600;
+}
+
+.next-due i {
+    color: #d4af37;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.schedule-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 11px;
+    border-radius: 50px;
+
+    font-size: 0.73rem;
+    font-weight: 700;
+}
+
+.schedule-status::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.status-active {
+    background: #e9f7ef;
+    color: #157347;
+}
+
+.status-active::before {
+    background: #198754;
+}
+
+.status-inactive {
+    background: #f0f1f2;
+    color: #6c757d;
+}
+
+.status-inactive::before {
+    background: #6c757d;
+}
+
+/* =========================================================
+   INVOICE BUTTON
+   ========================================================= */
+
+.invoice-btn {
+    display: inline-flex;
+    align-items: center;
+
+    background: #d4af37;
+    color: #022c22 !important;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 8px 12px;
+
+    font-size: 0.74rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition: all 0.2s ease;
+}
+
+.invoice-btn:hover {
+    background: #e2bf48;
+    color: #022c22 !important;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 5px 12px rgba(0,0,0,0.12);
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+    padding: 65px 20px !important;
+}
+
+.empty-icon {
+    width: 65px;
+    height: 65px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    background: #eef6f2;
+    color: #064e3b;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.6rem;
+}
+
+.empty-title {
+    color: #022c22;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.empty-text {
+    color: #89938f;
+    font-size: 0.87rem;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .schedule-header {
+        padding: 23px 20px;
+        border-radius: 14px;
+    }
+
+    .schedule-title {
+        font-size: 1.45rem;
+    }
+
+    .create-schedule-btn {
+        width: 100%;
+        margin-top: 18px;
+    }
+
+    .schedule-card {
+        border-radius: 13px;
+    }
+
+    .schedule-card-header {
+        padding: 17px;
+    }
+
+    .schedule-table thead th,
+    .schedule-table tbody td {
+        padding: 13px 14px;
+    }
+
+}
+
+</style>
+
+
+<div class="dues-schedule-page">
+
+    <div class="container-fluid py-4 px-3 px-md-4">
+
+        <!-- =================================================
+             PAGE HEADER
+             ================================================= -->
+
+        <div class="schedule-header mb-4">
+
+            <div class="schedule-header-content">
+
+                <div class="row align-items-center">
+
+                    <div class="col-lg-8">
+
+                        <span class="schedule-badge">
+
+                            <i class="bi bi-calendar-check"></i>
+
+                            MEMBERSHIP
+
+                        </span>
+
+                        <h2 class="schedule-title">
+                            Dues Schedules
+                        </h2>
+
+                        <p class="schedule-subtitle">
+                            Assign and manage recurring dues obligations
+                            for association members.
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-lg-4 text-lg-end">
+
+                        <a
+                            href="{% url 'payments:dues_schedule_create' %}"
+                            class="btn create-schedule-btn"
+                        >
+
+                            <i class="bi bi-plus-circle me-2"></i>
+
+                            Create Schedule
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SCHEDULE TABLE
+             ================================================= -->
+
+        <div class="schedule-card">
+
+            <div class="schedule-card-header">
+
+                <div>
+
+                    <h5 class="schedule-card-title">
+
+                        <i
+                            class="bi bi-calendar2-check me-2"
+                            style="color:#D4AF37;"
+                        ></i>
+
+                        Member Dues Schedules
+
+                    </h5>
+
+                    <p class="schedule-card-subtitle">
+                        Recurring membership payment obligations.
+                    </p>
+
+                </div>
+
+
+                <span
+                    class="badge rounded-pill"
+                    style="
+                        background:#eef6f2;
+                        color:#064E3B;
+                        padding:8px 12px;
+                    "
+                >
+
+                    {{ schedules|length }}
+                    Schedule{{ schedules|length|pluralize }}
+
+                </span>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table schedule-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Member
+                            </th>
+
+                            <th>
+                                Membership Code
+                            </th>
+
+                            <th>
+                                Dues
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Next Due
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for schedule in schedules %}
+
+                        <tr>
+
+                            <!-- MEMBER -->
+
+                            <td>
+
+                                <div class="member-info">
+
+                                    <div class="member-avatar">
+
+                                        {% if schedule.member.get_full_name %}
+
+                                            {{ schedule.member.get_full_name|first|upper }}
+
+                                        {% else %}
+
+                                            {{ schedule.member.username|first|upper }}
+
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div class="member-name">
+
+                                        {{ schedule.member.get_full_name|default:schedule.member.username }}
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- MEMBERSHIP CODE -->
+
+                            <td>
+
+                                <span class="membership-code">
+
+                                    <i
+                                        class="bi bi-person-badge me-1"
+                                    ></i>
+
+                                    {{ schedule.member.membership_code }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- DUES -->
+
+                            <td>
+
+                                <span class="dues-name">
+
+                                    {{ schedule.dues_type.name }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- AMOUNT -->
+
+                            <td>
+
+                                <span class="schedule-amount">
+
+                                    ₦{{ schedule.amount|floatformat:2 }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- NEXT DUE -->
+
+                            <td>
+
+                                <span class="next-due">
+
+                                    <i
+                                        class="bi bi-calendar-event me-1"
+                                    ></i>
+
+                                    {{ schedule.next_due_date|date:"d M Y" }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if schedule.is_active %}
+
+                                    <span
+                                        class="schedule-status status-active"
+                                    >
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span
+                                        class="schedule-status status-inactive"
+                                    >
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ACTION -->
+
+                            <td>
+
+                                {% if schedule.is_active %}
+
+                                    <a
+                                        href="{% url 'payments:generate_invoice' schedule.id %}"
+                                        class="btn invoice-btn"
+                                    >
+
+                                        <i
+                                            class="bi bi-receipt me-1"
+                                        ></i>
+
+                                        Generate Invoice
+
+                                    </a>
+
+                                {% else %}
+
+                                    <span class="text-muted small">
+                                        —
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="empty-state text-center"
+                            >
+
+                                <div class="empty-icon">
+
+                                    <i class="bi bi-calendar-x"></i>
+
+                                </div>
+
+                                <div class="empty-title">
+
+                                    No Dues Schedules Yet
+
+                                </div>
+
+                                <div class="empty-text">
+
+                                    No recurring dues schedules have
+                                    been created for members.
+
+                                </div>
+
+                                <a
+                                    href="{% url 'payments:dues_schedule_create' %}"
+                                    class="btn create-schedule-btn mt-2"
+                                >
+
+                                    <i
+                                        class="bi bi-plus-circle me-2"
+                                    ></i>
+
+                                    Create First Schedule
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

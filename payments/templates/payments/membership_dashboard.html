@@ -1,0 +1,1116 @@
+{% extends "base.html" %}
+
+{% block title %}
+    My Membership
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   UGMWA MY MEMBERSHIP PAGE
+   DARK GREEN & GOLD THEME
+   ========================================================= */
+
+:root {
+    --ugmwa-green: #0b3d2e;
+    --ugmwa-green-dark: #06291f;
+    --ugmwa-green-light: #145c45;
+    --ugmwa-gold: #d4af37;
+    --ugmwa-gold-light: #f1d77a;
+    --ugmwa-bg: #f5f8f6;
+    --ugmwa-border: #dfe7e2;
+    --ugmwa-muted: #6b7872;
+}
+
+/* PAGE */
+
+.membership-page {
+    min-height: calc(100vh - 80px);
+    background:
+        linear-gradient(
+            180deg,
+            #f8faf8 0%,
+            #f3f6f3 100%
+        );
+    padding: 50px 0 70px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.membership-header {
+    margin-bottom: 30px;
+}
+
+.membership-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--ugmwa-gold);
+    color: var(--ugmwa-green-dark);
+    padding: 7px 15px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.membership-header h1 {
+    color: var(--ugmwa-green);
+    font-size: 2rem;
+    font-weight: 800;
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
+.membership-header p {
+    color: var(--ugmwa-muted);
+    margin-bottom: 0;
+}
+
+
+/* MEMBERSHIP CARD BUTTON */
+
+.membership-card-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(
+        135deg,
+        var(--ugmwa-gold),
+        #e5c451
+    );
+    color: var(--ugmwa-green-dark);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-weight: 800;
+    box-shadow: 0 6px 16px rgba(212, 175, 55, 0.20);
+    transition: all 0.25s ease;
+}
+
+.membership-card-btn:hover {
+    background: linear-gradient(
+        135deg,
+        #e5c451,
+        var(--ugmwa-gold)
+    );
+    color: var(--ugmwa-green-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 9px 22px rgba(212, 175, 55, 0.28);
+}
+
+
+/* =========================================================
+   GENERAL CARD
+   ========================================================= */
+
+.membership-card {
+    background: #ffffff;
+    border: 1px solid var(--ugmwa-border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(11, 61, 46, 0.07);
+    transition: all 0.25s ease;
+}
+
+.membership-card:hover {
+    box-shadow: 0 14px 35px rgba(11, 61, 46, 0.10);
+}
+
+.membership-card-top {
+    height: 5px;
+    background: linear-gradient(
+        90deg,
+        var(--ugmwa-green),
+        var(--ugmwa-gold),
+        var(--ugmwa-green)
+    );
+}
+
+
+/* =========================================================
+   MEMBER IDENTITY
+   ========================================================= */
+
+.member-identity {
+    border-left: 5px solid var(--ugmwa-gold);
+}
+
+.member-label {
+    color: var(--ugmwa-muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.member-name {
+    color: var(--ugmwa-green);
+    font-size: 1.55rem;
+    font-weight: 800;
+}
+
+.membership-code-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f6f9f7;
+    border: 1px solid var(--ugmwa-border);
+    border-radius: 9px;
+    padding: 9px 13px;
+}
+
+.membership-code-label {
+    color: var(--ugmwa-muted);
+    font-size: 0.85rem;
+}
+
+.membership-code {
+    color: var(--ugmwa-green);
+    font-weight: 800;
+    letter-spacing: 0.4px;
+}
+
+
+/* STATUS */
+
+.status-box {
+    background: #eef6f2;
+    border: 1px solid #d8e9e1;
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.status-title {
+    color: var(--ugmwa-muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 50px;
+    padding: 7px 13px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.status-active {
+    background: #dff3e7;
+    color: #17663b;
+}
+
+.status-suspended {
+    background: #fff0c9;
+    color: #765b00;
+}
+
+.status-expired {
+    background: #f9dddd;
+    color: #8b2929;
+}
+
+.status-inactive {
+    background: #e7e9eb;
+    color: #596168;
+}
+
+
+/* =========================================================
+   FINANCIAL SUMMARY
+   ========================================================= */
+
+.summary-card {
+    position: relative;
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid var(--ugmwa-border);
+    border-radius: 15px;
+    padding: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(11, 61, 46, 0.06);
+}
+
+.summary-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--ugmwa-green);
+}
+
+.summary-card.paid::before {
+    background: var(--ugmwa-gold);
+}
+
+.summary-card.outstanding::before {
+    background: #b83b3b;
+}
+
+.summary-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #edf5f1;
+    color: var(--ugmwa-green);
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+}
+
+.summary-card.paid .summary-icon {
+    background: #fbf5df;
+    color: #967617;
+}
+
+.summary-card.outstanding .summary-icon {
+    background: #fceaea;
+    color: #a52a2a;
+}
+
+.summary-label {
+    color: var(--ugmwa-muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+.summary-amount {
+    color: var(--ugmwa-green);
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: 7px;
+}
+
+.summary-card.outstanding .summary-amount {
+    color: #a52a2a;
+}
+
+
+/* =========================================================
+   SECTION HEADERS
+   ========================================================= */
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px 15px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ugmwa-green);
+    font-size: 1.05rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.section-title::before {
+    content: "";
+    width: 5px;
+    height: 22px;
+    border-radius: 5px;
+    background: var(--ugmwa-gold);
+}
+
+
+/* =========================================================
+   TABLES
+   ========================================================= */
+
+.membership-table {
+    margin-bottom: 0;
+}
+
+.membership-table thead th {
+    background: var(--ugmwa-green);
+    color: #ffffff;
+    border: none;
+    padding: 14px 15px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.membership-table thead th:first-child {
+    border-top-left-radius: 7px;
+}
+
+.membership-table thead th:last-child {
+    border-top-right-radius: 7px;
+}
+
+.membership-table tbody td {
+    padding: 15px;
+    border-color: #edf1ee;
+    color: #43514b;
+    vertical-align: middle;
+}
+
+.membership-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.membership-table tbody tr:hover {
+    background: #f7faf8;
+}
+
+.invoice-number {
+    color: var(--ugmwa-green);
+    font-weight: 700;
+}
+
+.amount-paid {
+    color: var(--ugmwa-green);
+    font-weight: 700;
+}
+
+.amount-balance {
+    color: #a52a2a;
+    font-weight: 800;
+}
+
+
+/* VIEW BUTTON */
+
+.view-invoice-btn {
+    border: 1px solid var(--ugmwa-green);
+    color: var(--ugmwa-green);
+    background: transparent;
+    border-radius: 8px;
+    padding: 6px 13px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.view-invoice-btn:hover {
+    background: var(--ugmwa-green);
+    color: #ffffff;
+}
+
+
+/* PAYMENT STATUS */
+
+.payment-success {
+    background: #dff3e7;
+    color: #17663b;
+    border-radius: 50px;
+    padding: 6px 11px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.payment-other {
+    background: #e9ecef;
+    color: #596168;
+    border-radius: 50px;
+    padding: 6px 11px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+
+/* EMPTY STATE */
+
+.empty-state {
+    padding: 45px 20px !important;
+    text-align: center;
+}
+
+.empty-state-icon {
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: #edf5f1;
+    color: var(--ugmwa-green);
+    font-size: 1.4rem;
+}
+
+.empty-state-text {
+    color: var(--ugmwa-muted);
+    margin: 0;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .membership-page {
+        padding: 35px 15px 55px;
+    }
+
+    .membership-header {
+        text-align: center;
+    }
+
+    .membership-header h1 {
+        font-size: 1.65rem;
+    }
+
+    .membership-card-btn {
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .member-name {
+        font-size: 1.3rem;
+    }
+
+    .membership-code-box {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .status-box {
+        margin-top: 5px;
+    }
+
+    .summary-amount {
+        font-size: 1.3rem;
+    }
+
+    .section-header {
+        padding: 20px 18px 15px;
+    }
+
+}
+
+</style>
+
+
+<div class="membership-page">
+
+    <div class="container">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="row align-items-center membership-header">
+
+            <div class="col-md-8">
+
+                <span class="membership-badge">
+
+                    <i class="bi bi-people-fill"></i>
+
+                    MEMBERSHIP
+
+                </span>
+
+                <h1>
+                    My Membership
+                </h1>
+
+                <p>
+                    Manage your membership information,
+                    dues and payment history.
+                </p>
+
+            </div>
+
+
+            <div class="col-md-4 text-md-end">
+
+                <a href="{% url 'payments:membership_card' %}"
+                    class="btn membership-card-btn"
+                >
+
+                    <i class="bi bi-person-vcard"></i>
+
+                    Membership Card
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MEMBERSHIP IDENTITY
+        ================================================== -->
+
+        <div class="membership-card member-identity mb-4">
+
+            <div class="membership-card-top"></div>
+
+            <div class="card-body p-4">
+
+                <div class="row align-items-center">
+
+                    <div class="col-md-8">
+
+                        <div class="member-label">
+                            MEMBER
+                        </div>
+
+                        <h3 class="member-name mt-2 mb-3">
+
+                            {{ request.user.get_full_name|default:request.user.username }}
+
+                        </h3>
+
+                        <div class="membership-code-box">
+
+                            <span class="membership-code-label">
+                                Membership Code:
+                            </span>
+
+                            <span class="membership-code">
+
+                                {{ request.user.membership_code }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+<div class="col-md-6 col-xl-4 mb-4">
+
+    <div class="card border-0 shadow-sm h-100">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex align-items-center mb-3">
+
+                <div
+                    class="rounded-circle d-flex align-items-center justify-content-center"
+                    style="
+                        width:55px;
+                        height:55px;
+                        background:#E8F3EF;
+                        color:#064E3B;
+                    "
+                >
+                    <i class="bi bi-people-fill fs-4"></i>
+                </div>
+
+                <div class="ms-3">
+
+                    <h5 class="fw-bold mb-1">
+                        Membership Management
+                    </h5>
+
+                    <small class="text-muted">
+                        Manage association members
+                    </small>
+
+                </div>
+
+            </div>
+
+            <p class="text-muted">
+                View members, update member information,
+                manage membership status and monitor dues.
+            </p>
+
+            <a
+                href="{% url 'payments:membership_officer_dashboard' %}"
+                class="btn text-white w-100"
+                style="background:#064E3B;"
+            >
+                <i class="bi bi-arrow-right-circle me-2"></i>
+                Open Membership Management
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+                    <div class="col-md-4 mt-4 mt-md-0">
+
+                        <div class="status-box">
+
+                            <div class="status-title">
+                                MEMBERSHIP STATUS
+                            </div>
+
+                            <div class="mt-3">
+
+                                {% if request.user.membership_status == "ACTIVE" %}
+
+                                    <span class="status-badge status-active">
+
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                        Active
+
+                                    </span>
+
+                                {% elif request.user.membership_status == "SUSPENDED" %}
+
+                                    <span class="status-badge status-suspended">
+
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                                        Suspended
+
+                                    </span>
+
+                                {% elif request.user.membership_status == "EXPIRED" %}
+
+                                    <span class="status-badge status-expired">
+
+                                        <i class="bi bi-x-circle-fill"></i>
+
+                                        Expired
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status-badge status-inactive">
+
+                                        <i class="bi bi-dash-circle-fill"></i>
+
+                                        Inactive
+
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FINANCIAL SUMMARY
+        ================================================== -->
+
+        <div class="row g-4 mb-4">
+
+
+            <!-- TOTAL INVOICED -->
+
+            <div class="col-md-4">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon">
+
+                        <i class="bi bi-receipt"></i>
+
+                    </div>
+
+                    <div class="summary-label">
+                        TOTAL INVOICED
+                    </div>
+
+                    <div class="summary-amount">
+
+                        ₦{{ total_invoiced|floatformat:2 }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL PAID -->
+
+            <div class="col-md-4">
+
+                <div class="summary-card paid">
+
+                    <div class="summary-icon">
+
+                        <i class="bi bi-check2-circle"></i>
+
+                    </div>
+
+                    <div class="summary-label">
+                        TOTAL PAID
+                    </div>
+
+                    <div class="summary-amount">
+
+                        ₦{{ total_paid|floatformat:2 }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- OUTSTANDING -->
+
+            <div class="col-md-4">
+
+                <div class="summary-card outstanding">
+
+                    <div class="summary-icon">
+
+                        <i class="bi bi-exclamation-circle"></i>
+
+                    </div>
+
+                    <div class="summary-label">
+                        OUTSTANDING
+                    </div>
+
+                    <div class="summary-amount">
+
+                        ₦{{ total_outstanding|floatformat:2 }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             OUTSTANDING DUES
+        ================================================== -->
+
+        <div class="membership-card mb-4">
+
+            <div class="section-header">
+
+                <h5 class="section-title">
+
+                    <i class="bi bi-wallet2"></i>
+
+                    Outstanding Dues
+
+                </h5>
+
+            </div>
+
+            <div class="card-body pt-0">
+
+                <div class="table-responsive">
+
+                    <table class="table membership-table align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Invoice</th>
+
+                                <th>Dues</th>
+
+                                <th>Amount</th>
+
+                                <th>Paid</th>
+
+                                <th>Balance</th>
+
+                                <th>Due Date</th>
+
+                                <th></th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for invoice in outstanding_invoices %}
+
+                            <tr>
+
+                                <td>
+
+                                    <span class="invoice-number">
+
+                                        {{ invoice.invoice_number }}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    {{ invoice.dues_type.name }}
+
+                                </td>
+
+                                <td>
+
+                                    ₦{{ invoice.amount|floatformat:2 }}
+
+                                </td>
+
+                                <td>
+
+                                    <span class="amount-paid">
+
+                                        ₦{{ invoice.amount_paid|floatformat:2 }}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="amount-balance">
+
+                                        ₦{{ invoice.balance|floatformat:2 }}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    {{ invoice.due_date|date:"d M Y" }}
+
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'payments:invoice_detail' invoice.invoice_number %}"
+                                        class="btn btn-sm view-invoice-btn"
+                                    >
+
+                                        <i class="bi bi-eye me-1"></i>
+
+                                        View
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="empty-state"
+                                >
+
+                                    <div class="empty-state-icon">
+
+                                        <i class="bi bi-check2-circle"></i>
+
+                                    </div>
+
+                                    <p class="empty-state-text">
+
+                                        You have no outstanding dues.
+
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PAYMENT HISTORY
+        ================================================== -->
+
+        <div class="membership-card">
+
+            <div class="section-header">
+
+                <h5 class="section-title">
+
+                    <i class="bi bi-clock-history"></i>
+
+                    Recent Payment History
+
+                </h5>
+
+            </div>
+
+            <div class="card-body pt-0">
+
+                <div class="table-responsive">
+
+                    <table class="table membership-table align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Date</th>
+
+                                <th>Receipt</th>
+
+                                <th>Invoice</th>
+
+                                <th>Amount</th>
+
+                                <th>Status</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for payment in recent_payments %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ payment.paid_at|date:"d M Y" }}
+
+                                </td>
+
+                                <td>
+
+                                    <span class="invoice-number">
+
+                                        <!-- {{ payment.receipt_number }} -->
+
+                                        <a
+        href="{% url 'payments:receipt_detail' payment.receipt_number %}"
+        class="text-decoration-none fw-semibold"
+        style="color:#064E3B;"
+    >
+
+        {{ payment.receipt_number }}
+
+    </a>
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    {{ payment.invoice.invoice_number }}
+
+                                </td>
+
+                                <td>
+
+                                    <span class="amount-paid">
+
+                                        ₦{{ payment.amount|floatformat:2 }}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    {% if payment.status == "SUCCESS" %}
+
+                                        <span class="payment-success">
+
+                                            <i class="bi bi-check-circle-fill me-1"></i>
+
+                                            Successful
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="payment-other">
+
+                                            {{ payment.get_status_display }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="empty-state"
+                                >
+
+                                    <div class="empty-state-icon">
+
+                                        <i class="bi bi-receipt"></i>
+
+                                    </div>
+
+                                    <p class="empty-state-text">
+
+                                        No payments recorded yet.
+
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

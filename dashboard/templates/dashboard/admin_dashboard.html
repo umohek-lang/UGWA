@@ -1,0 +1,1023 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --association-green: #0b3d2e;
+        --association-green-dark: #06291f;
+        --association-green-light: #145c45;
+        --association-gold: #d4af37;
+        --association-gold-light: #f1d77a;
+        --association-muted: #68756f;
+        --association-cream: #f8f6ef;
+        --association-border: #e3eae6;
+    }
+
+    /* =========================================
+       ADMIN DASHBOARD
+    ========================================== */
+
+    .admin-dashboard {
+        min-height: 100vh;
+        background: #f4f7f5;
+        padding-bottom: 70px;
+    }
+
+
+    /* =========================================
+       ADMIN HERO
+    ========================================== */
+
+    .admin-hero {
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                var(--association-green-dark) 0%,
+                var(--association-green) 65%,
+                var(--association-green-light) 100%
+            );
+        border-radius: 0 0 26px 26px;
+        padding: 42px 0 88px;
+        margin-bottom: -50px;
+    }
+
+    .admin-hero::before,
+    .admin-hero::after {
+        content: "";
+        position: absolute;
+        border: 1px solid rgba(212, 175, 55, 0.23);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .admin-hero::before {
+        width: 390px;
+        height: 390px;
+        right: -170px;
+        top: -225px;
+    }
+
+    .admin-hero::after {
+        width: 230px;
+        height: 230px;
+        left: -105px;
+        bottom: -145px;
+    }
+
+    .admin-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .admin-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 15px;
+        margin-bottom: 14px;
+        color: var(--association-gold-light);
+        background: rgba(212, 175, 55, 0.12);
+        border: 1px solid rgba(241, 215, 122, 0.3);
+        border-radius: 30px;
+        font-size: 0.73rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.3px;
+    }
+
+    .admin-label i {
+        color: var(--association-gold);
+    }
+
+    .admin-title {
+        color: #ffffff;
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .admin-subtitle {
+        max-width: 650px;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.7;
+        margin: 0;
+    }
+
+
+    /* =========================================
+       STATISTICS
+    ========================================== */
+
+    .admin-statistics {
+        position: relative;
+        z-index: 5;
+    }
+
+    .admin-stat-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid var(--association-border);
+        border-radius: 17px;
+        box-shadow: 0 9px 28px rgba(6, 41, 31, 0.07);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    .admin-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 17px 38px rgba(6, 41, 31, 0.12);
+    }
+
+    .admin-stat-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--association-gold);
+    }
+
+    .admin-stat-body {
+        padding: 23px;
+    }
+
+    .admin-stat-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 17px;
+    }
+
+    .admin-stat-label {
+        color: var(--association-muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .admin-stat-number {
+        color: var(--association-green);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        margin: 0;
+    }
+
+    .admin-stat-icon {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 23px;
+    }
+
+    .admin-stat-card.applications .admin-stat-icon {
+        background: rgba(212, 175, 55, 0.13);
+        color: #9a7800;
+    }
+
+    .admin-stat-card.events .admin-stat-icon {
+        background: rgba(20, 92, 69, 0.1);
+        color: var(--association-green-light);
+    }
+
+    .admin-stat-card.revenue .admin-stat-icon {
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+
+    .admin-stat-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--association-green);
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .admin-stat-link:hover {
+        color: var(--association-gold);
+    }
+
+    .admin-stat-link i {
+        transition: transform 0.2s ease;
+    }
+
+    .admin-stat-link:hover i {
+        transform: translateX(3px);
+    }
+
+
+    /* =========================================
+       MANAGEMENT SECTION
+    ========================================== */
+
+    .management-section {
+        margin-top: 48px;
+    }
+
+    .section-heading {
+        margin-bottom: 23px;
+    }
+
+    .section-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--association-gold);
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 7px;
+    }
+
+    .section-label::before {
+        content: "";
+        width: 27px;
+        height: 2px;
+        background: var(--association-gold);
+    }
+
+    .section-heading h3 {
+        color: var(--association-green);
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .section-heading p {
+        color: var(--association-muted);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+
+    /* =========================================
+       MANAGEMENT CARDS
+    ========================================== */
+
+    .management-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid var(--association-border);
+        border-radius: 17px;
+        box-shadow: 0 7px 24px rgba(6, 41, 31, 0.06);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
+    }
+
+    .management-card:hover {
+        transform: translateY(-7px);
+        border-color: rgba(212, 175, 55, 0.6);
+        box-shadow: 0 17px 38px rgba(6, 41, 31, 0.12);
+    }
+
+    .management-card::after {
+        content: "";
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        right: -65px;
+        bottom: -65px;
+        border: 1px solid rgba(212, 175, 55, 0.18);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .management-card-body {
+        position: relative;
+        z-index: 2;
+        padding: 27px;
+    }
+
+    .management-icon {
+        width: 62px;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        font-size: 27px;
+        margin-bottom: 19px;
+        transition: all 0.3s ease;
+    }
+
+    .management-card:hover .management-icon {
+        background: var(--association-green);
+        color: var(--association-gold-light);
+        transform: scale(1.06);
+    }
+
+    .management-card h5 {
+        color: var(--association-green);
+        font-size: 1.15rem;
+        font-weight: 800;
+        margin-bottom: 9px;
+    }
+
+    .management-card p {
+        color: var(--association-muted);
+        font-size: 0.88rem;
+        line-height: 1.7;
+        min-height: 48px;
+        margin-bottom: 23px;
+    }
+
+    /* =========================================
+       MANAGEMENT BUTTON
+    ========================================== */
+
+    .management-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 17px;
+        background: var(--association-green);
+        border: 1px solid var(--association-green);
+        border-radius: 8px;
+        color: #ffffff;
+        font-size: 0.83rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+    .management-btn:hover {
+        background: var(--association-gold);
+        border-color: var(--association-gold);
+        color: var(--association-green-dark);
+        transform: translateY(-2px);
+    }
+
+    .management-btn i {
+        transition: transform 0.25s ease;
+    }
+
+    .management-btn:hover i {
+        transform: translateX(3px);
+    }
+
+
+    /* =========================================
+       ADMIN FOOTER NOTE
+    ========================================== */
+
+    .admin-system-note {
+        margin-top: 45px;
+        padding: 18px 20px;
+        background: var(--association-cream);
+        border: 1px solid #e9e4d3;
+        border-left: 4px solid var(--association-gold);
+        border-radius: 10px;
+        color: var(--association-muted);
+        font-size: 0.82rem;
+    }
+
+    .admin-system-note i {
+        color: var(--association-gold);
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+    ========================================== */
+
+    @media (max-width: 767.98px) {
+
+        .admin-hero {
+            padding: 32px 0 72px;
+            border-radius: 0 0 18px 18px;
+        }
+
+        .admin-title {
+            font-size: 1.9rem;
+        }
+
+        .admin-subtitle {
+            font-size: 0.88rem;
+        }
+
+        .admin-stat-body {
+            padding: 19px;
+        }
+
+        .admin-stat-number {
+            font-size: 1.65rem;
+        }
+
+        .admin-stat-icon {
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            font-size: 20px;
+        }
+
+        .management-section {
+            margin-top: 36px;
+        }
+
+        .management-card-body {
+            padding: 23px;
+        }
+
+    }
+</style>
+
+<div class="admin-dashboard">
+
+<!-- =========================================
+     ADMIN HERO
+========================================== -->
+
+<section class="admin-hero">
+
+    <div class="container-fluid px-3 px-lg-4">
+
+        <div class="admin-hero-content">
+
+            <div class="admin-label">
+
+                <i class="bi bi-shield-lock-fill"></i>
+
+                Administration
+
+            </div>
+
+
+            <h1 class="admin-title">
+                Administration Dashboard
+            </h1>
+
+
+            <p class="admin-subtitle">
+
+                Manage the association, monitor activities,
+                oversee membership and access important
+                administrative tools from one central location.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="container-fluid px-3 px-lg-4">
+
+
+    <!-- =========================================
+         STATISTICS
+    ========================================== -->
+
+    <section class="admin-statistics">
+
+        <div class="row g-3 g-lg-4">
+
+
+            <!-- Total Members -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-body">
+
+                        <div class="admin-stat-top">
+
+                            <div>
+
+                                <div class="admin-stat-label">
+                                    Total Members
+                                </div>
+
+                                <h2 class="admin-stat-number">
+                                    0
+                                </h2>
+
+                            </div>
+
+
+                            <div class="admin-stat-icon">
+
+                                <i class="bi bi-people-fill"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="#"
+                            class="admin-stat-link"
+                        >
+
+                            Manage Members
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Pending Applications -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="admin-stat-card applications">
+
+                    <div class="admin-stat-body">
+
+                        <div class="admin-stat-top">
+
+                            <div>
+
+                                <div class="admin-stat-label">
+                                    Pending Applications
+                                </div>
+
+                                <h2 class="admin-stat-number">
+                                    0
+                                </h2>
+
+                            </div>
+
+
+                            <div class="admin-stat-icon">
+
+                                <i class="bi bi-person-plus-fill"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="#"
+                            class="admin-stat-link"
+                        >
+
+                            Review Applications
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Events -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="admin-stat-card events">
+
+                    <div class="admin-stat-body">
+
+                        <div class="admin-stat-top">
+
+                            <div>
+
+                                <div class="admin-stat-label">
+                                    Events
+                                </div>
+
+                                <h2 class="admin-stat-number">
+                                    0
+                                </h2>
+
+                            </div>
+
+
+                            <div class="admin-stat-icon">
+
+                                <i class="bi bi-calendar-event-fill"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="#"
+                            class="admin-stat-link"
+                        >
+
+                            Manage Events
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Revenue -->
+
+            <div class="col-6 col-xl-3">
+
+                <div class="admin-stat-card revenue">
+
+                    <div class="admin-stat-body">
+
+                        <div class="admin-stat-top">
+
+                            <div>
+
+                                <div class="admin-stat-label">
+                                    Revenue
+                                </div>
+
+                                <h2 class="admin-stat-number">
+                                    ₦0
+                                </h2>
+
+                            </div>
+
+
+                            <div class="admin-stat-icon">
+
+                                <i class="bi bi-wallet2"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="#"
+                            class="admin-stat-link"
+                        >
+
+                            View Finance
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         MANAGEMENT
+    ========================================== -->
+
+    <section class="management-section">
+
+        <div class="section-heading">
+
+            <div class="section-label">
+                Administration
+            </div>
+
+
+            <h3>
+                Management Centre
+            </h3>
+
+
+            <p>
+                Access the main administrative areas of the association.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- Membership -->
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="management-card">
+
+                    <div class="management-card-body">
+
+                        <div class="management-icon">
+
+                            <i class="bi bi-people-fill"></i>
+
+                        </div>
+
+
+                        <h5>
+                            Membership
+                        </h5>
+
+
+                        <p>
+                            Manage members, applications, categories,
+                            profiles and membership status.
+                        </p>
+
+
+                        <a
+                            href="#"
+                            class="management-btn"
+                        >
+
+                            Manage Membership
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Events -->
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="management-card">
+
+                    <div class="management-card-body">
+
+                        <div class="management-icon">
+
+                            <i class="bi bi-calendar-event"></i>
+
+                        </div>
+
+
+                        <h5>
+                            Events
+                        </h5>
+
+
+                        <p>
+                            Create events, manage registrations,
+                            attendance and event information.
+                        </p>
+
+
+                        <a
+                            href="#"
+                            class="management-btn"
+                        >
+
+                            Manage Events
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Finance -->
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="management-card">
+
+                    <div class="management-card-body">
+
+                        <div class="management-icon">
+
+                            <i class="bi bi-wallet2"></i>
+
+                        </div>
+
+
+                        <h5>
+                            Finance
+                        </h5>
+
+
+                        <p>
+                            Manage payments, membership dues,
+                            expenses and financial records.
+                        </p>
+
+
+                        <a
+                            href="#"
+                            class="management-btn"
+                        >
+
+                            Manage Finance
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Announcements -->
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="management-card">
+
+                    <div class="management-card-body">
+
+                        <div class="management-icon">
+
+                            <i class="bi bi-megaphone"></i>
+
+                        </div>
+
+
+                        <h5>
+                            Announcements
+                        </h5>
+
+
+                        <p>
+                            Publish announcements, news and
+                            important association notices.
+                        </p>
+
+
+                        <a
+                            href="#"
+                            class="management-btn"
+                        >
+
+                            Manage News
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Documents -->
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="management-card">
+
+                    <div class="management-card-body">
+
+                        <div class="management-icon">
+
+                            <i class="bi bi-file-earmark-text"></i>
+
+                        </div>
+
+
+                        <h5>
+                            Documents
+                        </h5>
+
+
+                        <p>
+                            Manage the association's documents,
+                            resources and important files.
+                        </p>
+
+
+                        <a
+                            href="#"
+                            class="management-btn"
+                        >
+
+                            Manage Documents
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Reports -->
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="management-card">
+
+                    <div class="management-card-body">
+
+                        <div class="management-icon">
+
+                            <i class="bi bi-bar-chart-line"></i>
+
+                        </div>
+
+
+                        <h5>
+                            Reports
+                        </h5>
+
+
+                        <p>
+                            Generate membership, financial,
+                            event and activity reports.
+                        </p>
+
+
+                        <a
+                            href="#"
+                            class="management-btn"
+                        >
+
+                            View Reports
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- System Note -->
+
+        <div class="admin-system-note">
+
+            <i class="bi bi-info-circle-fill me-2"></i>
+
+            <strong>Administration Centre:</strong>
+            Use the management tools above to oversee the
+            association's membership, events, finances,
+            communications and records.
+
+        </div>
+
+    </section>
+
+</div>
+
+</div>
+
+{% endblock %}

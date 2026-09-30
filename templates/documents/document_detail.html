@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    {{ document.title }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-9">
+
+            <div
+                class="card border-0 shadow-sm overflow-hidden"
+            >
+
+                <!-- HEADER -->
+
+                <div
+                    class="p-5 text-white"
+                    style="
+                        background:
+                        linear-gradient(
+                            135deg,
+                            #022C22,
+                            #064E3B
+                        );
+                    "
+                >
+
+                    <div class="mb-3">
+
+                        <span
+                            class="badge"
+                            style="
+                                background:#D4AF37;
+                                color:#022C22;
+                            "
+                        >
+
+                            {{ document.get_document_type_display }}
+
+                        </span>
+
+                    </div>
+
+
+                    <h1 class="fw-bold mb-3">
+
+                        {{ document.title }}
+
+                    </h1>
+
+
+                    <p class="mb-0 opacity-75">
+
+                        Official Association Document
+
+                    </p>
+
+                </div>
+
+
+                <!-- BODY -->
+
+                <div class="card-body p-5">
+
+                    <div class="row g-4 mb-4">
+
+                        <div class="col-md-6">
+
+                            <div
+                                class="p-3 rounded"
+                                style="
+                                    background:#F8FAF9;
+                                    border-left:
+                                    4px solid #D4AF37;
+                                "
+                            >
+
+                                <small
+                                    class="text-muted d-block"
+                                >
+                                    Category
+                                </small>
+
+                                <strong
+                                    style="color:#064E3B;"
+                                >
+                                    {{ document.category.name }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div
+                                class="p-3 rounded"
+                                style="
+                                    background:#F8FAF9;
+                                    border-left:
+                                    4px solid #D4AF37;
+                                "
+                            >
+
+                                <small
+                                    class="text-muted d-block"
+                                >
+                                    Access Level
+                                </small>
+
+                                <strong
+                                    style="color:#064E3B;"
+                                >
+
+                                    {{ document.get_access_level_display }}
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <h5
+                        class="fw-bold mb-3"
+                        style="color:#064E3B;"
+                    >
+
+                        Document Description
+
+                    </h5>
+
+
+                    {% if document.description %}
+
+                        <p class="text-muted">
+
+                            {{ document.description }}
+
+                        </p>
+
+                    {% else %}
+
+                        <p class="text-muted">
+
+                            No description was provided.
+
+                        </p>
+
+                    {% endif %}
+
+
+                    <hr class="my-4">
+
+
+                    <div
+                        class="d-flex flex-wrap gap-2"
+                    >
+
+                        <a
+                            href="{% url 'documents:download' document.slug %}"
+                            class="btn text-white fw-semibold"
+                            style="background:#064E3B;"
+                        >
+
+                            <i class="bi bi-download me-2"></i>
+
+                            Download Document
+
+                        </a>
+
+
+                        <a
+                            href="{% url 'documents:list' %}"
+                            class="btn fw-semibold"
+                            style="
+                                border:1px solid #D4AF37;
+                                color:#064E3B;
+                            "
+                        >
+
+                            <i class="bi bi-arrow-left me-2"></i>
+
+                            Back to Documents
+
+                        </a>
+
+                    </div>
+
+
+                    <div
+                        class="mt-4 small text-muted"
+                    >
+
+                        <i class="bi bi-download me-1"></i>
+
+                        {{ document.download_count }}
+                        downloads
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,688 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Payment Receipt
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* ==========================================
+       PAYMENT RECEIPT PAGE
+    ========================================== */
+
+    .receipt-page {
+        min-height: calc(100vh - 80px);
+        background: #f8f6ef;
+        padding: 35px 0 60px;
+    }
+
+    /* ==========================================
+       RECEIPT CARD
+    ========================================== */
+
+    .receipt-card {
+        position: relative;
+        overflow: hidden;
+        border: 0;
+        border-radius: 20px;
+        background: #ffffff;
+        box-shadow: 0 12px 35px rgba(11, 61, 46, 0.12);
+    }
+
+    .receipt-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(
+            90deg,
+            #0b3d2e,
+            #d4af37,
+            #0b3d2e
+        );
+    }
+
+    .receipt-body {
+        padding: 50px;
+    }
+
+    /* ==========================================
+       SUCCESS HEADER
+    ========================================== */
+
+    .receipt-success-icon {
+        width: 92px;
+        height: 92px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(25, 135, 84, 0.10);
+        border: 1px solid rgba(25, 135, 84, 0.18);
+        color: #198754;
+        font-size: 3.3rem;
+    }
+
+    .receipt-title {
+        color: #0b3d2e;
+        font-weight: 800;
+        margin-top: 20px;
+        margin-bottom: 7px;
+    }
+
+    .receipt-subtitle {
+        color: #68756f;
+        margin-bottom: 0;
+    }
+
+    /* ==========================================
+       RECEIPT DETAILS
+    ========================================== */
+
+    .receipt-details {
+        position: relative;
+        overflow: hidden;
+        margin-top: 35px;
+        border: 1px solid #e4ebe7;
+        border-radius: 16px;
+        background: #ffffff;
+    }
+
+    .receipt-details::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: #d4af37;
+    }
+
+    .receipt-details-header {
+        padding: 18px 24px;
+        background: #f8f6ef;
+        border-bottom: 1px solid #e4ebe7;
+    }
+
+    .receipt-details-header h5 {
+        margin: 0;
+        color: #0b3d2e;
+        font-weight: 800;
+    }
+
+    .receipt-details-header i {
+        color: #d4af37;
+    }
+
+    .receipt-row {
+        padding: 17px 24px;
+        border-bottom: 1px solid #edf1ee;
+    }
+
+    .receipt-row:last-child {
+        border-bottom: 0;
+    }
+
+    .receipt-label {
+        color: #68756f;
+        font-size: 0.86rem;
+        font-weight: 700;
+    }
+
+    .receipt-value {
+        color: #25352e;
+        font-weight: 650;
+        word-break: break-word;
+    }
+
+    .receipt-number {
+        color: #0b3d2e;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+    }
+
+    .payment-reference {
+        color: #145c45;
+        font-family: monospace;
+        font-size: 0.9rem;
+    }
+
+    /* ==========================================
+       AMOUNT
+    ========================================== */
+
+    .amount-row {
+        background: rgba(212, 175, 55, 0.07);
+    }
+
+    .amount-value {
+        color: #0b3d2e;
+        font-size: 1.45rem;
+        font-weight: 850;
+    }
+
+    /* ==========================================
+       PAYMENT METHOD
+    ========================================== */
+
+    .method-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(11, 61, 46, 0.07);
+        color: #0b3d2e;
+        border-radius: 50px;
+        padding: 7px 12px;
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .method-badge i {
+        color: #d4af37;
+    }
+
+    /* ==========================================
+       STATUS
+    ========================================== */
+
+    .success-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(25, 135, 84, 0.11);
+        color: #198754;
+        border-radius: 50px;
+        padding: 7px 13px;
+        font-size: 0.78rem;
+        font-weight: 750;
+    }
+
+    /* ==========================================
+       PRINT / ACTION BUTTONS
+    ========================================== */
+
+    .receipt-actions {
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 1px solid #e4ebe7;
+    }
+
+    .print-btn {
+        background: linear-gradient(
+            135deg,
+            #0b3d2e,
+            #145c45
+        );
+        border: 1px solid #0b3d2e;
+        color: #ffffff;
+        border-radius: 9px;
+        padding: 10px 18px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+    .print-btn:hover {
+        background: #06291f;
+        border-color: #06291f;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .history-btn {
+        border: 1px solid #0b3d2e;
+        color: #0b3d2e;
+        background: #ffffff;
+        border-radius: 9px;
+        padding: 10px 18px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+    .history-btn:hover {
+        background: #0b3d2e;
+        border-color: #0b3d2e;
+        color: #ffffff;
+    }
+
+    /* ==========================================
+       RECEIPT FOOTER
+    ========================================== */
+
+    .receipt-footer {
+        margin-top: 28px;
+        text-align: center;
+        color: #68756f;
+        font-size: 0.82rem;
+    }
+
+    .receipt-footer i {
+        color: #d4af37;
+    }
+
+    /* ==========================================
+       MOBILE
+    ========================================== */
+
+    @media (max-width: 767.98px) {
+
+        .receipt-page {
+            padding: 25px 0 40px;
+        }
+
+        .receipt-body {
+            padding: 35px 20px;
+        }
+
+        .receipt-success-icon {
+            width: 78px;
+            height: 78px;
+            font-size: 2.7rem;
+        }
+
+        .receipt-title {
+            font-size: 1.6rem;
+        }
+
+        .receipt-details {
+            margin-top: 28px;
+        }
+
+        .receipt-details-header {
+            padding: 16px 18px;
+        }
+
+        .receipt-row {
+            padding: 15px 18px;
+        }
+
+        .receipt-row .text-sm-end {
+            text-align: left !important;
+            margin-top: 5px;
+        }
+
+        .receipt-actions {
+            flex-direction: column;
+        }
+
+        .receipt-actions .btn {
+            width: 100%;
+        }
+    }
+
+    /* ==========================================
+       PRINT STYLES
+    ========================================== */
+
+    @media print {
+
+        body {
+            background: #ffffff !important;
+        }
+
+        .receipt-page {
+            background: #ffffff !important;
+            padding: 0 !important;
+            min-height: auto;
+        }
+
+        .receipt-card {
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+            border-radius: 0 !important;
+        }
+
+        .receipt-card::before {
+            display: none;
+        }
+
+        .receipt-body {
+            padding: 30px !important;
+        }
+
+        .receipt-actions {
+            display: none !important;
+        }
+
+        .receipt-footer {
+            margin-top: 25px;
+        }
+    }
+</style>
+
+
+<div class="receipt-page">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-8 col-xl-8">
+
+                <div class="card receipt-card">
+
+                    <div class="receipt-body">
+
+                        <!-- ==================================
+                             SUCCESS HEADER
+                        =================================== -->
+
+                        <div class="text-center">
+
+                            <div class="receipt-success-icon">
+
+                                <i class="bi bi-check-lg"></i>
+
+                            </div>
+
+                            <h2 class="receipt-title">
+                                Payment Successful
+                            </h2>
+
+                            <p class="receipt-subtitle">
+                                Thank you for your payment.
+                                Your transaction has been recorded successfully.
+                            </p>
+
+                        </div>
+
+
+                        <!-- ==================================
+                             RECEIPT DETAILS
+                        =================================== -->
+
+                        <div class="receipt-details">
+
+                            <div class="receipt-details-header">
+
+                                <h5>
+                                    <i class="bi bi-receipt-cutoff me-2"></i>
+                                    Payment Receipt
+                                </h5>
+
+                            </div>
+
+
+                            <!-- Receipt Number -->
+
+                            <div class="row align-items-center receipt-row">
+
+                                <div class="col-sm-6">
+
+                                    <span class="receipt-label">
+                                        Receipt Number
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-6 text-sm-end">
+
+                                    <span class="receipt-value receipt-number">
+                                        {{ payment.receipt_number }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Payment Reference -->
+
+                            <div class="row align-items-center receipt-row">
+
+                                <div class="col-sm-6">
+
+                                    <span class="receipt-label">
+                                        Payment Reference
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-6 text-sm-end">
+
+                                    <span class="receipt-value payment-reference">
+                                        {{ payment.payment_reference }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Member -->
+
+                            <div class="row align-items-center receipt-row">
+
+                                <div class="col-sm-6">
+
+                                    <span class="receipt-label">
+                                        Member
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-6 text-sm-end">
+
+                                    <span class="receipt-value">
+                                        {{ payment.member.get_full_name|default:payment.member.username }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Invoice -->
+
+                            <div class="row align-items-center receipt-row">
+
+                                <div class="col-sm-6">
+
+                                    <span class="receipt-label">
+                                        Invoice
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-6 text-sm-end">
+
+                                    <span class="receipt-value receipt-number">
+                                        {{ payment.invoice.invoice_number }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Amount -->
+
+                            <div class="row align-items-center receipt-row amount-row">
+
+                                <div class="col-sm-6">
+
+                                    <span class="receipt-label">
+                                        Amount Paid
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-6 text-sm-end">
+
+                                    <span class="amount-value">
+                                        ₦{{ payment.amount|floatformat:2 }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Payment Method -->
+
+                            <div class="row align-items-center receipt-row">
+
+                                <div class="col-sm-6">
+
+                                    <span class="receipt-label">
+                                        Payment Method
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-6 text-sm-end">
+
+                                    <span class="method-badge">
+
+                                        <i class="bi bi-credit-card"></i>
+
+                                        {{ payment.payment_method }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Channel -->
+
+                            {% if payment.channel %}
+
+                                <div class="row align-items-center receipt-row">
+
+                                    <div class="col-sm-6">
+
+                                        <span class="receipt-label">
+                                            Channel
+                                        </span>
+
+                                    </div>
+
+                                    <div class="col-sm-6 text-sm-end">
+
+                                        <span class="receipt-value">
+
+                                            {{ payment.channel|title }}
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- Status -->
+
+                            <div class="row align-items-center receipt-row">
+
+                                <div class="col-sm-6">
+
+                                    <span class="receipt-label">
+                                        Status
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-6 text-sm-end">
+
+                                    <span class="success-badge">
+
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                        Successful
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Payment Date -->
+
+                            <div class="row align-items-center receipt-row">
+
+                                <div class="col-sm-6">
+
+                                    <span class="receipt-label">
+                                        Payment Date
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-6 text-sm-end">
+
+                                    <span class="receipt-value">
+
+                                        {{ payment.paid_at|date:"d M Y, h:i A" }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================
+                             ACTION BUTTONS
+                        =================================== -->
+
+                        <div class="receipt-actions d-flex justify-content-center gap-2">
+
+                            <button
+                                onclick="window.print()"
+                                class="btn print-btn">
+
+                                <i class="bi bi-printer me-1"></i>
+
+                                Print Receipt
+
+                            </button>
+
+
+                            <a
+                                href="{% url 'payments:history' %}"
+                                class="btn history-btn">
+
+                                <i class="bi bi-clock-history me-1"></i>
+
+                                Payment History
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- ==================================
+                             FOOTER
+                        =================================== -->
+
+                        <div class="receipt-footer">
+
+                            <i class="bi bi-shield-check me-1"></i>
+
+                            This receipt confirms that your payment was successfully recorded.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

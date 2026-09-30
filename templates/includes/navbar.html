@@ -1,0 +1,1130 @@
+{% load static %}
+<style>
+
+/* =========================================================
+   UGMWA PROFESSIONAL NAVBAR
+========================================================= */
+
+.ugmwa-navbar {
+    background: linear-gradient(135deg, #06291f, #073f36);
+    border-bottom: 3px solid #d4af37;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.ugmwa-navbar .container {
+    min-height: 78px;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.ugmwa-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #ffffff !important;
+    font-weight: 900;
+    font-size: 1.25rem;
+    letter-spacing: 0.5px;
+    padding: 0;
+}
+
+.ugmwa-brand:hover {
+    color: #f1d77a !important;
+}
+
+/* .ugmwa-brand-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #d4af37;
+    color: #06291f;
+    font-size: 1.35rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+} */
+
+.ugmwa-brand-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 2px solid #d4af37;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.18);
+}
+
+.ugmwa-brand-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ugmwa-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+}
+
+.ugmwa-brand-name {
+    font-size: 1.18rem;
+    font-weight: 900;
+}
+
+.ugmwa-brand-subtitle {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 1.3px;
+    color: rgba(255, 255, 255, 0.62);
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+
+
+/* =========================================================
+   MAIN NAVIGATION
+========================================================= */
+
+.ugmwa-navbar .navbar-nav {
+    align-items: center;
+    gap: 3px;
+}
+
+.ugmwa-navbar .nav-link {
+    position: relative;
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 28px 13px !important;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.ugmwa-navbar .nav-link:hover {
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   GOLD ACTIVE / HOVER UNDERLINE
+========================================================= */
+
+.ugmwa-navbar .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 13px;
+    right: 13px;
+    bottom: 17px;
+    height: 2px;
+    background: #d4af37;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.2s ease;
+}
+
+.ugmwa-navbar .nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+
+/* =========================================================
+   MENU DROPDOWN
+========================================================= */
+
+.ugmwa-menu-dropdown {
+    min-width: 270px !important;
+    margin-top: 8px !important;
+    padding: 8px !important;
+    border: 1px solid #e4ebe7 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.13) !important;
+    animation: ugmwaDropdown 0.18s ease;
+}
+
+@keyframes ugmwaDropdown {
+
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =========================================================
+   DROPDOWN ITEMS
+========================================================= */
+
+.ugmwa-navbar .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #34443f;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ugmwa-navbar .dropdown-item i {
+    width: 18px;
+    color: #0b5d4f;
+}
+
+.ugmwa-navbar .dropdown-item:hover {
+    background: #edf5f2;
+    color: #0b5d4f;
+}
+
+.ugmwa-navbar .dropdown-divider {
+    margin: 7px 4px;
+}
+
+
+/* =========================================================
+   USER PROFILE
+========================================================= */
+
+.ugmwa-user {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.ugmwa-user-icon {
+    width: 31px;
+    height: 31px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.13);
+    color: #f1d77a;
+}
+
+
+/* =========================================================
+   USER DROPDOWN
+========================================================= */
+
+.ugmwa-user-dropdown {
+    min-width: 270px !important;
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   USER DROPDOWN SCROLLBAR
+========================================================= */
+
+.ugmwa-user-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ugmwa-user-dropdown::-webkit-scrollbar-track {
+    background: #f1f5f3;
+    border-radius: 10px;
+}
+
+.ugmwa-user-dropdown::-webkit-scrollbar-thumb {
+    background: #0b5d4f;
+    border-radius: 10px;
+}
+
+.ugmwa-user-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #073f36;
+}
+
+.ugmwa-user-dropdown {
+    scrollbar-width: thin;
+    scrollbar-color: #0b5d4f #f1f5f3;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.ugmwa-login-btn {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    padding: 9px 18px !important;
+    transition: all 0.2s ease;
+}
+
+.ugmwa-login-btn:hover {
+    background: #ffffff;
+    color: #073f36 !important;
+    border-color: #ffffff;
+}
+
+
+/* =========================================================
+   REGISTER BUTTON
+========================================================= */
+
+.ugmwa-register-btn {
+    background: #d4af37;
+    color: #06291f !important;
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    font-size: 0.84rem;
+    font-weight: 800;
+    padding: 9px 18px !important;
+    transition: all 0.2s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.10);
+}
+
+.ugmwa-register-btn:hover {
+    background: #f1d77a;
+    border-color: #f1d77a;
+    color: #06291f !important;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   HAMBURGER BUTTON
+========================================================= */
+
+.ugmwa-toggler {
+    border: 1px solid rgba(212, 175, 55, 0.55) !important;
+    border-radius: 8px;
+    padding: 7px 10px;
+    box-shadow: none !important;
+}
+
+.ugmwa-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18) !important;
+}
+
+.ugmwa-toggler .navbar-toggler-icon {
+    background-image:
+        url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28212,175,55,1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+
+/* =========================================================
+   MENU BUTTON
+========================================================= */
+
+.ugmwa-menu-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .ugmwa-navbar .container {
+        min-height: 70px;
+    }
+
+    .ugmwa-navbar .navbar-collapse {
+        margin-top: 15px;
+        padding: 12px 0 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    .ugmwa-navbar .navbar-nav {
+        align-items: stretch;
+        gap: 3px;
+    }
+
+    .ugmwa-navbar .nav-link {
+        padding: 12px 10px !important;
+        border-radius: 7px;
+    }
+
+    .ugmwa-navbar .nav-link:hover {
+        background: rgba(255, 255, 255, 0.07);
+    }
+
+    .ugmwa-navbar .nav-link::after {
+        display: none;
+    }
+
+
+    /* Mobile Menu Dropdown */
+
+    .ugmwa-menu-dropdown {
+        margin-top: 4px !important;
+        width: 100%;
+        background: #ffffff;
+        border: none !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+    }
+
+
+    /* Mobile User Dropdown */
+
+    .ugmwa-user-dropdown {
+        max-height: 55vh;
+        overflow-y: auto;
+        width: 100%;
+        margin-top: 4px !important;
+        background: #ffffff;
+        border: none !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+    }
+
+
+    /* Login/Register */
+
+    .ugmwa-navbar .nav-item.ms-lg-2 {
+        margin-left: 0 !important;
+        margin-top: 6px;
+    }
+
+    .ugmwa-login-btn,
+    .ugmwa-register-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 11px 18px !important;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 575px) {
+
+    .ugmwa-brand-name {
+        font-size: 1rem;
+    }
+
+    .ugmwa-brand-subtitle {
+        font-size: 0.53rem;
+        letter-spacing: 1px;
+    }
+
+    .ugmwa-brand-icon {
+        width: 39px;
+        height: 39px;
+        font-size: 1.1rem;
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     UGMWA NAVBAR
+========================================================= -->
+
+<nav class="navbar navbar-expand-lg ugmwa-navbar">
+
+    <div class="container">
+
+
+        <!-- =================================================
+             BRAND
+        ================================================== -->
+
+        <a
+            class="navbar-brand ugmwa-brand"
+            href="/"
+        >
+
+            <!-- <span class="ugmwa-brand-icon">
+                <i class="bi bi-people-fill"></i>
+            </span> -->
+
+            <span class="ugmwa-brand-icon">
+    <img
+        src="{% static 'images/ugmwa.jpg' %}"
+        alt="UGMWA Logo"
+    >
+</span>
+
+            <span class="ugmwa-brand-text">
+
+                <span class="ugmwa-brand-name">
+                    UGMWA
+                </span>
+
+                <span class="ugmwa-brand-subtitle">
+                    Association
+                </span>
+
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MOBILE HAMBURGER
+        ================================================== -->
+
+        <button
+            class="navbar-toggler ugmwa-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <div
+            class="collapse navbar-collapse"
+            id="mainNavbar"
+        >
+
+            <ul class="navbar-nav ms-auto">
+
+
+                <!-- =================================================
+                     HOME
+                ================================================= -->
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="/"
+                    >
+
+                        <i class="bi bi-house-door me-1"></i>
+
+                        Home
+
+                    </a>
+
+                </li>
+
+
+                <!-- =================================================
+                     MAIN MENU DROPDOWN
+                ================================================= -->
+
+                <li class="nav-item dropdown">
+
+                    <a
+                        class="nav-link dropdown-toggle ugmwa-menu-button"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+
+                        <i class="bi bi-list"></i>
+
+                        Menu
+
+                    </a>
+
+
+                    <ul class="dropdown-menu dropdown-menu-end ugmwa-menu-dropdown">
+
+
+                        <!-- ABOUT -->
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'association:about' %}"
+                            >
+
+                                <i class="bi bi-info-circle"></i>
+
+                                About
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- LEADERSHIP -->
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'executives:leadership' %}"
+                            >
+
+                                <i class="bi bi-people"></i>
+
+                                Leadership
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- EVENTS -->
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'events:list' %}"
+                            >
+
+                                <i class="bi bi-calendar-event"></i>
+
+                                Events
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- NEWS -->
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'announcements:list' %}"
+                            >
+
+                                <i class="bi bi-newspaper"></i>
+
+                                News
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- CONTACT -->
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="#contact"
+                            >
+
+                                <i class="bi bi-envelope"></i>
+
+                                Contact
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- CONSTITUTION -->
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'association:constitution' %}"
+                            >
+
+                                <i class="bi bi-journal-text"></i>
+
+                                Constitution
+
+                            </a>
+
+                        </li>
+
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+
+                        <!-- ATTENDANCE -->
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'attendance:list' %}"
+                            >
+
+                                <i class="bi bi-calendar-check"></i>
+
+                                Attendance
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- MY ATTENDANCE -->
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'attendance:my' %}"
+                            >
+
+                                <i class="bi bi-person-check"></i>
+
+                                My Attendance
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- WELFARE -->
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'welfare:my' %}"
+                            >
+
+                                <i class="bi bi-heart-pulse"></i>
+
+                                Welfare
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+
+                <!-- =================================================
+                     AUTHENTICATED USER
+                ================================================== -->
+
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item dropdown ms-lg-2">
+
+                        <a
+                            class="nav-link dropdown-toggle ugmwa-user"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+
+                            <span class="ugmwa-user-icon">
+
+                                <i class="bi bi-person-fill"></i>
+
+                            </span>
+
+                            <span>
+                                {{ user.first_name|default:user.username }}
+                            </span>
+
+                        </a>
+
+
+                        <!-- USER DROPDOWN -->
+
+                        <ul class="dropdown-menu dropdown-menu-end ugmwa-user-dropdown">
+
+
+                            <!-- DASHBOARD -->
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'dashboard:home' %}"
+                                >
+
+                                    <i class="bi bi-speedometer2"></i>
+
+                                    Dashboard
+
+                                </a>
+
+                            </li>
+
+<li>
+    <div class="dropdown-item-text">
+
+        <small class="text-muted d-block">
+            Membership Code
+        </small>
+
+        <strong
+            style="color:#064E3B;"
+        >
+            {{ user.membership_code }}
+        </strong>
+
+    </div>
+</li>
+
+<li>
+    <hr class="dropdown-divider">
+</li>
+{% if user.is_superuser or user.role == "SUPER_ADMIN" or user.role == "MEMBERSHIP_OFFICER" %}
+
+<li>
+    <a
+        class="dropdown-item"
+        href="{% url 'payments:dues_type_list' %}"
+    >
+        <i class="bi bi-cash-stack me-2"></i>
+        Dues Types
+    </a>
+</li>
+
+<li>
+    <a
+        class="dropdown-item"
+        href="{% url 'payments:dues_schedule_list' %}"
+    >
+        <i class="bi bi-calendar-check me-2"></i>
+        Dues Schedules
+    </a>
+</li>
+
+{% endif %}
+<li>
+    <a
+        class="dropdown-item"
+        href="{% url 'payments:membership_dashboard' %}"
+    >
+
+        <i class="bi bi-person-vcard me-2"></i>
+
+        My Membership
+
+    </a>
+</li>
+
+<li>
+    <a
+        class="dropdown-item"
+        href="{% url 'payments:membership_card' %}"
+    >
+
+        <i class="bi bi-card-heading me-2"></i>
+
+        Membership Card
+
+    </a>
+</li>
+                            <!-- PROFILE -->
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'members:profile' %}"
+                                >
+
+                                    <i class="bi bi-person"></i>
+
+                                    My Profile
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- PAYMENTS -->
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'payments:invoices' %}"
+                                >
+
+                                    <i class="bi bi-wallet2"></i>
+
+                                    My Payments
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- PAYMENT HISTORY -->
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'payments:history' %}"
+                                >
+
+                                    <i class="bi bi-receipt"></i>
+
+                                    Payment History
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- DOCUMENTS -->
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'documents:list' %}"
+                                >
+
+                                    <i class="bi bi-folder2-open"></i>
+
+                                    Documents
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- =================================================
+                                 FINANCE
+                            ================================================== -->
+
+                            {% if user.is_superuser or user.role == "SUPER_ADMIN" or user.role == "TREASURER" or user.role == "FINANCIAL_SECRETARY" %}
+
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+
+
+                                <!-- FINANCE DASHBOARD -->
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="{% url 'finance:dashboard' %}"
+                                    >
+
+                                        <i class="bi bi-bar-chart-line"></i>
+
+                                        Finance Dashboard
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- INCOME -->
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="{% url 'finance:income_list' %}"
+                                    >
+
+                                        <i class="bi bi-arrow-down-circle"></i>
+
+                                        Income
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- RECORD INCOME -->
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="{% url 'finance:income_create' %}"
+                                    >
+
+                                        <i class="bi bi-plus-circle"></i>
+
+                                        Record Income
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- RECORD EXPENSE -->
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="{% url 'finance:expense_create' %}"
+                                    >
+
+                                        <i class="bi bi-dash-circle"></i>
+
+                                        Record Expense
+
+                                    </a>
+
+                                </li>
+
+
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+
+
+                                <!-- FINANCIAL REPORTS -->
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="{% url 'finance:report' %}"
+                                    >
+
+                                        <i class="bi bi-file-earmark-bar-graph"></i>
+
+                                        Financial Reports
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- MONTHLY REPORT -->
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="{% url 'finance:monthly_report' %}"
+                                    >
+
+                                        <i class="bi bi-calendar3"></i>
+
+                                        Monthly Financial Report
+
+                                    </a>
+
+                                </li>
+
+                            {% endif %}
+
+
+                            <!-- LOGOUT -->
+
+                            <li>
+
+                                <hr class="dropdown-divider">
+
+                            </li>
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item text-danger"
+                                    href="{% url 'accounts:logout' %}"
+                                >
+
+                                    <i class="bi bi-box-arrow-right text-danger"></i>
+
+                                    Logout
+
+                                </a>
+
+                            </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                {% else %}
+
+
+                    <!-- =================================================
+                         LOGIN
+                    ================================================== -->
+
+                    <!-- <li class="nav-item ms-lg-2">
+
+                        <a
+                            class="nav-link ugmwa-login-btn"
+                            href="{% url 'accounts:login' %}"
+                        >
+
+                            <i class="bi bi-box-arrow-in-right me-1"></i>
+
+                            Login
+
+                        </a>
+
+                    </li> -->
+
+
+                    <!-- =================================================
+                         REGISTER
+                    ================================================== -->
+
+                    <!-- <li class="nav-item ms-lg-2">
+
+                        <a
+                            class="nav-link ugmwa-register-btn"
+                            href="{% url 'accounts:register' %}"
+                        >
+
+                            <i class="bi bi-person-plus-fill me-1"></i>
+
+                            Register
+
+                        </a>
+
+                    </li> -->
+
+
+                {% endif %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>

@@ -1,0 +1,822 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Finance Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+    :root {
+        --finance-green: #0b3d2e;
+        --finance-dark: #06291f;
+        --finance-light-green: #145c45;
+        --finance-gold: #d4af37;
+        --finance-light-gold: #f1d77a;
+        --finance-bg: #f8f6ef;
+        --finance-border: #e4ebe7;
+        --finance-muted: #68756f;
+    }
+
+    .finance-dashboard {
+        background: var(--finance-bg);
+        min-height: 100vh;
+        padding: 30px 0 50px;
+    }
+
+    /* =========================
+       PAGE HEADER
+    ========================= */
+
+    .finance-header {
+        background: linear-gradient(
+            135deg,
+            var(--finance-dark),
+            var(--finance-green)
+        );
+        border-radius: 20px;
+        padding: 28px 30px;
+        color: #fff;
+        box-shadow: 0 10px 30px rgba(6, 41, 31, 0.15);
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .finance-header::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        right: -60px;
+        top: -80px;
+        border: 2px solid rgba(212, 175, 55, 0.25);
+        border-radius: 50%;
+    }
+
+    .finance-header h2 {
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .finance-header p {
+        color: rgba(255, 255, 255, 0.72);
+    }
+
+    .finance-header .header-icon {
+        color: var(--finance-light-gold);
+    }
+
+    /* =========================
+       BUTTON
+    ========================= */
+
+    .btn-finance {
+        background: var(--finance-gold);
+        color: var(--finance-dark);
+        border: none;
+        font-weight: 700;
+        padding: 11px 18px;
+        border-radius: 10px;
+        transition: all 0.25s ease;
+        position: relative;
+        z-index: 2;
+    }
+
+    .btn-finance:hover {
+        background: var(--finance-light-gold);
+        color: var(--finance-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 7px 18px rgba(212, 175, 55, 0.25);
+    }
+
+    /* =========================
+       SUMMARY CARDS
+    ========================= */
+
+    .finance-card {
+        background: #fff;
+        border: 1px solid var(--finance-border);
+        border-radius: 18px;
+        overflow: hidden;
+        transition: all 0.25s ease;
+        box-shadow: 0 5px 18px rgba(6, 41, 31, 0.06);
+        height: 100%;
+        position: relative;
+    }
+
+    .finance-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--finance-gold);
+    }
+
+    .finance-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(6, 41, 31, 0.12);
+        border-color: rgba(212, 175, 55, 0.5);
+    }
+
+    .finance-card .card-body {
+        padding: 23px;
+    }
+
+    .finance-label {
+        color: var(--finance-muted);
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .finance-amount {
+        color: var(--finance-dark);
+        font-size: 1.55rem;
+        font-weight: 800;
+        margin-bottom: 3px;
+    }
+
+    .finance-year {
+        color: var(--finance-muted);
+        font-size: 0.8rem;
+    }
+
+    .finance-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(11, 61, 46, 0.09);
+        color: var(--finance-green);
+        font-size: 1.55rem;
+    }
+
+    .finance-icon.gold {
+        background: rgba(212, 175, 55, 0.14);
+        color: #a88409;
+    }
+
+    .finance-icon.red {
+        background: rgba(180, 45, 45, 0.09);
+        color: #a83232;
+    }
+
+    /* =========================
+       TODAY ACTIVITY
+    ========================= */
+
+    .activity-card {
+        background: linear-gradient(
+            145deg,
+            #ffffff,
+            #f8fbf9
+        );
+    }
+
+    .activity-row {
+        padding: 7px 0;
+    }
+
+    .activity-title {
+        color: var(--finance-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .income-text {
+        color: var(--finance-green) !important;
+    }
+
+    .expense-text {
+        color: #a83232 !important;
+    }
+
+    /* =========================
+       TRANSACTION CARDS
+    ========================= */
+
+    .transaction-card {
+        background: #fff;
+        border: 1px solid var(--finance-border);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(6, 41, 31, 0.06);
+    }
+
+    .transaction-header {
+        background: linear-gradient(
+            135deg,
+            var(--finance-dark),
+            var(--finance-green)
+        );
+        color: #fff;
+        padding: 17px 20px;
+        border: none;
+    }
+
+    .transaction-header h5 {
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .transaction-header i {
+        color: var(--finance-light-gold);
+    }
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .finance-table {
+        margin: 0;
+    }
+
+    .finance-table thead {
+        background: #f3f6f4;
+    }
+
+    .finance-table thead th {
+        color: var(--finance-green);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        border-bottom: 2px solid var(--finance-gold);
+        padding: 14px 16px;
+        white-space: nowrap;
+    }
+
+    .finance-table tbody td {
+        padding: 14px 16px;
+        vertical-align: middle;
+        color: #394640;
+        border-color: #edf1ef;
+        font-size: 0.9rem;
+    }
+
+    .finance-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .finance-table tbody tr:hover {
+        background: rgba(11, 61, 46, 0.035);
+    }
+
+    .reference-number {
+        color: var(--finance-green);
+        font-weight: 700;
+    }
+
+    .category-name {
+        color: #56645e;
+    }
+
+    .income-amount {
+        color: var(--finance-green) !important;
+        font-weight: 800;
+    }
+
+    .expense-amount {
+        color: #a83232 !important;
+        font-weight: 800;
+    }
+
+    .date-text {
+        color: var(--finance-muted);
+        white-space: nowrap;
+    }
+
+    /* =========================
+       EMPTY STATE
+    ========================= */
+
+    .empty-state {
+        padding: 35px 20px !important;
+        color: var(--finance-muted);
+    }
+
+    .empty-state i {
+        display: block;
+        font-size: 2rem;
+        color: var(--finance-gold);
+        margin-bottom: 8px;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 767.98px) {
+
+        .finance-dashboard {
+            padding: 20px 0 35px;
+        }
+
+        .finance-header {
+            padding: 22px 20px;
+            border-radius: 16px;
+        }
+
+        .finance-header .d-flex {
+            align-items: flex-start !important;
+            gap: 18px;
+        }
+
+        .finance-header h2 {
+            font-size: 1.45rem;
+        }
+
+        .finance-header .btn-finance {
+            padding: 9px 12px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .finance-card {
+            border-radius: 15px;
+        }
+
+        .finance-card .card-body {
+            padding: 20px;
+        }
+
+        .finance-amount {
+            font-size: 1.35rem;
+        }
+
+        .transaction-card {
+            border-radius: 15px;
+        }
+
+        .transaction-header {
+            padding: 15px 17px;
+        }
+
+        .finance-table thead th,
+        .finance-table tbody td {
+            padding: 12px;
+        }
+    }
+
+</style>
+
+
+<div class="finance-dashboard">
+
+    <div class="container-fluid">
+
+
+        <!-- =========================
+             PAGE HEADER
+        ========================== -->
+
+        <div class="finance-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <div class="d-flex align-items-center mb-2">
+
+                        <i class="bi bi-bar-chart-line-fill fs-4 me-2 header-icon"></i>
+
+                        <h2 class="mb-0">
+                            Finance Dashboard
+                        </h2>
+
+                    </div>
+
+                    <p class="mb-0">
+                        Financial overview for {{ current_year }}
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <a
+                        href="{% url 'admin:finance_income_add' %}"
+                        class="btn btn-finance">
+
+                        <i class="bi bi-plus-circle me-1"></i>
+
+                        Record Income
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             FINANCIAL SUMMARY
+        ========================== -->
+
+        <div class="row g-4 mb-4">
+
+
+            <!-- Total Income -->
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="finance-card">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <div>
+
+                                <p class="finance-label">
+                                    Total Income
+                                </p>
+
+                                <h3 class="finance-amount">
+                                    ₦{{ total_income|floatformat:2 }}
+                                </h3>
+
+                                <small class="finance-year">
+                                    {{ current_year }}
+                                </small>
+
+                            </div>
+
+
+                            <div class="finance-icon">
+
+                                <i class="bi bi-arrow-down-circle-fill"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Total Expenses -->
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="finance-card">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <div>
+
+                                <p class="finance-label">
+                                    Total Expenses
+                                </p>
+
+                                <h3 class="finance-amount">
+                                    ₦{{ total_expenses|floatformat:2 }}
+                                </h3>
+
+                                <small class="finance-year">
+                                    {{ current_year }}
+                                </small>
+
+                            </div>
+
+
+                            <div class="finance-icon red">
+
+                                <i class="bi bi-arrow-up-circle-fill"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Net Balance -->
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="finance-card">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <div>
+
+                                <p class="finance-label">
+                                    Net Balance
+                                </p>
+
+                                <h3 class="finance-amount">
+                                    ₦{{ balance|floatformat:2 }}
+                                </h3>
+
+                                <small class="finance-year">
+                                    Income minus expenses
+                                </small>
+
+                            </div>
+
+
+                            <div class="finance-icon gold">
+
+                                <i class="bi bi-wallet2"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Today's Activity -->
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="finance-card activity-card">
+
+                    <div class="card-body">
+
+                        <p class="finance-label">
+                            Today's Activity
+                        </p>
+
+
+                        <div class="activity-row">
+
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <span class="activity-title">
+                                    Income
+                                </span>
+
+                                <span class="fw-bold income-text">
+                                    ₦{{ today_income|floatformat:2 }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="activity-row">
+
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <span class="activity-title">
+                                    Expenses
+                                </span>
+
+                                <span class="fw-bold expense-text">
+                                    ₦{{ today_expenses|floatformat:2 }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             RECENT TRANSACTIONS
+        ========================== -->
+
+        <div class="row g-4">
+
+
+            <!-- Recent Income -->
+
+            <div class="col-lg-6">
+
+                <div class="transaction-card">
+
+                    <div class="transaction-header">
+
+                        <h5>
+
+                            <i class="bi bi-arrow-down-circle-fill me-2"></i>
+
+                            Recent Income
+
+                        </h5>
+
+                    </div>
+
+
+                    <div class="card-body p-0">
+
+                        <div class="table-responsive">
+
+                            <table class="table finance-table table-hover mb-0">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Reference</th>
+
+                                        <th>Category</th>
+
+                                        <th>Amount</th>
+
+                                        <th>Date</th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for income in recent_income %}
+
+                                    <tr>
+
+                                        <td class="reference-number">
+                                            {{ income.income_number }}
+                                        </td>
+
+                                        <td class="category-name">
+                                            {{ income.category.name }}
+                                        </td>
+
+                                        <td class="income-amount">
+
+                                            ₦{{ income.amount|floatformat:2 }}
+
+                                        </td>
+
+                                        <td class="date-text">
+                                            {{ income.transaction_date|date:"d M Y" }}
+                                        </td>
+
+                                    </tr>
+
+                                    {% empty %}
+
+                                    <tr>
+
+                                        <td
+                                            colspan="4"
+                                            class="text-center empty-state">
+
+                                            <i class="bi bi-inbox"></i>
+
+                                            No income records yet.
+
+                                        </td>
+
+                                    </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Recent Expenses -->
+
+            <div class="col-lg-6">
+
+                <div class="transaction-card">
+
+                    <div class="transaction-header">
+
+                        <h5>
+
+                            <i class="bi bi-arrow-up-circle-fill me-2"></i>
+
+                            Recent Expenses
+
+                        </h5>
+
+                    </div>
+
+
+                    <div class="card-body p-0">
+
+                        <div class="table-responsive">
+
+                            <table class="table finance-table table-hover mb-0">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Reference</th>
+
+                                        <th>Category</th>
+
+                                        <th>Amount</th>
+
+                                        <th>Date</th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for expense in recent_expenses %}
+
+                                    <tr>
+
+                                        <td class="reference-number">
+                                            {{ expense.expense_number }}
+                                        </td>
+
+                                        <td class="category-name">
+                                            {{ expense.category.name }}
+                                        </td>
+
+                                        <td class="expense-amount">
+
+                                            ₦{{ expense.amount|floatformat:2 }}
+
+                                        </td>
+
+                                        <td class="date-text">
+                                            {{ expense.transaction_date|date:"d M Y" }}
+                                        </td>
+
+                                    </tr>
+
+                                    {% empty %}
+
+                                    <tr>
+
+                                        <td
+                                            colspan="4"
+                                            class="text-center empty-state">
+
+                                            <i class="bi bi-inbox"></i>
+
+                                            No expense records yet.
+
+                                        </td>
+
+                                    </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

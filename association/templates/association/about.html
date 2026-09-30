@@ -1,0 +1,446 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    About {{ association.name|default:"Our Association" }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --association-green: #0b3d2e;
+        --association-green-dark: #06291f;
+        --association-green-light: #145c45;
+        --association-gold: #d4af37;
+        --association-gold-light: #f1d77a;
+        --association-cream: #f8f6ef;
+        --association-text: #26332d;
+        --association-muted: #68756f;
+    }
+
+    .about-page {
+        background:
+            linear-gradient(
+                135deg,
+                rgba(11, 61, 46, 0.04),
+                rgba(212, 175, 55, 0.06)
+            );
+        min-height: 100vh;
+        padding-bottom: 80px;
+    }
+
+    /* HERO */
+
+    .about-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+            135deg,
+            var(--association-green-dark),
+            var(--association-green)
+        );
+        color: white;
+        padding: 75px 20px;
+        margin-bottom: 55px;
+    }
+
+    .about-hero::before {
+        content: "";
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        border-radius: 50%;
+        top: -180px;
+        right: -100px;
+    }
+
+    .about-hero::after {
+        content: "";
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        border: 1px solid rgba(212, 175, 55, 0.18);
+        border-radius: 50%;
+        bottom: -150px;
+        left: -80px;
+    }
+
+    .about-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-badge {
+        display: inline-block;
+        color: var(--association-gold-light);
+        border: 1px solid rgba(241, 215, 122, 0.5);
+        padding: 7px 18px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+    }
+
+    .about-title {
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 15px;
+    }
+
+    .about-title span {
+        color: var(--association-gold);
+    }
+
+    .about-slogan {
+        max-width: 750px;
+        margin: auto;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 1.15rem;
+    }
+
+    /* SECTION CARDS */
+
+    .about-card {
+        background: #ffffff;
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        height: 100%;
+        box-shadow: 0 10px 35px rgba(11, 61, 46, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .about-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 18px 45px rgba(11, 61, 46, 0.14);
+    }
+
+    .about-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--association-gold);
+    }
+
+    .about-card-body {
+        padding: 32px;
+    }
+
+    .about-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(11, 61, 46, 0.08);
+        color: var(--association-green);
+        border-radius: 14px;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .about-heading {
+        color: var(--association-green);
+        font-weight: 750;
+        margin-bottom: 15px;
+    }
+
+    .about-heading::after {
+        content: "";
+        display: block;
+        width: 45px;
+        height: 3px;
+        background: var(--association-gold);
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .about-text {
+        color: var(--association-muted);
+        line-height: 1.9;
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+
+    /* FEATURED HISTORY */
+
+    .history-card {
+        margin-bottom: 30px;
+    }
+
+    .history-card .about-card-body {
+        padding: 38px;
+    }
+
+    .history-icon {
+        background: var(--association-green);
+        color: var(--association-gold);
+    }
+
+    /* MISSION / VISION */
+
+    .mission-card {
+        background:
+            linear-gradient(
+                145deg,
+                #ffffff,
+                #f8faf8
+            );
+    }
+
+    .vision-card {
+        background:
+            linear-gradient(
+                145deg,
+                #ffffff,
+                #fbfaf4
+            );
+    }
+
+    .mission-card .about-icon {
+        color: var(--association-green);
+        background: rgba(11, 61, 46, 0.1);
+    }
+
+    .vision-card .about-icon {
+        color: #a98513;
+        background: rgba(212, 175, 55, 0.14);
+    }
+
+    /* OBJECTIVES */
+
+    .objectives-card {
+        margin-top: 30px;
+    }
+
+    .objectives-list-icon {
+        background: rgba(212, 175, 55, 0.15);
+        color: #9b7910;
+    }
+
+    /* SECTION LABEL */
+
+    .section-label {
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #9b7910;
+        margin-bottom: 8px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 767px) {
+
+        .about-hero {
+            padding: 55px 15px;
+            margin-bottom: 35px;
+        }
+
+        .about-title {
+            font-size: 2.2rem;
+        }
+
+        .about-slogan {
+            font-size: 1rem;
+        }
+
+        .about-card-body,
+        .history-card .about-card-body {
+            padding: 25px;
+        }
+
+    }
+</style>
+
+
+<div class="about-page">
+
+    <!-- HERO HEADER -->
+
+    <section class="about-hero">
+
+        <div class="container text-center about-hero-content">
+
+            <div class="about-badge">
+                <i class="bi bi-building me-2"></i>
+                About Our Association
+            </div>
+
+            <h1 class="about-title">
+                About
+                <span>
+                    {{ association.name|default:"Our Association" }}
+                </span>
+            </h1>
+
+            {% if association.slogan %}
+
+                <p class="about-slogan">
+                    {{ association.slogan }}
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <div class="container">
+
+
+        <!-- HISTORY -->
+
+        <div class="about-card history-card">
+
+            <div class="about-card-body">
+
+                <div class="about-icon history-icon">
+
+                    <i class="bi bi-clock-history"></i>
+
+                </div>
+
+                <div class="section-label">
+                    Our Journey
+                </div>
+
+                <h3 class="about-heading">
+                    Our History
+                </h3>
+
+                <p class="about-text">
+
+                    {{ association.history|default:"Association history has not been added yet."|linebreaksbr }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- MISSION AND VISION -->
+
+        <div class="row g-4">
+
+
+            <!-- MISSION -->
+
+            <div class="col-md-6">
+
+                <div class="about-card mission-card">
+
+                    <div class="about-card-body">
+
+                        <div class="about-icon">
+
+                            <i class="bi bi-bullseye"></i>
+
+                        </div>
+
+                        <div class="section-label">
+                            Our Purpose
+                        </div>
+
+                        <h3 class="about-heading">
+                            Our Mission
+                        </h3>
+
+                        <p class="about-text">
+
+                            {{ association.mission|default:"Our mission has not been added yet."|linebreaksbr }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- VISION -->
+
+            <div class="col-md-6">
+
+                <div class="about-card vision-card">
+
+                    <div class="about-card-body">
+
+                        <div class="about-icon">
+
+                            <i class="bi bi-eye"></i>
+
+                        </div>
+
+                        <div class="section-label">
+                            Our Future
+                        </div>
+
+                        <h3 class="about-heading">
+                            Our Vision
+                        </h3>
+
+                        <p class="about-text">
+
+                            {{ association.vision|default:"Our vision has not been added yet."|linebreaksbr }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- OBJECTIVES -->
+
+        <div class="about-card objectives-card">
+
+            <div class="about-card-body">
+
+                <div class="about-icon objectives-list-icon">
+
+                    <i class="bi bi-list-check"></i>
+
+                </div>
+
+                <div class="section-label">
+                    What We Aim To Achieve
+                </div>
+
+                <h3 class="about-heading">
+                    Our Objectives
+                </h3>
+
+                <p class="about-text">
+
+                    {{ association.objectives|default:"Our objectives have not been added yet."|linebreaksbr }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

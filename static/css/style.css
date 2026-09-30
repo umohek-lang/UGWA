@@ -1,0 +1,776 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+.hero-section {
+    padding: 100px 0;
+}
+
+.section-padding {
+    padding: 70px 0;
+}
+
+.card {
+    border: none;
+}
+
+footer {
+    background-color: #212529;
+    color: white;
+}
+
+
+:root {
+
+    /* ================================
+       ASSOCIATION COLORS
+    ================================= */
+
+    --association-green: #0B3D2E;
+    --association-dark-green: #06291F;
+    --association-deep-green: #021C15;
+    --association-light-green: #145C45;
+
+    --association-gold: #D4AF37;
+    --association-light-gold: #F1D77A;
+    --association-pale-gold: #F8EEC5;
+
+    --association-light: #F8F6EF;
+    --association-white: #FFFFFF;
+
+    --association-border: #E2E9E5;
+    --association-muted: #68756F;
+}
+
+
+/* ================================
+   GENERAL
+================================ */
+
+body {
+
+    background-color: var(--association-light);
+
+    color: #26352F;
+
+    font-family: Arial, sans-serif;
+
+}
+
+
+/* ================================
+   LINKS
+================================ */
+
+a {
+
+    text-decoration: none;
+
+}
+
+a:hover {
+
+    text-decoration: none;
+
+}
+
+
+/* ================================
+   NAVBAR
+================================ */
+
+.association-navbar {
+
+    background: linear-gradient(
+        135deg,
+        var(--association-deep-green),
+        var(--association-dark-green)
+    );
+
+    border-bottom: 3px solid var(--association-gold);
+
+    box-shadow:
+        0 4px 15px rgba(2, 28, 21, 0.20);
+
+}
+
+
+.association-navbar .navbar-brand {
+
+    color: var(--association-white);
+
+    font-weight: 800;
+
+    letter-spacing: 0.2px;
+
+}
+
+
+.association-navbar .navbar-brand:hover {
+
+    color: var(--association-light-gold);
+
+}
+
+
+.association-navbar .nav-link {
+
+    color: rgba(255, 255, 255, 0.88);
+
+    font-weight: 500;
+
+    transition: all 0.25s ease;
+
+    position: relative;
+
+}
+
+
+.association-navbar .nav-link:hover {
+
+    color: var(--association-light-gold);
+
+}
+
+
+.association-navbar .nav-link.active {
+
+    color: var(--association-gold);
+
+    font-weight: 700;
+
+}
+
+
+/* Gold underline for active nav item */
+
+.association-navbar .nav-link.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 10px;
+
+    right: 10px;
+
+    bottom: 2px;
+
+    height: 2px;
+
+    background-color: var(--association-gold);
+
+    border-radius: 5px;
+
+}
+
+
+/* Navbar toggler */
+
+.association-navbar .navbar-toggler {
+
+    border: 1px solid rgba(212, 175, 55, 0.65);
+
+}
+
+
+.association-navbar .navbar-toggler:focus {
+
+    box-shadow:
+        0 0 0 0.2rem rgba(212, 175, 55, 0.18);
+
+}
+
+
+/* ================================
+   GOLD BUTTON
+================================ */
+
+.btn-association-gold {
+
+    background: linear-gradient(
+        135deg,
+        var(--association-gold),
+        #C29D22
+    );
+
+    border: 1px solid var(--association-gold);
+
+    color: var(--association-dark-green);
+
+    font-weight: 700;
+
+    border-radius: 8px;
+
+    padding: 9px 17px;
+
+    transition: all 0.25s ease;
+
+}
+
+
+.btn-association-gold:hover {
+
+    background: linear-gradient(
+        135deg,
+        var(--association-light-gold),
+        var(--association-gold)
+    );
+
+    border-color: var(--association-light-gold);
+
+    color: var(--association-dark-green);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(212, 175, 55, 0.25);
+
+}
+
+
+/* ================================
+   GREEN BUTTON
+================================ */
+
+.btn-association-green {
+
+    background: linear-gradient(
+        135deg,
+        var(--association-green),
+        var(--association-dark-green)
+    );
+
+    border: 1px solid var(--association-green);
+
+    color: var(--association-white);
+
+    font-weight: 700;
+
+    border-radius: 8px;
+
+    padding: 9px 17px;
+
+    transition: all 0.25s ease;
+
+}
+
+
+.btn-association-green:hover {
+
+    background: linear-gradient(
+        135deg,
+        var(--association-light-green),
+        var(--association-green)
+    );
+
+    border-color: var(--association-light-green);
+
+    color: var(--association-white);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(6, 41, 31, 0.20);
+
+}
+
+
+/* ================================
+   OUTLINE GOLD BUTTON
+================================ */
+
+.btn-outline-association-gold {
+
+    background-color: transparent;
+
+    border: 1px solid var(--association-gold);
+
+    color: var(--association-gold);
+
+    font-weight: 700;
+
+    border-radius: 8px;
+
+    transition: all 0.25s ease;
+
+}
+
+
+.btn-outline-association-gold:hover {
+
+    background-color: var(--association-gold);
+
+    border-color: var(--association-gold);
+
+    color: var(--association-dark-green);
+
+}
+
+
+/* ================================
+   OUTLINE GREEN BUTTON
+================================ */
+
+.btn-outline-association-green {
+
+    background-color: transparent;
+
+    border: 1px solid var(--association-green);
+
+    color: var(--association-green);
+
+    font-weight: 700;
+
+    border-radius: 8px;
+
+    transition: all 0.25s ease;
+
+}
+
+
+.btn-outline-association-green:hover {
+
+    background-color: var(--association-green);
+
+    border-color: var(--association-green);
+
+    color: white;
+
+}
+
+
+/* ================================
+   SECTION
+================================ */
+
+.association-section {
+
+    padding: 70px 0;
+
+}
+
+
+/* ================================
+   SECTION TITLE
+================================ */
+
+.association-section-title {
+
+    color: var(--association-dark-green);
+
+    font-weight: 800;
+
+}
+
+
+.association-section-title::after {
+
+    content: "";
+
+    display: block;
+
+    width: 55px;
+
+    height: 3px;
+
+    margin-top: 10px;
+
+    background-color: var(--association-gold);
+
+    border-radius: 5px;
+
+}
+
+
+/* ================================
+   CARDS
+================================ */
+
+.association-card {
+
+    background-color: var(--association-white);
+
+    border: 1px solid var(--association-border);
+
+    border-top: 4px solid var(--association-gold);
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 5px 20px rgba(2, 28, 21, 0.07);
+
+    transition: all 0.25s ease;
+
+}
+
+
+.association-card:hover {
+
+    transform: translateY(-5px);
+
+    border-color: rgba(212, 175, 55, 0.45);
+
+    box-shadow:
+        0 12px 30px rgba(2, 28, 21, 0.12);
+
+}
+
+
+/* ================================
+   CARD TITLE
+================================ */
+
+.association-card h1,
+.association-card h2,
+.association-card h3,
+.association-card h4,
+.association-card h5,
+.association-card h6 {
+
+    color: var(--association-dark-green);
+
+    font-weight: 700;
+
+}
+
+
+/* ================================
+   GOLD TEXT
+================================ */
+
+.text-association-gold {
+
+    color: var(--association-gold) !important;
+
+}
+
+
+.text-association-light-gold {
+
+    color: var(--association-light-gold) !important;
+
+}
+
+
+/* ================================
+   GREEN TEXT
+================================ */
+
+.text-association-green {
+
+    color: var(--association-green) !important;
+
+}
+
+
+.text-association-dark-green {
+
+    color: var(--association-dark-green) !important;
+
+}
+
+
+/* ================================
+   BADGES
+================================ */
+
+.badge-association-gold {
+
+    background-color: var(--association-gold);
+
+    color: var(--association-dark-green);
+
+    font-weight: 700;
+
+}
+
+
+.badge-association-green {
+
+    background-color: var(--association-green);
+
+    color: white;
+
+    font-weight: 700;
+
+}
+
+
+/* ================================
+   HERO SECTION
+================================ */
+
+.association-hero {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(2, 28, 21, 0.97),
+            rgba(11, 61, 46, 0.94)
+        );
+
+    color: white;
+
+    padding: 90px 0;
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+.association-hero::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+
+    height: 280px;
+
+    right: -100px;
+
+    top: -120px;
+
+    border: 2px solid rgba(212, 175, 55, 0.25);
+
+    border-radius: 50%;
+
+}
+
+
+.association-hero h1 {
+
+    color: white;
+
+    font-weight: 800;
+
+}
+
+
+.association-hero .highlight {
+
+    color: var(--association-gold);
+
+}
+
+
+/* ================================
+   GOLD DIVIDER
+================================ */
+
+.association-divider {
+
+    width: 70px;
+
+    height: 4px;
+
+    background-color: var(--association-gold);
+
+    border-radius: 10px;
+
+    margin: 15px 0;
+
+}
+
+
+/* ================================
+   FORMS
+================================ */
+
+.form-control,
+.form-select {
+
+    border: 1px solid var(--association-border);
+
+    border-radius: 8px;
+
+}
+
+
+.form-control:focus,
+.form-select:focus {
+
+    border-color: var(--association-gold);
+
+    box-shadow:
+        0 0 0 0.2rem rgba(212, 175, 55, 0.15);
+
+}
+
+
+/* ================================
+   TABLES
+================================ */
+
+.association-table thead {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--association-dark-green),
+            var(--association-green)
+        );
+
+    color: white;
+
+}
+
+
+.association-table thead th {
+
+    font-weight: 700;
+
+    border-bottom: 2px solid var(--association-gold);
+
+}
+
+
+.association-table tbody tr:hover {
+
+    background-color: rgba(11, 61, 46, 0.035);
+
+}
+
+
+.association-table tbody td {
+
+    border-color: var(--association-border);
+
+}
+
+
+/* ================================
+   ALERT / NOTICE
+================================ */
+
+.association-alert {
+
+    background-color: var(--association-pale-gold);
+
+    border: 1px solid rgba(212, 175, 55, 0.45);
+
+    color: var(--association-dark-green);
+
+    border-radius: 10px;
+
+}
+
+
+/* ================================
+   FOOTER
+================================ */
+
+footer {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--association-deep-green),
+            var(--association-dark-green)
+        );
+
+    color: white;
+
+    border-top: 3px solid var(--association-gold);
+
+}
+
+
+footer a {
+
+    color: rgba(255, 255, 255, 0.80);
+
+    transition: color 0.2s ease;
+
+}
+
+
+footer a:hover {
+
+    color: var(--association-light-gold);
+
+}
+
+
+/* ================================
+   FOOTER GOLD TITLE
+================================ */
+
+footer h5,
+footer h6 {
+
+    color: var(--association-gold);
+
+    font-weight: 700;
+
+}
+
+
+/* ================================
+   SCROLLBAR
+================================ */
+
+::-webkit-scrollbar {
+
+    width: 9px;
+
+}
+
+
+::-webkit-scrollbar-track {
+
+    background: var(--association-light);
+
+}
+
+
+::-webkit-scrollbar-thumb {
+
+    background: var(--association-green);
+
+    border-radius: 10px;
+
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+
+    background: var(--association-gold);
+
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 767.98px) {
+
+    .association-section {
+
+        padding: 45px 0;
+
+    }
+
+    .association-hero {
+
+        padding: 60px 0;
+
+    }
+
+    .association-hero h1 {
+
+        font-size: 1.9rem;
+
+    }
+
+}

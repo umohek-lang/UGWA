@@ -1,0 +1,978 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Attendance
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* =========================================
+       ASSOCIATION COLOUR THEME
+       ========================================= */
+
+    :root {
+        --dark-green: #022C22;
+        --green: #064E3B;
+        --light-green: #E8F3EF;
+        --gold: #D4AF37;
+        --light-gold: #F4E7B2;
+        --soft-gold: #FFF8DF;
+        --page-bg: #F8FAF9;
+        --text-dark: #1F2937;
+    }
+
+
+    body {
+        background: var(--page-bg);
+    }
+
+
+    /* =========================================
+       PAGE HEADER
+       ========================================= */
+
+    .attendance-page-header {
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(212, 175, 55, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #022C22,
+                #064E3B
+            );
+
+        border-radius: 18px;
+        padding: 40px;
+        color: white;
+
+        position: relative;
+        overflow: hidden;
+
+        box-shadow:
+            0 10px 30px
+            rgba(2, 44, 34, 0.12);
+    }
+
+
+    .attendance-page-header::after {
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        border: 2px solid
+            rgba(212, 175, 55, 0.18);
+
+        border-radius: 50%;
+
+        right: -55px;
+        bottom: -80px;
+    }
+
+
+    .header-icon {
+        width: 62px;
+        height: 62px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(212, 175, 55, 0.14);
+
+        border: 1px solid
+            rgba(212, 175, 55, 0.35);
+
+        border-radius: 16px;
+
+        color: var(--gold);
+
+        font-size: 1.7rem;
+
+        margin-bottom: 18px;
+    }
+
+
+    .header-title {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+
+        letter-spacing: -0.5px;
+    }
+
+
+    .header-description {
+        color: rgba(255,255,255,0.78);
+        margin-bottom: 0;
+    }
+
+
+    .gold-line {
+        width: 65px;
+        height: 4px;
+
+        background: var(--gold);
+
+        border-radius: 20px;
+
+        margin-top: 18px;
+    }
+
+
+    /* =========================================
+       STATISTICS CARDS
+       ========================================= */
+
+    .stat-card {
+        background: white;
+
+        border: 0;
+
+        border-radius: 16px;
+
+        padding: 25px 20px;
+
+        height: 100%;
+
+        position: relative;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 6px 22px
+            rgba(2, 44, 34, 0.07);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+
+        box-shadow:
+            0 12px 28px
+            rgba(2, 44, 34, 0.12);
+    }
+
+
+    .stat-card::before {
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+        right: 0;
+
+        height: 4px;
+
+        background: var(--green);
+    }
+
+
+    .stat-card.gold::before {
+        background: var(--gold);
+    }
+
+
+    .stat-icon {
+        width: 55px;
+        height: 55px;
+
+        margin: 0 auto 13px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        background: var(--light-green);
+
+        color: var(--green);
+
+        font-size: 1.45rem;
+    }
+
+
+    .stat-icon.gold {
+        background: var(--soft-gold);
+
+        color: var(--gold);
+    }
+
+
+    .stat-number {
+        color: var(--dark-green);
+
+        font-size: 1.9rem;
+
+        margin-bottom: 4px;
+    }
+
+
+    .stat-number.gold {
+        color: var(--gold);
+    }
+
+
+    .stat-label {
+        color: #6B7280;
+
+        font-size: 0.9rem;
+    }
+
+
+    /* =========================================
+       ATTENDANCE HISTORY CARD
+       ========================================= */
+
+    .history-card {
+        background: white;
+
+        border: 0;
+
+        border-radius: 18px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 8px 28px
+            rgba(2, 44, 34, 0.08);
+    }
+
+
+    .history-header {
+        background:
+            linear-gradient(
+                135deg,
+                #022C22,
+                #064E3B
+            );
+
+        color: white;
+
+        padding: 18px 24px;
+
+        position: relative;
+    }
+
+
+    .history-header::after {
+        content: "";
+
+        position: absolute;
+
+        width: 100px;
+        height: 100px;
+
+        border: 1px solid
+            rgba(212, 175, 55, 0.18);
+
+        border-radius: 50%;
+
+        right: -30px;
+        top: -45px;
+    }
+
+
+    .history-header h5 {
+        position: relative;
+
+        z-index: 2;
+    }
+
+
+    /* =========================================
+       TABLE
+       ========================================= */
+
+    .attendance-table {
+        min-width: 800px;
+    }
+
+
+    .attendance-table thead th {
+        background: var(--light-gold);
+
+        color: var(--dark-green);
+
+        padding: 15px 18px;
+
+        border-bottom:
+            2px solid var(--gold);
+
+        font-size: 0.78rem;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.45px;
+
+        white-space: nowrap;
+    }
+
+
+    .attendance-table tbody td {
+        padding: 17px 18px;
+
+        border-color: #EEF2F0;
+
+        color: #4B5563;
+
+        font-size: 0.92rem;
+    }
+
+
+    .attendance-table tbody tr {
+        transition:
+            background 0.2s ease;
+    }
+
+
+    .attendance-table tbody tr:hover {
+        background: #F8FCFA;
+    }
+
+
+    /* =========================================
+       SESSION NAME
+       ========================================= */
+
+    .session-wrapper {
+        display: flex;
+
+        align-items: center;
+    }
+
+
+    .session-icon {
+        width: 42px;
+        height: 42px;
+
+        min-width: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: var(--light-green);
+
+        color: var(--green);
+
+        border-radius: 12px;
+
+        margin-right: 12px;
+    }
+
+
+    .session-title {
+        color: var(--green);
+
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+       STATUS BADGES
+       ========================================= */
+
+    .status-badge {
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 6px 11px;
+
+        border-radius: 30px;
+
+        font-size: 0.75rem;
+
+        font-weight: 700;
+    }
+
+
+    .status-present {
+        background: #DDF5E9;
+
+        color: #065F46;
+    }
+
+
+    .status-late {
+        background: #FFF3CD;
+
+        color: #7A5B00;
+    }
+
+
+    .status-absent {
+        background: #FDE2E2;
+
+        color: #B42318;
+    }
+
+
+    .status-excused {
+        background: #E9ECEF;
+
+        color: #495057;
+    }
+
+
+    /* =========================================
+       DATE / TIME
+       ========================================= */
+
+    .date-text {
+        font-weight: 600;
+
+        color: #374151;
+    }
+
+
+    .time-text {
+        color: #6B7280;
+
+        font-size: 0.85rem;
+    }
+
+
+    /* =========================================
+       EMPTY STATE
+       ========================================= */
+
+    .empty-state {
+        padding: 70px 20px;
+    }
+
+
+    .empty-icon {
+        width: 75px;
+        height: 75px;
+
+        margin: 0 auto 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: var(--soft-gold);
+
+        color: var(--gold);
+
+        font-size: 2rem;
+    }
+
+
+    .empty-title {
+        color: var(--green);
+
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+       ========================================= */
+
+    @media (max-width: 768px) {
+
+        .attendance-page-header {
+            padding: 30px 25px;
+        }
+
+
+        .header-title {
+            font-size: 1.8rem;
+        }
+
+
+        .stat-card {
+            padding: 22px 15px;
+        }
+
+
+        .history-header {
+            padding: 16px 18px;
+        }
+
+    }
+
+</style>
+
+<div class="container py-5">
+
+<!-- =========================================
+     PAGE HEADER
+     ========================================= -->
+
+<div class="attendance-page-header mb-5">
+
+    <div class="position-relative" style="z-index:2;">
+
+        <div class="header-icon">
+
+            <i class="bi bi-person-check-fill"></i>
+
+        </div>
+
+
+        <h1 class="header-title fw-bold mb-2">
+
+            My Attendance
+
+        </h1>
+
+
+        <p class="header-description">
+
+            View your association attendance history,
+            participation and attendance rate.
+
+        </p>
+
+
+        <div class="gold-line"></div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     STATISTICS
+     ========================================= -->
+
+<div class="row g-4 mb-5">
+
+
+    <!-- TOTAL -->
+
+    <div class="col-6 col-md-3">
+
+        <div class="stat-card text-center">
+
+            <div class="stat-icon">
+
+                <i class="bi bi-calendar-check-fill"></i>
+
+            </div>
+
+
+            <h2 class="stat-number fw-bold">
+
+                {{ total }}
+
+            </h2>
+
+
+            <p class="stat-label mb-0">
+
+                Total Sessions
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PRESENT -->
+
+    <div class="col-6 col-md-3">
+
+        <div class="stat-card text-center">
+
+            <div class="stat-icon">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+            </div>
+
+
+            <h2 class="stat-number fw-bold">
+
+                {{ present }}
+
+            </h2>
+
+
+            <p class="stat-label mb-0">
+
+                Present
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- LATE -->
+
+    <div class="col-6 col-md-3">
+
+        <div class="stat-card gold text-center">
+
+            <div class="stat-icon gold">
+
+                <i class="bi bi-clock-history"></i>
+
+            </div>
+
+
+            <h2 class="stat-number gold fw-bold">
+
+                {{ late }}
+
+            </h2>
+
+
+            <p class="stat-label mb-0">
+
+                Late
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ATTENDANCE RATE -->
+
+    <div class="col-6 col-md-3">
+
+        <div class="stat-card text-center">
+
+            <div class="stat-icon">
+
+                <i class="bi bi-bar-chart-fill"></i>
+
+            </div>
+
+
+            <h2 class="stat-number fw-bold">
+
+                {{ attendance_rate|floatformat:1 }}%
+
+            </h2>
+
+
+            <p class="stat-label mb-0">
+
+                Attendance Rate
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     ATTENDANCE HISTORY
+     ========================================= -->
+
+<div class="history-card">
+
+
+    <!-- HEADER -->
+
+    <div class="history-header">
+
+        <h5 class="mb-0 fw-bold">
+
+            <i class="bi bi-calendar-check me-2"></i>
+
+            Attendance History
+
+        </h5>
+
+    </div>
+
+
+
+    <!-- TABLE -->
+
+    <div class="table-responsive">
+
+        <table
+            class="table attendance-table table-hover align-middle mb-0"
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th class="px-4">
+                        Session
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Type
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Check In
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for record in records %}
+
+                    <tr>
+
+
+                        <!-- SESSION -->
+
+                        <td class="px-4">
+
+                            <div class="session-wrapper">
+
+                                <div class="session-icon">
+
+                                    <i class="bi bi-calendar-event"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <div class="session-title">
+
+                                        {{ record.session.title }}
+
+                                    </div>
+
+                                    <small class="text-muted">
+
+                                        Association Attendance
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            <div class="date-text">
+
+                                {{ record.session.date|date:"d M Y" }}
+
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- TYPE -->
+
+                        <td>
+
+                            <span class="text-muted">
+
+                                {{ record.session.get_session_type_display }}
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            {% if record.status == "PRESENT" %}
+
+                                <span
+                                    class="status-badge status-present"
+                                >
+
+                                    <i
+                                        class="bi bi-check-circle-fill"
+                                    ></i>
+
+                                    Present
+
+                                </span>
+
+
+                            {% elif record.status == "LATE" %}
+
+                                <span
+                                    class="status-badge status-late"
+                                >
+
+                                    <i
+                                        class="bi bi-clock-fill"
+                                    ></i>
+
+                                    Late
+
+                                </span>
+
+
+                            {% elif record.status == "ABSENT" %}
+
+                                <span
+                                    class="status-badge status-absent"
+                                >
+
+                                    <i
+                                        class="bi bi-x-circle-fill"
+                                    ></i>
+
+                                    Absent
+
+                                </span>
+
+
+                            {% else %}
+
+                                <span
+                                    class="status-badge status-excused"
+                                >
+
+                                    <i
+                                        class="bi bi-info-circle-fill"
+                                    ></i>
+
+                                    Excused
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+
+                        <!-- CHECK IN -->
+
+                        <td>
+
+                            {% if record.check_in %}
+
+                                <div class="time-text">
+
+                                    <i
+                                        class="bi bi-clock me-1"
+                                        style="color:#D4AF37;"
+                                    ></i>
+
+                                    {{ record.check_in|date:"H:i" }}
+
+                                </div>
+
+                            {% else %}
+
+                                <span class="text-muted">
+
+                                    —
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% empty %}
+
+                    <!-- EMPTY STATE -->
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="text-center"
+                        >
+
+                            <div class="empty-state">
+
+                                <div class="empty-icon">
+
+                                    <i
+                                        class="bi bi-calendar-x"
+                                    ></i>
+
+                                </div>
+
+
+                                <h5 class="empty-title">
+
+                                    No Attendance Records
+
+                                </h5>
+
+
+                                <p class="text-muted mb-0">
+
+                                    You do not have any attendance
+                                    records yet.
+
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}
